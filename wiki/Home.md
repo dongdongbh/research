@@ -12,6 +12,12 @@ repo proper (see `results/`), not in the wiki.
 
 ## Current strategy (read these first)
 
+- **[[Unified-Direction-Ranking-2026-08]] — CURRENT RANKING, 2026-08-03.**
+  Full 8-lane gating sweep of every scan candidate: three flagships
+  (autoresearch FDR ★★★★★, judge-audit program ★★★★½, parallel-RL
+  factorial ★★★★½), a deep ★★★★ bench, T1 demoted to ★★★ (three cells
+  published at top venues), ten candidates killed with evidence, and the
+  week-one zero-cost gates.
 - [[Top-Researcher-Scan-2026-08]] — 26 leading researchers profiled:
   convergence map (verification bottleneck, diversity collapse, unarbitrated
   mechanism claims), ranked opportunities, method directions, operating
@@ -64,14 +70,23 @@ MuJoCo/SAPIEN stacks run everywhere.
 
 1. **Prior-art gate before any experiment** — read method sections of the
    nearest papers and quote the sentence establishing the gap; never trust a
-   paper's own novelty claim; re-run any gate older than ~6 weeks.
-2. **Filter directions by remaining opportunity (saturation), never by
+   paper's own novelty claim; re-run any gate older than ~6 weeks; **every
+   search must explicitly cover the most recent 8 weeks** (a July gate missed
+   two June papers that had already killed its direction).
+2. **Re-gates must re-identify the competitor, not just re-check the claim** —
+   T1's cells went to three top venues while we watched the wrong group.
+3. **Lane-wide sweeps beat person-scoped checks** — four researcher-scan
+   premises died on lane search that person-scoped checks had passed.
+4. **Filter directions by remaining opportunity (saturation), never by
    crowding** — and an empty lane must explain why it is empty.
-3. **Every diagnostic project names, at pre-registration time, the method
+5. **Every diagnostic project names, at pre-registration time, the method
    paper it unlocks** — diagnosis first, then own the fix.
-4. **Pair every arbitration with a released reusable artifact** (harness,
+6. **Pair every arbitration with a released reusable artifact** (harness,
    benchmark, metric) — diagnostics buy credibility, artifacts buy citations.
-5. **Check substrate liveness** (maintainers, recent pushes, released
-   checkpoints) before adopting any external codebase as a target.
-6. Ask "who changes their behavior if this result is true?" before committing
+7. **Substrate liveness gates outcomes, not just cost** — a null on your own
+   reimplementation of unreleased code is not defensible; verify cited
+   benchmarks/datasets actually exist and hydrate before rating a direction.
+8. **Verify quoted numbers against primary artifacts** before they enter a
+   design brief.
+9. Ask "who changes their behavior if this result is true?" before committing
    compute.

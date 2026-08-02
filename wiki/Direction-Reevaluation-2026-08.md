@@ -1,5 +1,15 @@
 # Direction Re-evaluation — 2026-08-02
 
+> **SUPERSEDED 2026-08-03.** The star ranking below was replaced by
+> [[Unified-Direction-Ranking-2026-08]] after a full 8-lane gating sweep of
+> the researcher-scan candidates. Biggest changes: T1 demoted ★★★★½ → ★★★
+> (three of its four cells published at CVPR/ICLR/ICML 2026 — the flagged
+> scoop risk was the wrong group); safety-aware KV allocation dead (scooped
+> in June, before this page's gate ran); three new flagships identified
+> (autoresearch FDR ★★★★★, judge-audit program ★★★★½, parallel-RL factorial
+> ★★★★½). This page is kept as the record of the Aug 2 re-gate.
+
+
 Updated 2026-08-02 for the general research wiki. **This page is the current
 authority on the direction star ranking**; older star tables elsewhere in this
 wiki are superseded by it.
