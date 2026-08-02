@@ -89,7 +89,8 @@ generator as the artifact).
 **Next cycle — SELECTED (pre-registrations drafted):** 1-NFE diversity →
 CVPR 2027 ([[Prereg-1NFE-Diversity]]); epistemic contextualization → ICML
 2027 ([[Prereg-Epistemic-Contextualization]], pipeline engineering starts
-now). Bench (designs in git history / lane reports): parallel-RL factorial
+now; **revised to a mid-training design on OLMo-2-1B, ~300–450 GPU-h**, with
+a gated from-scratch escalation). Bench (designs in git history / lane reports): parallel-RL factorial
 (expires with time — the source group is sweeping its axes serially),
 SigLIP-2 ingredient ladder, replay arbitration, calibration tension test.
 

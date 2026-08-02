@@ -55,14 +55,22 @@ architecture trains on it unchanged.
 **Rewriter:** an open 4–8B model with constrained prompting + rule
 validators; a **fact-fidelity audit** on stratified samples (LLM-judge +
 human spot-check) with a pre-registered pass threshold.
-**Corpus:** ~8B tokens — a DCLM/FineWeb subset enriched with a
+**Corpus:** ~2B tokens — a DCLM/FineWeb subset enriched with a
 contested-claims-rich slice (news/forums/reviews) so the intervention has
 signal to change.
-**Models:** 0.5B and 1.4B, matched token budgets, standard recipe.
+**Training regime (revised 2026-08-04, owner concern: from-scratch
+pretraining too costly):** **continued pretraining (mid-training) on a
+fully-open base model — OLMo-2-1B** — whose raw pretraining data is public,
+so the pre-intervention diet is known. This is also the deployable form of
+the method: no lab re-pretrains from scratch; contextualization would enter
+real pipelines as a mid-training/annealing intervention. A from-scratch
+arm (0.5B × 8B tokens) is retained as a **gated escalation** (§4), run only
+if Phase-1 effects are positive.
 
 ## 4. Pre-registered design
 
-**Arms (× 2 scales × 2 seeds = 16 pretraining runs):**
+**Arms (× 2 seeds = 8 continued-pretraining runs on OLMo-2-1B, 2B tokens
+each):**
 - C0 raw corpus.
 - C1 **contextualized** (full epistemic rewriting).
 - C2 **tag-only** — identical metadata prepended as tags, text unchanged.
@@ -80,8 +88,12 @@ signal to change.
   beyond C2 — i.e., rewriting adds over tags.
 - **H4:** capability tax of C1 ≤ 2.0 points average on the standard suite
   vs C0.
-- **H5:** the C1 effects hold or grow from 0.5B → 1.4B (not a small-model
-  artifact).
+- **H5 (escalation gate, replaces the old scale hypothesis):** if H1–H3
+  are positive, the from-scratch escalation arm (0.5B × 8B tokens, 4 arms ×
+  2 seeds, ~+300 GPU-h incl. extra rewriting) reproduces the C1 > C2
+  ordering — testing whether the effect also forms without a raw-text
+  pretraining history. Run ONLY on a positive Phase-1; its result extends
+  the paper, it does not gate it.
 
 **Decision rules:** bootstrap CIs over seeds; Holm across H1–H5; all
 metrics and prompts frozen at lock; the fidelity threshold (≥97%
@@ -118,14 +130,13 @@ goal-adoption prevention beyond the probe suite's proxy.
 
 ## 6. Resources and timeline
 
-**Cost:** ~900–1,400 GPU-h total, rewriter inference dominant (~8B-token
-corpus through a 4–8B rewriter ≈ 500–800 H100-h at vLLM throughputs — the
-H200 batch advantage matters; pretraining arms ≈ 16 runs ≈ 350–600 H100-h).
-**Cluster: Delta gpuH200x8-long** for rewriting + the 1.4B arms (30-day
-walls fit whole stages; mind proportional charging); OrangeGrid for 0.5B
-arms and evals. Runs after the ICLR crunch; engineering (schema, rewriter,
-validators, fidelity audit) starts now — it needs no GPUs the ICLR papers
-want.
+**Cost (revised): ~300–450 GPU-h for Phase 1** — rewriting 2B tokens
+through a 4–8B rewriter ≈ 150–250 H100-h; 8 continued-pretraining runs at
+1B × 2B tokens ≈ 100 H100-h; evals ≈ 30. The gated from-scratch escalation
+adds ~300 GPU-h only if Phase 1 is positive. **Clusters: OrangeGrid/Anvil
+suffice for Phase 1** (Delta H200 optional for rewriter batch throughput;
+no longer required). Engineering (schema, rewriter, validators, fidelity
+audit) starts now — it needs no GPUs the ICLR papers want.
 
 **Timeline:** Aug–Sep schema + rewriter + fidelity gate → Oct lock +
 rewrite at scale → Nov pretraining arms → Dec evals + analysis → Jan
