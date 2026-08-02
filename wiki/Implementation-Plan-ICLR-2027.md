@@ -45,11 +45,13 @@ generation, (iii) the SigLIP2 cache build — roughly 100–200 H100-h +
 ## Data and weights to stage (into `artifacts/hf-cache` unless noted)
 
 **RoboJudge:**
-1. `RoboArena/DataDump_02-03-2026` → `$SCRATCH/robojudge/dump/` (manifest +
-   SHA-256 per [[Data-and-Caches]]); copy `global_metadata.yaml` + all
-   per-session labels/preferences (not videos) to
-   `/anvil/projects/x-cis261253/datasets/roboarena_labels/` (durable;
-   scratch purges in 30 d — videos are re-downloadable at 18.5 GB).
+1. `RoboArena/DataDump_02-03-2026` →
+   `/anvil/projects/x-cis261253/datasets/roboarena/dump/` (manifest +
+   SHA-256 per [[Data-and-Caches]]). Owner decision 2026-08-02: the whole
+   dump lives in **project space** (18.5 GB against a 4.6 TB-free quota),
+   not `$SCRATCH` — avoids the 30-day purge entirely; no separate labels
+   copy needed. Download quirk: use `HF_HUB_DISABLE_XET=1` — the dump's
+   thousands of small files rate-limit (429) the xet token endpoint.
 2. Models: `teetone/RoboReward-4B`, `teetone/RoboReward-8B`,
    `Qwen/Qwen2.5-VL-7B-Instruct`, `Qwen/Qwen2.5-VL-72B-Instruct` (+ its AWQ
    as the 2×A100 fallback), `OpenGVLab/InternVL3-8B`,
