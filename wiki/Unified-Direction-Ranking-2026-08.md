@@ -74,7 +74,8 @@ generator as the artifact).
 
 ## Recommended portfolio (professor's decision; our suggestion)
 
-**Start now, aimed at ICLR Sep 18:**
+**Start now, aimed at ICLR Sep 18** (pre-registrations drafted:
+[[Prereg-Autoresearch-Accept-Rule]], [[Prereg-RoboJudge-Audit]]):
 1. **Autoresearch FDR + accept rule** (#1) — lab-defining, perfectly
    OrangeGrid-shaped, diagnosis and method in one paper. Conditions: second
    substrate; noise floor pre-registered before any campaign.
