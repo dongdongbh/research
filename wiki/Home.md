@@ -18,6 +18,14 @@ repo proper (see `results/`), not in the wiki.
   factorial ★★★★½), a deep ★★★★ bench, T1 demoted to ★★★ (three cells
   published at top venues), ten candidates killed with evidence, and the
   week-one zero-cost gates.
+- **[[Method-Gates-2026-08]] — NEW.** Gates for the two real-method
+  candidates (owner definition: new approach, not ablation/statistics).
+  Both survive: crop-consistency distillation ★★★★ (CLIPSelf mechanism
+  exists for dense prediction only; compositional-ITM/frozen-adapter/
+  structured-teacher form unclaimed; week-1 CLIPSelf-checkpoint check is
+  the condition) and epistemic contextualization ★★★★ (no implementation
+  exists; tag-conditioning neighbors are distinct; tag-only arm is the
+  decisive control).
 - **Pre-registrations (DRAFT, awaiting sign-off):**
   ICLR 2027 — [[Prereg-RoboJudge-Audit]] (diagnostic) ·
   [[Prereg-ParallelRL-Factorial]] (method; replaces the declined
