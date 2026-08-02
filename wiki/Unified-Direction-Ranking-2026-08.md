@@ -22,7 +22,7 @@ abstract is committed.
 
 | # | Direction | ★ | Cost / cluster | ICLR? | Method-unlock |
 |---|---|---|---|---|---|
-| 1 | **Autoresearch FDR + sound accept rule** — **DECLINED as a paper by owner 2026-08-03** (statistics-as-contribution reads as engineering; see [[Prereg-Autoresearch-Accept-Rule]]). Retained as internal tooling only | ~~★★★★★~~ | — | — | — |
+| 1 | **Autoresearch FDR + sound accept rule** — **DECLINED as a paper by owner 2026-08-03** (statistics-as-contribution reads as engineering; see the removed autoresearch accept-rule draft (git history)). Retained as internal tooling only | ~~★★★★★~~ | — | — | — |
 | 2 | **Judge/evaluator validity-audit program** (anchor: RoboReward; + DreamGen judge-swap + off-the-shelf VLM judges; ground truth = RoboArena human dumps) | **★★★★½** | 250–500 GPU-h · inference-only, OrangeGrid | **Yes** | Rank-calibrated evaluator + "evaluator report card" |
 | 3 | **Abbeel parallel-RL factorial** (BRC vs TD-overfitting contradiction; factorial around authors' own published config) | **★★★★½** | 400–650 GPU-h · OrangeGrid, MuJoCo-only | **Yes** | Minimal FastTD3 recipe |
 
@@ -75,9 +75,11 @@ generator as the artifact).
 ## Recommended portfolio (professor's decision; our suggestion)
 
 **Start now, aimed at ICLR Sep 18** (pre-registrations drafted:
-[[Prereg-ParallelRL-Factorial]], [[Prereg-RoboJudge-Audit]]):
-1. **Parallel-RL factorial** (method flagship; swapped in 2026-08-03 after
-   the autoresearch paper was declined — this uses its now-or-never window).
+[[Prereg-Crop-Consistency-Distillation]], [[Prereg-RoboJudge-Audit]]):
+1. **Crop-consistency distillation** (method flagship; selected 2026-08-04
+   after the owner's real-method criterion re-gated the slate — see
+   [[Method-Gates-2026-08]]. Week-1 decisive checks: CLIPSelf checkpoint on
+   our battery; aggregation-fix arm).
 2. **Judge-audit program first paper** — uses the VLM eval infra,
    inference-only, disjoint resources from #1. Week-1 go/no-go: RoboArena
    dump storage footprint.
@@ -85,11 +87,11 @@ generator as the artifact).
    (100–250), Bundle A if the Jaccard gate passes (<100).
 
 **Next cycle — SELECTED (pre-registrations drafted):** 1-NFE diversity →
-CVPR 2027 ([[Prereg-1NFE-Diversity]]); SigLIP-2 ingredient ladder → ICML
-2027 ([[Prereg-SigLIP2-Ingredient-Ladder]], OpenCLIP engineering starts
-immediately). The Abbeel factorial is deliberately NOT held for ICML — its
-scoop risk grows with time (source group sweeping the axes serially); it is
-a swap-in for the ICLR slate or it expires.
+CVPR 2027 ([[Prereg-1NFE-Diversity]]); epistemic contextualization → ICML
+2027 ([[Prereg-Epistemic-Contextualization]], pipeline engineering starts
+now). Bench (designs in git history / lane reports): parallel-RL factorial
+(expires with time — the source group is sweeping its axes serially),
+SigLIP-2 ingredient ladder, replay arbitration, calibration tension test.
 
 **Also holdable for next cycle:** Abbeel factorial (or swap it in
 for #2 if the professor prefers a method-flavored flagship), SigLIP-2

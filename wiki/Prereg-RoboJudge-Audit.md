@@ -6,7 +6,7 @@ rules do not change; any deviation is reported as a deviation.
 
 Paper type: **diagnostic** (with a constructive method half per standing
 rule 5). Target venue: ICLR 2027 (abstracts Sep 18, full Sep 25). Companion
-paper: [[Prereg-Autoresearch-Accept-Rule]] (method).
+paper: the removed autoresearch accept-rule draft (git history) (method).
 
 ---
 
@@ -162,5 +162,5 @@ Wk1 gate + ranking freeze → Wk2–3 A1/A2 → Wk4 A3/A4 → Wk5 A5 → Wk6 ana
 
 ## Related
 
-[[Unified-Direction-Ranking-2026-08]] · [[Prereg-Autoresearch-Accept-Rule]] ·
+[[Unified-Direction-Ranking-2026-08]] · the removed autoresearch accept-rule draft (git history) ·
 [[GPU-Resources-Across-Clusters]] · [[Data-Transfer-Between-Clusters]]

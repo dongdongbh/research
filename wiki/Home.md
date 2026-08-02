@@ -28,12 +28,13 @@ repo proper (see `results/`), not in the wiki.
   decisive control).
 - **Pre-registrations (DRAFT, awaiting sign-off):**
   ICLR 2027 — [[Prereg-RoboJudge-Audit]] (diagnostic) ·
-  [[Prereg-ParallelRL-Factorial]] (method; replaces the declined
-  [[Prereg-Autoresearch-Accept-Rule]]).
-  Next cycle — [[Prereg-1NFE-Diversity]] (CVPR 2027) ·
-  [[Prereg-SigLIP2-Ingredient-Ladder]] (ICML 2027, engineering starts now).
-  Each: problem statement, research state, novelty, locked
-  hypotheses/arms/metrics, kill criteria, timeline.
+  [[Prereg-Crop-Consistency-Distillation]] (method).
+  CVPR 2027 — [[Prereg-1NFE-Diversity]] (diagnostic).
+  ICML 2027 — [[Prereg-Epistemic-Contextualization]] (method).
+  Stale drafts for superseded picks (autoresearch accept rule, parallel-RL
+  factorial, SigLIP-2 ladder) were removed 2026-08-04; recoverable from git
+  history; decisions and evidence remain in [[Unified-Direction-Ranking-2026-08]]
+  and [[Method-Gates-2026-08]].
 - [[Top-Researcher-Scan-2026-08]] — 26 leading researchers profiled:
   convergence map (verification bottleneck, diversity collapse, unarbitrated
   mechanism claims), ranked opportunities, method directions, operating

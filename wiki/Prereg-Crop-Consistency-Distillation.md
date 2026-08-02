@@ -1,0 +1,142 @@
+# Pre-registration: Crop-Consistency Distillation — Region Information at Single-Pass Cost
+
+Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Locks after the
+week-1 decisive checks (§8). Target venue: **ICLR 2027** (abstracts Sep 18).
+
+Paper type: **METHOD** (owner definition: a new approach — here, a training
+procedure that breaks the assumption that patch tokens already carry region
+information). Gate record: [[Method-Gates-2026-08]]. Companion diagnostic:
+[[Prereg-RoboJudge-Audit]].
+
+---
+
+## 1. The problem, in plain language
+
+Contrastive VLMs are compositionally brittle. Our SVIB post-mortem measured
+exactly where the fix lives and what it costs: re-encoding image **regions at
+full resolution** (a 20-crop grid + one self-attention layer) buys the gains
+(+2.66 SugarCrepe++ on corrected CLIP) but at **~8× inference cost**; reusing
+the ViT's own ROI-pooled patch tokens is nearly free (1.06×) but **loses 1.32
+points** (paired 95% CI [−2.51, −0.12]). The region information is simply not
+in the patch tokens — and putting it there at training time, so inference
+needs one pass, is the method.
+
+## 2. Current research state (gated 2026-08-03)
+
+- **CLIPSelf (ICLR 2024)** owns the ancestor mechanism — aligning dense-map
+  region representations with the image-level embedding of the corresponding
+  crop — but for **open-vocabulary dense prediction only**, with full ViT
+  fine-tuning and **no compositional/ITM evaluation**; none of its 100
+  citing papers applies it there. Repo public (207★, frozen Feb 2024, **no
+  license** — evaluate the checkpoint, reimplement the mechanism).
+- **DeGLA (2504.16801)** improves compositionality at ~1× via a *different*
+  mechanism (global EMA-teacher preservation + LLM-generated hard negatives;
+  +3.5% avg VALSE/SugarCrepe/ARO) → **mandatory baseline**, not prior art on
+  our mechanism.
+- **The aggregation line** (LABCLIP, DCSM ICCV 2025, "Similarity Is Not
+  Logic" ICML 2026) argues binding failure is *execution not representation*.
+  Our −1.32 evidence concerns region information for grid+attention gains,
+  not only binding — but reviewers will conflate them, so the aggregation
+  fix is a pre-registered **arm and kill criterion**, not a citation.
+- SILC / SigLIP-2 self-distillation is pretraining-time local-to-global on
+  the training pipeline's own crops — different direction, setting, and
+  objective from post-hoc crop→patch distillation on a frozen model.
+
+## 3. The method
+
+**Teacher (frozen, training-time only):** the full-resolution crop pathway —
+frozen backbone applied to the 20-view grid, plus our *trained
+grid+self-attention head* — i.e., a structured multi-region teacher, not
+single-crop embeddings (this is the delta from CLIPSelf's teacher).
+**Student:** ROI-pooled patch tokens of the same frozen backbone, passed
+through a **light adapter** (primary: adapter after the frozen ViT;
+secondary: LoRA on the last N blocks).
+**Losses:** per-region feature matching (cosine) + a relational term
+matching the teacher head's inter-region attention pattern (transfers the
+dense-routing structure our interventions showed is load-bearing).
+**Data:** images only (COCO/VG; our cached crops) — the distillation is
+self-supervised; no captions, no annotations.
+**At inference:** one backbone pass + adapter ≈ **1.1×** cost; evaluation
+under our corrected, validation-locked ITM protocol.
+
+## 4. Pre-registered design
+
+**Arms** (CLIP ViT-B/32 primary; SigLIP2 B/16 secondary):
+- A0 raw frozen backbone (corrected baselines).
+- A1 patch-ROI, no distillation (lower anchor, −1.32).
+- A2 grid+self-attention @8× (upper anchor, +2.66).
+- A3 **ours**: distilled adapter @~1.1×.
+- A4 CLIPSelf released checkpoint, ROI-pooled, same protocol (**week-1
+  decisive check**).
+- A5 aggregation-fix over raw patch tokens @1× (kill-arm).
+- A6 DeGLA (published numbers; checkpoint if released).
+- Retrieval-preservation eval (COCO both directions) for A3.
+
+**Hypotheses (directional, locked):**
+- **H1:** A3 recovers ≥⅔ of the (A2−A1) gap on SugarCrepe++ under
+  validation-locked selection (predict TRUE).
+- **H2:** A3 − A0 ≥ +1.0 SCPP++ with paired CI excluding 0 (predict TRUE).
+- **H3:** A4 does NOT close the gap (predict TRUE — CLIPSelf's objective is
+  dense-prediction alignment, not ITM).
+- **H4:** A5 alone does NOT close the gap (predict TRUE; FALSE = the
+  representation was sufficient and the method is unnecessary → §kill).
+- **H5:** A3 preserves COCO retrieval within 0.5 R@1 both directions.
+- **H6:** A3 inference overhead ≤1.2× measured (same L40S protocol as SVIB).
+
+**Decision rules:** 3 seeds; paired bootstrap CIs (existing machinery);
+validation-locked α/config selection only; Holm across H1–H6.
+**Hyperparameter honesty:** an attempt budget of **6 training configs
+total** (loss weights × adapter size), fixed now; no post-hoc mining; all
+attempts reported.
+
+**Kill criteria:** (i) week-1: A4 already closes ≥⅔ of the gap → the paper
+collapses into a calibration of CLIPSelf (drop to bench; salvage = transfer
+study). (ii) A5 closes ≥⅔ of the gap → the fix is execution, not
+representation; fold our evidence into the readout-ladder paper instead.
+(iii) A3 fails to beat A1 beyond seed noise within the attempt budget →
+publish inside the honest-negative section of the SVIB write-up, not alone.
+
+**What we will NOT claim:** SOTA compositionality versus hard-negative
+fine-tuned models (different regime — we claim the frozen-backbone,
+annotation-free-at-inference lane); anything about generative/decoder VLMs;
+backbones beyond the two tested.
+
+## 5. Expected outcomes
+
+- **Central (H1–H4 as predicted):** compositional gains at single-pass cost
+  — a deployable method converting SVIB's honest negative into its fix, with
+  the relational-distillation term as the mechanism novelty.
+- **A5-wins branch:** the field learns the representation was sufficient
+  after all — merged into the readout-arbitration line, still publishable.
+- Artifacts regardless: adapter weights, distillation recipe, and the
+  harness — on top of the already-released SVIB evaluation stack.
+
+## 6. Resources and timeline
+
+**Cost:** 200–400 GPU-h (adapter training is small; teacher features are
+already cached for CLIP). OrangeGrid A100 primary; Anvil for the SigLIP2
+arm. Wk1: A4 + A5 decisive checks, lock. Wk2–3: A3 training sweep (attempt
+budget). Wk4: secondary backbone + retrieval. Wk5: seeds/CIs. Wk6:
+analysis. Wk7: write-up. Abstract needs A3-vs-A1 on the primary backbone.
+
+## 7. Risks and scoop watch
+
+- Aggregation-line groups moving training-side is the live scoop path —
+  watch LABCLIP/DCSM/SNL citations; standard 6-week re-gate; 48h re-gate on
+  any "crop distillation compositional" hit.
+- CLIPSelf has no license → its checkpoint is evaluated, never forked; our
+  implementation is from the paper.
+- Teacher ceiling: A2 is only +2.66 — effect sizes are small, hence the
+  paired-CI machinery and the ≥⅔-gap framing rather than absolute SOTA.
+
+## 8. Lock checklist
+
+1. Professor sign-off on §4 (esp. attempt budget and kill criteria).
+2. Week-1 A4/A5 results in hand.
+3. Confirmatory literature pass, most recent 8 weeks explicit.
+4. → LOCKED + git hash; deviations logged below this line.
+
+## Related
+
+[[Method-Gates-2026-08]] · [[Unified-Direction-Ranking-2026-08]] ·
+[[Prereg-RoboJudge-Audit]] · [[Status-And-Survivors]]
