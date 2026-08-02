@@ -5,8 +5,8 @@ week-1 substrate gate (§8). Target venue: **CVPR 2027** (deadline ~Nov 13,
 2026 per our deadlines table — confirm exact date at lock).
 
 Paper type: **diagnostic arbitration with a named method-unlock** (standing
-rules 5–6). Sibling pages: [[Prereg-RoboJudge-Audit]],
-the removed autoresearch accept-rule draft (git history), the removed SigLIP-2 ladder draft (git history).
+rules 5–6). Sibling pages: [[Prereg-RoboJudge-Audit]] ·
+[[Prereg-Crop-Consistency-Distillation]] · [[Prereg-Epistemic-Contextualization]].
 
 ---
 

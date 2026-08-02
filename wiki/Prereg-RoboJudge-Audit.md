@@ -6,7 +6,7 @@ rules do not change; any deviation is reported as a deviation.
 
 Paper type: **diagnostic** (with a constructive method half per standing
 rule 5). Target venue: ICLR 2027 (abstracts Sep 18, full Sep 25). Companion
-paper: the removed autoresearch accept-rule draft (git history) (method).
+method paper: [[Prereg-Crop-Consistency-Distillation]].
 
 ---
 
