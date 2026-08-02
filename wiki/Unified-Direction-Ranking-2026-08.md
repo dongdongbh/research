@@ -1,4 +1,5 @@
 # Unified Direction Ranking — 2026-08-03
+## (Direction Re-evaluation, v2)
 
 Status: **CURRENT AUTHORITY.** Supersedes the ranking in
 [[Direction-Reevaluation-2026-08]] (kept as record) and the opportunity lists
