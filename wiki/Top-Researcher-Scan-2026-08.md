@@ -1,5 +1,9 @@
 # Top-Researcher Scan — 2026-08-02
 
+Updated 2026-08-02 for the general research wiki. **Current page** — read
+alongside [[Direction-Reevaluation-2026-08]], which carries the direction star
+ranking; this page carries the people-and-openings layer.
+
 Status: **Complete.** 26 leading researchers profiled by 26 parallel Opus
 agents (one resumed once for a truncated report). Method: weight last-author
 small-team papers, solo/position pieces, talks, commit histories and hiring
@@ -209,9 +213,12 @@ at pre-registration time, the method paper it unlocks if the diagnosis lands
 - **T1 needs an immediate re-gate against Darrell's C1 cluster** (CoVFT + the
   four encoder fixes) — his group is now the primary scoop risk.
 - The verifier-audit program is a NEW top-tier candidate alongside T1/T3.
-- Tier-1 items 3, 4, 5 are bolt-ons to existing SVIB infrastructure and can
-  run alongside anything.
+- Tier-1 items 3, 4, 5 are bolt-ons to the existing compositional-eval
+  infrastructure (harness and benchmark battery documented in the svib repo
+  wiki) and can run alongside anything.
 - Marin contribution = potential compute channel (JAX/Levanter stack).
+- The July star table in [[Status-And-Survivors]] predates both this page and
+  the re-evaluation; do not rank against it.
 
 ## Operational notes for the cluster
 

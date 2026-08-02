@@ -1,16 +1,19 @@
 # CUDA Compatibility and vLLM
 
+Updated 2026-08-02 for the general research wiki.
+
 Purpose: the local workaround that makes CUDA 13-linked vLLM wheels run on
 OrangeGrid nodes whose installed NVIDIA driver is still `570.133.07`, plus the
-smoke tests that prove it.
+smoke tests that prove it. The same pattern applies on any node whose driver is
+older than the CUDA runtime a wheel links against.
 
-For the measured one-H100 Qwen3.6-27B deployment, startup failures, SU cost,
-and 4/16/32-worker throughput results, see
+For a measured one-H100 27B-class deployment, startup failures, SU cost, and
+4/16/32-worker throughput results, see
 [[Anvil-H100-Qwen36-vLLM-Benchmark]].
 
 ## Problem
 
-The local `uv` environment currently has:
+The project `uv` environment in this example has:
 
 ```text
 torch 2.11.0+cu128
@@ -68,8 +71,8 @@ libnvidia-nvvm.so
 
 ## Runtime Environment
 
-From the SVIB2 repository root, export both paths before importing or launching
-vLLM:
+From the project repository root, export both paths before importing or
+launching vLLM:
 
 ```bash
 export CUDA_COMPAT="$HOME/miniforge3/envs/cuda13compat/cuda-compat"
@@ -194,7 +197,7 @@ Use the small smoke test first on every new node type.
 
 ## Notes
 
-- `cuda-compat` is not a Python package for SVIB2. It supplies driver
+- `cuda-compat` is not a project Python dependency. It supplies driver
   compatibility libraries and is consumed through `LD_LIBRARY_PATH`.
 - Put `$CUDA_COMPAT` before `$CU13_LIB` and before any existing library paths.
 - Set the paths before Python starts. Setting `LD_LIBRARY_PATH` inside Python is

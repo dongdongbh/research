@@ -1,5 +1,7 @@
 # Does the Capacity Gap Survive Per-Teacher Temperature Tuning?
 
+*Updated 2026-08-02 for the general research wiki.*
+
 Status: **PRIOR-ART GATE FAILED 2026-07-25 (owner-run). Do not run this
 protocol.** The central control was already performed at larger scale, and its
 result contradicts this protocol's primary hypothesis.
@@ -262,7 +264,8 @@ robustness arm adds ~40 runs.
 
 ## Related
 
-[[Capacity-Gap-Falsification-Preregistration]] — the superseded version and its
-gate.
+Capacity-Gap-Falsification-Preregistration (svib repo wiki) — the superseded
+version of this protocol and its gate.
 [[Direction-Gate-Results]] — the recurring failure mode this protocol was
 designed around.
+[[LLM-KD-Direction-Gates]] — the distillation survey this gate preceded.

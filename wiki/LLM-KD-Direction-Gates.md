@@ -1,5 +1,12 @@
 # LLM/VLM Distillation — Survey and Gates
 
+*Updated 2026-08-02 for the general research wiki.*
+
+Later development: see [[Direction-Reevaluation-2026-08]]. Its T4 post-mortem
+("our July sweep declared the lane empty while the scooping paper had been
+public for ~8 weeks — the empty-lane claim was false when made") is a second,
+independent confirmation of the generating-process rule stated below.
+
 Status: **Surveyed and gated 2026-07-25.** The on-policy capacity-gap candidate
 is killed. Two candidates survive, and they came from a **different generating
 process** that is worth naming.
@@ -15,9 +22,10 @@ insider.
 The two survivors below were generated differently: **find a specific published
 claim whose evidence is visibly inadequate.** That is the same process that
 produced this group's two real findings — the HF CLIP double-projection bug and
-the QuickGELU reference mismatch. It has a far better hit rate because a
-documented evidentiary weakness cannot be scooped by an appendix; it is a fact
-about a paper that is already in print.
+the QuickGELU reference mismatch (both SVIB-project findings; full detail: svib
+repo wiki). It has a far better hit rate because a documented evidentiary
+weakness cannot be scooped by an appendix; it is a fact about a paper that is
+already in print.
 
 **Rule going forward: generate from inadequate evidence, not from empty space.**
 

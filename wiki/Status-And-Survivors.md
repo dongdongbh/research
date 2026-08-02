@@ -1,99 +1,63 @@
 # Where SVIB Stands, and Everything Still Alive
 
-Status: **Orientation document, 2026-07-27.** Written in plain language. If you
-read one page in this wiki, read this one.
+Status: **Orientation document, 2026-07-27.** Written in plain language.
+Updated 2026-08-02 for the general research wiki: Part 1 condensed to its
+transferable lessons, and the star table in Part 3 marked superseded.
+
+> **Star table superseded 2026-08-02.** The Part 3 ranking below reflects the
+> July gate. A dedicated re-evaluation moved six of its rows — T4 down to ★★,
+> B1 down to ★★★, T3 up to ★★★★½, T1 to ★★★★½, AHD up to ★★★★, KV-cache up if
+> narrowed — and reversed the separate "do not enter self-improving AI"
+> verdict. Current authority: [[Direction-Reevaluation-2026-08]], with the
+> people-and-openings layer in [[Top-Researcher-Scan-2026-08]]. The table is
+> kept as the record of what was believed in July, not as guidance.
 
 ---
 
-# Part 1 — SVIB: what happened, and what to do with it
+# Part 1 — SVIB: what happened (condensed)
 
-## The short version
+Project-specific numbers, probes and provenance live in the svib repo wiki.
+This is the short version, kept only because the lessons underneath it get
+reused on every project.
 
-The submitted paper's headline was wrong, and we found it ourselves. But the
-work produced **five things that are genuinely useful and true**, and those are
-publishable — just not as "we invented a better method."
+The submitted paper's headline was an artifact: the frozen-baseline code path
+applied the text projection twice, and correcting it shrank the claimed
+improvement to roughly a point. We caught it ourselves, because the corrected
+baseline matched published values and the submitted one never had. Under equal
+training, none of the paper's distinctive components — object proposals, sparse
+directed routing, the variational bottleneck — was doing the work; a
+deterministic grid of crops plus one plain self-attention layer matched or beat
+the whole apparatus at a small fraction of the overhead. The hand-designed
+semantic gate fired mostly on cases the global scorer already got right, and
+even perfect routing had a small ceiling. Six further probes were all rejected
+in favour of the raw global score under validation-locked selection.
 
-## What went wrong
+**The transferable lessons, which are the part worth keeping:**
 
-**The headline number was an artifact.** The frozen-CLIP baseline was computed
-through a code path that applied the text projection twice. Corrected, the
-baseline goes from `42.27` to `66.34` on SugarCrepe++, so the claimed `+25.23`
-improvement becomes `+1.16`. The corrected Winoground baseline (`9.00`) also
-matches published values, while the submitted one (`0.50`) never did — which is
-how we caught it.
+1. **Cheap beats clever often enough that the deterministic baseline has to be
+   run before the clever one is believed.** But note the flip side we also
+   measured: the expensive step was not the proposals, it was re-encoding
+   regions at full resolution — free one-pass alternatives lost.
+2. **A fused system at `alpha = 1` must exactly reproduce its standalone
+   backbone.** That invariant is a cheap, reusable evaluator-bug detector.
+   Watch also for QuickGELU-versus-standard-GELU reference mismatches, which
+   silently corrupt source-matched comparisons.
+3. **Hand-designed semantic gates can be anti-aligned** with where the expert
+   actually helps. Measure the oracle ceiling before building the gate.
+4. **Benchmark conclusions flip** under a second, equally valid positive
+   caption. Check the ranking's stability before trusting it.
+5. **Test-selected operating points inflate reported gains.** Under
+   validation-locked selection, methods collapse to the trivial setting. The
+   selection protocol is the transferable contribution, not the method.
 
-**The mechanism was not what we said.** Under equal training:
+**Disposition:** not a method paper. Write it as a controls-first study of what
+actually drives compositional gains in frozen dual-encoder VLMs, at TMLR or
+ICBINB, with the evaluator suite as the released artifact. It examines our own
+work, so there is no reviewer-conflict problem, and the experiments already
+exist — this is a writing task, not a compute task.
 
-- a **deterministic grid of crops** with zero object awareness **beats SAM3**
-  proposals (`69.04` vs `68.43` on CLIP);
-- **plain self-attention beats the directed sparse graph**;
-- the **variational bottleneck** contributes nothing after fusion (`beta = 0`
-  matches the tuned value);
-- **14 crops match 20** (`-0.11`).
-
-So none of the paper's distinctive components — object proposals, sparse
-directed routing, the information bottleneck — is doing the work.
-
-**The gate does the opposite of what it claims.** The adaptive caption-overlap
-gate fires on **81.4%** of cases the global scorer already gets right and only
-**59.6%** of cases it gets wrong. It is worth `+0.80` where simply blending
-everything is worth `+0.71` — nine hundredths of a point for the paper's second
-headline contribution. And perfect routing would only be worth `+3.99`.
-
-**Six probes, one answer.** Beyond SVIB itself we tried pooled patch tokens,
-caption decomposition into claims, equivalence-class dispersion, marginal
-calibration, and exclusive optimal-transport assignment. Under honest
-validation-locked selection, **all six were rejected in favour of the raw global
-score** (the tuning procedure picked `alpha = 1.0`).
-
-## What is actually true and worth publishing
-
-These are real findings, they are ours, and nobody has published them:
-
-1. **Cheap beats clever.** A deterministic multi-scale grid plus one
-   self-attention layer beats SAM3 proposals plus a variational graph, at
-   **8-11x** overhead instead of **258-366x**. That is a useful engineering
-   result with a clean cost table.
-2. **But crop re-encoding is load-bearing.** One-pass pooled patch tokens are
-   nearly free (`1.06x`) and **lose** (`-1.32` on CLIP). So the expensive part
-   is not the proposals — it is encoding regions at full resolution.
-3. **An evaluator bug with a diagnostic signature**, plus a reusable fix: any
-   fused system at `alpha = 1` must exactly reproduce its standalone backbone.
-   We also caught a QuickGELU-versus-standard-GELU reference mismatch that
-   silently corrupts source-matched comparisons.
-4. **Hand-designed semantic gates are anti-aligned** with where the expert
-   actually helps, and the oracle ceiling is small. This is measured, not argued.
-5. **Benchmark conclusions flip** under the second, equally valid positive
-   caption that SugarCrepe++ already provides — four sign reversals.
-
-## How to deal with it
-
-**Do not resubmit SVIB as a method paper.** The method claim does not survive
-its own controls.
-
-**Do write it up as a controls-first study.** The honest and interesting title
-is something like *what actually drives compositional gains in frozen
-dual-encoder VLMs* — with the grid-beats-SAM3 result as the positive
-contribution, the cost table as the practical takeaway, and the evaluator suite
-as a released artifact.
-
-Three things make this stronger than a normal negative result:
-
-- It examines **our own work**, so no reviewer has to be told they were wrong,
-  and the reviewer-conflict problem disappears.
-- The experiments **already exist**, pre-registered and provenance-hashed. This
-  is a writing task, not a compute task.
-- The selection protocol is the transferable contribution: published methods
-  report gains at test-selected operating points and get rejected at
-  `alpha = 1.0` under validation-locked selection. We can show that from our own
-  runs.
-
-**Venue: TMLR** (its scope explicitly covers this) or **ICBINB** (the
-NeurIPS negative-results workshop). Not a top-tier main track, and it should not
-be aimed there.
-
-**Do this soon.** It is the only item on the whole list where the work is done
-and only the writing remains.
+Full detail: svib repo wiki, pages Post-Rebuttal-Measurement-Sprint and
+Cluster-1-Compositional-Scoring.
 
 ---
 
@@ -119,6 +83,12 @@ changing the reinforcement-learning recipe afterwards is worth **under 2**. The
 trick that makes it affordable: train the shared trunk once, then fork many
 short decay phases from it, so every comparison is paired.
 
+> **Superseded 2026-08-02.** The "no method paper on it" claim was already false
+> when written — DiReCT had been public for about eight weeks. T4 was scooped
+> three times, the small-scale forked-decay moat is now citable against us, and
+> the direction drops to ★★. Only a narrow residual question survives. See
+> [[Direction-Reevaluation-2026-08]].
+
 **SVIB writeup** — described in Part 1.
 
 **T2 — Does reinforcement learning actually teach a model to *see* better?**
@@ -135,6 +105,10 @@ comes from the training algorithm or from the narrow data. The authors say so
 themselves. Olmo 3 releases both open weights and open training data at every
 stage, so for once the confound can actually be pulled apart.
 
+> **Superseded 2026-08-02.** Scooped in April 2026; the specific question is
+> closed and B1 drops to ★★★. The remaining causal crossover also costs more
+> than the estimate below. See [[Direction-Reevaluation-2026-08]].
+
 ## The medium ones
 
 **T3 — Data mixing beats data filtering.**
@@ -143,6 +117,10 @@ changing the *ratio* of instruction data to captions gives `+5.4`, and careful
 curation at fixed compute gives `+11.7` overall and `+57.1` on grounding. Huge
 effects. The catch: mixture optimization as a field is saturated, so the
 contribution has to be the constant-compute framing, not another mixer.
+
+> **Superseded 2026-08-02.** The saturation was text-only — the multimodal
+> mixture lane is close to empty, and T3 rises to ★★★★½ with public
+> checkpoints cutting the cost by ~50×. See [[Direction-Reevaluation-2026-08]].
 
 **A1 — Were the video-model benchmarks ever checked against humans?**
 Mostly no. The flagship one computes its human-agreement claim from **four
@@ -184,11 +162,23 @@ queueing theory for agent fan-out). Real but small.
 at matched cost. Real gap, but three control papers landed in five months and
 the window is 3-6 months.
 
+> **Superseded 2026-08-02.** Claims are outrunning controls roughly 10:1 and
+> the cost-normalized frontier still does not exist; AHD rises to ★★★★, with a
+> second unoccupied novelty-audit half. See [[Direction-Reevaluation-2026-08]].
+
 **Weather** — needs a meteorology collaborator to be credible.
 
 ---
 
 # Part 3 — the table
+
+> **Superseded 2026-08-02 — historical record, not guidance.** This ranking was
+> built on crowd count. That criterion has since been replaced by remaining
+> opportunity, and every crowd-count downgrade in the table below reversed while
+> both emptiness-credited rows fell. Read
+> [[Direction-Reevaluation-2026-08]] for the current stars, and
+> [[Top-Researcher-Scan-2026-08]] for the newer cross-person openings that are
+> not in this table at all.
 
 Priority is **overall recommendation**, weighing fit, cost, crowding and how
 likely it is to produce a paper.
@@ -220,9 +210,17 @@ subsumes the freeze/unfreeze idea that was separately on the list).
 If T1 goes well and you want a bigger swing afterwards, **T4** is the strongest
 paper on the list.
 
+> **Superseded 2026-08-02.** The write-up and T1 both still hold, but T4 is no
+> longer the bigger swing — it fell to ★★. T3 and the reversed self-training
+> collapse lane are the current second bets, and T1 now needs an immediate
+> re-gate against Darrell's encoder-fix cluster. See
+> [[Direction-Reevaluation-2026-08]] and [[Top-Researcher-Scan-2026-08]].
+
 ## Related
 
+[[Direction-Reevaluation-2026-08]] — current star ranking; supersedes Part 3.
+[[Top-Researcher-Scan-2026-08]] — people-level openings, current.
 [[Method-Opportunities]] — full detail, baselines and numbers to beat.
 [[Live-Research-Opportunities]] — the evaluation-side directions.
-[[Post-Rebuttal-Measurement-Sprint]], [[Cluster-1-Compositional-Scoring]] — the
-SVIB evidence base.
+Post-Rebuttal-Measurement-Sprint, Cluster-1-Compositional-Scoring (svib repo
+wiki) — the SVIB evidence base.

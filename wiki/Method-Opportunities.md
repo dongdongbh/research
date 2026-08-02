@@ -1,7 +1,18 @@
 # Method Opportunities — with baselines and numbers to beat
 
-Status: **Active 2026-07-26.** Written after the owner correctly pointed out
-that every prior survivor was measurement work.
+Status: **Written 2026-07-26; partly superseded.** *Updated 2026-08-02 for the
+general research wiki.* Written after the owner correctly pointed out that every
+prior survivor was measurement work.
+
+> **Supersession banner (2026-08-02).** The rankings on this page predate the
+> eight-direction re-gate in [[Direction-Reevaluation-2026-08]] and the
+> [[Top-Researcher-Scan-2026-08]]. Current verdicts: **T1 ★★★★½** (confirmed,
+> design revised to a three-level objective axis; Darrell's group is now the
+> primary scoop risk), **T3 ★★★★½** (up), **T2 ★★★★** (held, reframed as a
+> cross-method perception audit), **T4 ★★** (down — scooped three times),
+> **KV-cache ★★★★ only if narrowed to safety-aware allocation** (★★★ as scoped
+> here). Original text is preserved below as record, with dated notes at each
+> point of conflict.
 
 ## Why the bias happened, and it was mine
 
@@ -22,146 +33,69 @@ the lever?** Every proposal below names a baseline and a number to beat.
 
 ---
 
-# Cluster 1 — compositional VLM scoring (uses infrastructure already built)
+# Cluster 1 — compositional VLM scoring *(closed; condensed 2026-08-02)*
 
-**Execution:** [[Cluster-1-Compositional-Scoring]] locks the P1 protocol,
-records the prior-art boundary, and carries P1/P2/P3 results.
+**Condensed for the general wiki.** This cluster ran entirely on SVIB's frozen
+dual-encoder infrastructure and is closed. Four probes were specified — P1
+inductive score calibration, P2 exclusive OT assignment, P3 amortized structured
+inference, P4 box-conditioned region representation — P1 and P2 were run, and
+both were rejected: under validation-locked operating-point selection the
+protocol chose `alpha = 1.0`, i.e. the raw global score, for both. P3/P4 were
+never run; P4 was withdrawn because it fights a documented mechanism. Full
+detail (baselines, per-benchmark deltas and CIs, prior-art boundary, protocol
+locks): **svib repo wiki**, pages *Cluster-1-Compositional-Scoring* and
+*Method-Opportunities*.
 
-**Outcome update (2026-07-26):** P1 and the internal P2 mechanism ablation are
-closed. Fixed-bank normalization improves COCO retrieval but changes SigLIP2
-Winoground Group only `11.25 -> 11.50` (`95% CI [-1.00,+1.50]`; test-selected
-maximum `12.00`). Hard exclusive assignment over the existing SigLIP2 crop
-pipeline gives active SCPP++ Swap `+0.44` (`CI [-0.78,+1.66]`), significantly
-harms Replace by `-0.77` (`CI [-1.25,-0.32]`), and changes active Winoground
-Group by `+0.90` (`CI [0.00,+2.11]`). Wrong Swap captions collide slightly more
-often, but the negative-minus-positive exclusivity penalty is only `0.00015`
-against the predeclared `0.02` gate. Both local branches select `alpha=1.0` on
-development, returning raw SigLIP2 when fused.
+## General lessons kept from this cluster
 
-P2's algebraic gate passed: exclusive assignment can change the actual pairwise
-metrics. Its empirical mechanism gate did not. The official SGI P2/P3
-reproduction remains blocked because both released repositories still contain
-only "Coming soon" placeholders; the internal P2 result is not represented as
-an SGI comparison. The earlier one-pass patch-grid control remains adjacent
-P3 evidence.
-
-## The Test-Time Matching metric distinction
-
-Test-Time Matching shows frozen SigLIP-B16 Winoground group goes **10.25 →
-67.00** under joint assignment, and MMVP-VLM **22.96 → 81.48**. That is
-transductive — it requires the test-set group partition — so it is not a
-deployable method and not a legal comparison. It also changes the event being
-scored: four independent inequalities with `16.7%` random Group chance become
-one joint assignment comparison with `50%` chance. The `67.00` is therefore not
-calibration headroom and does not prove that frozen similarity ordering is
-nearly correct.
-
-Our P1 derivation further proves that separable image and caption bias
-corrections cancel exactly in the joint assignment margin. The earlier `30-45`
-target below was algebraically invalid and should have been removed before the
-run.
-
-## Correction to my earlier brief
-
-I reported `73.0 → 86.3` on SugarCrepe as a frozen-encoder result. **It is not.**
-That is **TF_Local**, a *trained* 13.3M-parameter cross-modal transformer. **SGI
-(the training-free method) is never evaluated on SugarCrepe, BiVLC, ARO or
-Winoground** — only on BiSCoR-Ctrl. And "beats full fine-tuning at 85.5" is
-trained-versus-trained. The frozen-inference story is narrower and weaker than I
-said, which is precisely why it is an opening.
-
-## Documented failures of the current best — the targets
-
-**The field is anti-correlated on controlled swap binding.** BiSCoR-Ctrl group
-score, **random = 16.7**: NegCLIP `1.8`, TripletCLIP `1.2`, FSC-CLIP `1.2`,
-X-VLM `1.7`, FineCLIP `1.4`, full fine-tuning `1.9`. Every end-to-end method sits
-at roughly one tenth of chance.
-
-**Size and Quantity are at chance for everyone.** Best in world
-(SigLIP2-G + structured inference): Size `20.2`, Quantity `19.4` against random
-`16.7` — while Color reaches `95.7` and Material `91.7`. The authors' own
-diagnosis: *"for SIZE, the image crops that capture objects in isolation tend to
-remove the size information."* **Cropping solves colour and destroys scale.**
-
-**Structured inference degrades I2T everywhere, and nobody has diagnosed it.**
-CLIP Winoground I2T `31.25 → 23.75`; group `8.75 → 6.75` (it *hurts*). SigLIP2-G
-BiVLC I2T `57.1 → 56.3` while T2I goes `9.2 → 36.5`. All gains are T2I-only.
-
-**Cost is 133-210x.** Measured: CLIP BiSCoR-Ctrl 1k instances 36s → 1.33h;
-SigLIP2-Giant 6min → 21h. The authors name ROI-Align amortization as unexplored
-future work.
-
-**Sobering calibration.** SVIB's own result is SigLIP2 SCPP `75.91 → 76.71`,
-Winoground `11.25 → 13.00`. The **training-free** 2025 crop baseline gets SigLIP2
-Winoground `10.75 → 13.75` and BiVLC `13.7 → 24.5`. The trained graph module is at
-parity with a training-free baseline that predates it. Any new proposal must
-leapfrog that, not match it.
-
-## P1 — inductive score calibration *(closed)*
-
-**Lever.** The residual error after joint assignment is a per-image and
-per-caption **additive bias** (hubness, modality gap, caption prior). Estimate
-marginals against a **fixed background corpus** rather than the test group:
-`s'(I,T) = s(I,T) - λ_i·E_{T'~B}[s(I,T')] - λ_t·E_{I'~B}[s(I',T)]`, or full
-Sinkhorn scaling against background marginals. Fully inductive — one pair, one
-forward pass, background embeddings cached once.
-
-**Historical target, invalidated before interpretation:** SigLIP2 Winoground
-group `11.25`; best *inductive* method `13.75`; target `30-45`. The target
-mistook a metric change for accessible separable-calibration headroom.
-
-**Cost: hours on one GPU.** The caches and both evaluators already exist.
-
-**Risk:** QB-Norm and DualSoftmax exist in cross-modal retrieval. The novelty must
-be the *claim* — "compositional failure is dominantly a calibration artifact,
-and here is the inductive fix" — not the normalizer.
-
-## P2 — Sinkhorn/OT assignment instead of greedy argmax
-
-**Lever tested.** Structured inference uses **greedy independent argmax** with a
-uniform mean. There is no exclusivity constraint, so "black cat" and "black dog"
-can both claim the same black region. We replaced it with exact maximum-weight
-partial one-to-one assignment and private dustbins.
-
-**Outcome: closed.** The hypothesized collision direction exists
-(`36.21%` negative versus `33.50%` positive on active Swap), but the penalty
-separation is only `0.00015`; near-equivalent alternative crops make the hard
-constraint almost inert. Active Swap improves only `+0.44` point with an
-interval spanning zero, while Replace falls a resolved `-0.77`. A Sinkhorn
-entropy sweep is not justified for this segment/crop representation.
-
-**Historical external targets:** CLIP+SGI BiSCoR-Ctrl `24.9`, PE+SGI `44.7`,
-SigLIP2-G `56.8`; and the per-category collapses CLIP Size `4.7`, Quantity
-`2.5`. These were not evaluated because the official assets are unreleased.
-
-**Cost:** trivial — Sinkhorn on an N x M matrix.
-
-## P3 — amortized structured inference (kill the 210x)
-
-ROI-Align pooled region features off one dense forward pass, replacing 86-270
-independent encoder passes. **Beat:** SigLIP2 BiVLC `24.5` at 160x cost — match
-at under 2x, or beat by spending the freed budget on more regions. Ship the
-latency table nobody has.
-
-## P4 — size- and count-preserving region representation
-
-Crops destroy scale by construction. Condition each region embedding on its box
-(scale, position, aspect ratio); add multi-resolution context regions.
-**Beat:** Size `20.2`, Quantity `19.4`. Target above 40. Highest raw headroom of
-anything here, and the cleanest narrative.
-
-**Cluster decision:** P1 and internal P2 both close. P3's one-pass patch-grid
-evidence remains useful engineering evidence, but the combined claim that
-compositional failure is dominantly a scoring problem is not supported.
-
-**Protocol warning.** Never compare inductively against Test-Time Matching
-numbers: they require the test-set partition and score a different event with a
-different chance level. The `67.00` must not be described as available
-calibration headroom.
+- **Never compare an inductive method against transductive numbers.** Test-Time
+  Matching's frozen-SigLIP Winoground jump (`10.25 → 67.00`) requires the
+  test-set group partition and *changes the event being scored*: four
+  independent inequalities at `16.7%` random chance become one joint assignment
+  at `50%`. It is not a legal baseline and not "available headroom". A metric
+  change disguised as headroom must be caught before the run.
+- **Check whether the headline number is the training-free number.** The
+  `73.0 → 86.3` SugarCrepe figure that motivated this cluster belongs to a
+  *trained* 13.3M-parameter cross-modal module; the training-free method it was
+  attributed to was never evaluated on SugarCrepe, BiVLC, ARO or Winoground.
+  Reading a claim from the abstract instead of the evaluation table cost a
+  cluster of planning.
+- **Derive the algebra before buying the compute.** Separable per-image and
+  per-caption bias corrections cancel *exactly* in a joint-assignment margin, so
+  P1's headline target was algebraically unreachable — provable on paper in an
+  hour, and it invalidated the target before any interpretation.
+- **A field-wide near-chance score is a warning, not an opening.** Every
+  end-to-end method scores `1.2–1.9` on controlled-swap binding where random is
+  `16.7`; and crop-based region pipelines solve colour (`95.7`) while destroying
+  scale (`20.2` against `16.7` chance) *by construction*. Levers that swim
+  against a documented mechanism should be expected to fail (this is why P4 was
+  dropped rather than run).
+- **Cost blowups are their own research object.** Structured inference over
+  regions costs 133–210× the base encoder pass and its gains were T2I-only —
+  degrading I2T everywhere, undiagnosed by anyone. Amortization (ROI-Align off
+  one dense pass) plus the latency table nobody publishes remains a legitimate,
+  unclaimed engineering contribution for whoever works in this area.
 
 ---
 
 # Cluster 2 — KV-cache bit allocation for the right objective
+
+> **Supersession note (2026-08-02).** [[Direction-Reevaluation-2026-08]] re-rated
+> this cluster **★★★★ only if narrowed to safety-aware allocation**, and **★★★
+> as scoped below**. What died: the long-horizon/rollout slot (M1 below) is now
+> claimed by CONF-KV (`2605.24786`), and compounding error already has three
+> published remedies (SQuat, KVarN, VeriCache). What survives is **M2** — six
+> targeted searches returned no safety-objective allocator, KVFundaBench v2
+> dropped safety from its abstract, and CAQ (`2511.07842`) proves the
+> objective-mismatch template publishable in weight PTQ. The one falsifiable
+> sweep is safety-optimal versus perplexity-optimal per-layer allocation: they
+> either coincide (cheap death) or diverge (novel map plus allocator).
+> Pre-register `2605.18053` (protection beats scoring) as the control. Also
+> refuted there: the folk objection that this lane needs custom CUDA kernels —
+> KVTuner (ICML'25), EvolKV (EMNLP) and SCBench (ICLR'25) published with zero
+> kernel work; the real bar is serving-compatible granularity plus throughput
+> atop existing kernels. Related: [[Top-Researcher-Scan-2026-08]] M6
+> (turn-aware KV eviction for agents) merges with the safety-aware allocator.
 
 **My lead was scooped, and the replacement is better.** Per-head/per-layer KV
 allocation is *not* unexploited — **RateQuant** (`2605.06675`) does closed-form
@@ -209,6 +143,10 @@ the wrong objective.*
 
 # Recommendation
 
+> **Superseded 2026-08-02.** Cluster 1 is closed (all local branches rejected)
+> and Cluster 2 survives only in its safety-aware narrowing. The live ranking is
+> in [[Direction-Reevaluation-2026-08]]. The reasoning below is kept as record.
+
 **Cluster 1**, because the infrastructure is already built and validated, the
 headroom is documented by a third party's ICLR paper, and P1 costs hours.
 **Cluster 2** if the goal is to move off VLM — cleaner "beat this number"
@@ -218,84 +156,58 @@ Neither has been prior-art gated. Given the record, gate before committing — b
 gate with the **method** bar (is there a lever?), not the **audit** bar (is it
 unprecedented?).
 
+**The general rule that survives:** for a *method*, the gate question is "where
+is the current best weak, and what is the lever?" — not "has anyone worked on
+this?". Applying a prior-existence test to method ideas kills all of them.
+For an *audit* the prior-existence test is exactly right. Use the right bar for
+the shape of the paper.
+
 ## Related
 
 [[Live-Research-Opportunities]] — the measurement-side directions.
+[[Direction-Reevaluation-2026-08]] — current star ranking (supersedes this page).
+[[Top-Researcher-Scan-2026-08]] — method directions M1–M7 from the people scan.
 
 ---
 
-# Program-level finding: the local-branch family is exhausted (2026-07-26)
+# Program-level finding: the local-branch family is exhausted *(condensed 2026-08-02)*
 
-P2 closed. Hard exclusive assignment is **not** algebraically invariant — unlike
-P1 — so it could have moved the metric. It did not:
+**SVIB-specific evidence condensed.** Six mechanistically distinct local-evidence
+branches on a frozen dual encoder (SVIB graph+VIB, patch-grid nodes, claim-level
+caption decomposition, conformal dispersion, P1 marginal calibration, P2
+exclusive OT assignment) were all rejected in favour of the raw global score
+under validation-locked operating-point selection. Full per-probe numbers,
+intervals and provenance hashes: **svib repo wiki**, pages
+*Cluster-1-Compositional-Scoring* and *Post-Rebuttal-Measurement-Sprint*.
 
-| Endpoint | Effect | 95% CI |
-|---|---:|---|
-| SCPP++ active Swap | `+0.44` | `[-0.78, +1.66]` |
-| SCPP++ active Replace | `-0.77` | `[-1.25, -0.32]` |
-| Winoground active Group | `+0.90` | `[0.00, +2.11]` |
+**The three general lessons, which are the reason this section stays:**
 
-**The mechanism check is the valuable part.** Negative captions *do* collide more
-often — the hypothesis was directionally correct — but penalty separation is
-`0.00015` against a pre-registered `0.02`. **Right mechanism, wrong magnitude by
-two orders.** That is far more informative than a bare null, and it is only
-available because the protocol pre-specified the mechanistic quantity rather
-than just the outcome.
+1. **Pre-specify the mechanistic quantity, not only the outcome.** The strongest
+   probe's hypothesis was directionally *correct* — the predicted collisions
+   happened — but the mechanism separation came in at `0.00015` against a
+   pre-registered `0.02` gate. *Right mechanism, wrong magnitude by two orders*
+   is a far more informative result than a bare null, and it was only available
+   because the protocol declared the mechanistic quantity in advance. Build this
+   into every pre-registration.
+2. **Validation-locked operating-point selection is itself a contribution.**
+   Published methods in a family routinely report gains under test-selected or
+   per-benchmark operating points; the same methods can be *rejected outright*
+   (mixing weight → the trivial value) when the operating point is locked on a
+   development split. Demonstrating that from your own runs makes the point
+   without auditing anyone — no reviewer has to be told they were wrong.
+3. **Stop probing a representation once N distinct branches all reject it, and
+   move areas.** A program of pre-registered negatives on one question is a real
+   asset (TMLR's scope explicitly covers it, as does ICBINB) and is a writing
+   task rather than a compute task — but the *next* project should change area
+   rather than add a seventh branch, especially when the remaining lever swims
+   against a documented mechanism.
 
-**Development selected `alpha = 1.0` for both local methods** — the protocol
-rejected the local branch entirely in favour of raw SigLIP2.
-
-## Six mechanistically distinct probes, one answer
-
-| Probe | Intervention | Outcome |
-|---|---|---|
-| SVIB | SAM3 proposals + directed sparse graph + VIB | every structural component ablatable; grid beats SAM3, attention beats graph, beta=0 matches |
-| Patch-grid | pooled ViT patch tokens as local nodes | loses to crop re-encoding (CLIP `-1.32`) |
-| Claim-level | deterministic caption decomposition | hurts on all four backbones (`-2.17` to `-3.51`) |
-| Conformal dispersion | equivalence-class score spread | no signal beyond a margin-only control (0/4) |
-| P1 | separable marginal calibration | `+3.0` COCO retrieval, `+0.25` Winoground |
-| P2 | exclusive OT assignment | mechanism confirmed, magnitude 130x too small |
-
-**The sharpest statement is not "our methods gave small gains."** It is:
-
-> Under validation-locked operating-point selection, six mechanistically
-> distinct local-evidence branches on a frozen dual encoder are all rejected in
-> favour of the raw global score.
-
-The field's own numbers agree independently: every end-to-end method scores
-`1.2-1.9` on BiSCoR-Ctrl where random is `16.7`; C2LIP's headline architectural
-contribution is worth `+0.3`; structured inference degrades I2T everywhere.
-
-**Recommendation: stop probing this representation.** P4 (size/quantity) is in
-the same family and swims against a documented current — crops are the mechanism
-that *destroys* scale information. Expect the same outcome.
-
-## What the six negatives are worth
-
-This is an unusual asset: **six completed, pre-registered, provenance-hashed
-experiments** on one question. Most negative-results papers are a single
-experiment; this is a program. And unlike an audit, it examines **our own work**,
-which sidesteps the reviewer-conflict objection entirely — nobody has to be told
-they were wrong.
-
-The distinctive contribution is the **selection protocol**: published local-branch
-methods report gains under test-selected or per-benchmark operating points, and
-the same methods are rejected at `alpha = 1.0` under validation-locked selection.
-That is demonstrable from our own runs without auditing anyone.
-
-Venue: TMLR (scope explicitly covers this) or ICBINB. **The experiments already
-exist** — this is a writing task, not a compute task.
-
-## New work should move areas
-
-**Cluster 2 (KV-cache allocation)** is untouched, in a different area, with
-cleaner "beat this number" framing and two failure modes documented by third
-parties who explicitly did not fix the allocator. 2-4 GPUs, no training.
-
-**Or the B-cluster** in [[Live-Research-Opportunities]] — diversity-collapse
-isolation (Olmo 3 supplies open weights *and* open per-stage data) and visual
-attention-sink emergence (one freeze/unfreeze experiment). Both are positive
-mechanism contributions in areas unrelated to frozen dual-encoder scoring.
+> **Note (2026-08-02).** The two "move areas" suggestions made here have since
+> moved: Cluster 2 (KV-cache) is ★★★★ only under the safety-aware narrowing,
+> and B1 (diversity-collapse isolation) was **downgraded to ★★★ — scooped in
+> April 2026** by `2604.16027`, which traces Olmo 3's three lineages. B2
+> (visual attention-sink emergence) was not re-gated. See
+> [[Direction-Reevaluation-2026-08]] and [[Live-Research-Opportunities]].
 
 ---
 
@@ -318,6 +230,20 @@ fine-tuning at 7-8B, contrastive training at CC3M scale, VLM instruction tuning,
 and small-scale pretraining are all **in scope**.
 
 ## T1 — the freeze x objective x stage factorial *(top pick of the session)*
+
+> **Update 2026-08-02 — confirmed ★★★★½, design revised.**
+> [[Direction-Reevaluation-2026-08]] re-gated T1 and it held at HIGH density:
+> CoVFT (`2603.21077`) states freeze-vs-finetune "remains unresolved" and its own
+> benchmark is SFT-only (VFT wins on 6/12); no consolidating survey on VLM
+> training recipes exists; the 7B band is uncontested. **Design change:** the
+> objective axis becomes **three-level — SFT / RL / SFT + perceptual auxiliary
+> (VIRAL-style)** — because PIVOT already occupies {unfrozen} × {SFT, DPO}. The
+> sharpened question: *does the freeze effect flip sign under a
+> non-language-generation objective?* **Scoop risk is now concrete:** the CoVFT
+> group adding an RL arm (use their public harness), and per
+> [[Top-Researcher-Scan-2026-08]] **Darrell's group is the primary risk** — T1
+> needs an immediate re-gate against his C1 cluster (CoVFT plus the four
+> unarbitrated encoder-fix loci).
 
 **A live three-way contradiction on the most basic VLM training question.**
 
@@ -356,6 +282,19 @@ it **subsumes** the earlier freeze/unfreeze proposal (B2); the reference run is
 
 ## T2 — RL improves the answer without improving the seeing
 
+> **Update 2026-08-02 — held ★★★★, reframed as a cross-method perception audit.**
+> The original framing is partly scooped (`2602.12395` corroborated
+> Perception-R1's null mechanistically; `2603.01301` ran the sharpening
+> decomposition in the medical domain), and the PSR estimator was flagged broken
+> on 2026-07-30 (`2607.28336`: it "conflates perceptual insufficiency with
+> reasoning difficulty"). **What is open and unclaimed:** roughly 50
+> perception-targeted RL methods exist against three 2026 diagnostics showing
+> gains survive image masking/corruption (`2605.09266`, `2604.03179`) — and
+> *nobody has run those controls on the methods claiming the fix*. The
+> diagnostic sub-lane is unowned (those papers have 3 / 0 / ~0 citations).
+> Inference-only on open weights, control arms are small 3B–7B GRPO runs,
+> ~256 GPU-h, ICLR-2027-feasible. See [[Direction-Reevaluation-2026-08]].
+
 **Perception-R1** (`2506.07218`): McNemar's test shows standard RLVR yields **no
 statistically significant improvement in visual perception** (`p = 0.22-0.69`)
 despite rising headline accuracy — RL amplifies latent correctness rather than
@@ -372,6 +311,21 @@ The incumbents published the null, the tests are statistical, and the discipline
 required is exactly what this program has spent months building. **~256 GPU-h.**
 
 ## T3 — constant-compute data mixture (largest measured effect sizes)
+
+> **Update 2026-08-02 — upgraded ★★★ → ★★★★½.** The apparent saturation was
+> text-only: of the 8 mixture methods DataComp-VLM cites, 7 are text-only and
+> the 8th is SFT-stage, and DataComp-VLM says verbatim that "there exists no
+> systematic study on filtering and mixing strategies in the VLM setting" (zero
+> surveys in its 347 references; 13 unresolved LaTeX labels including the
+> promised multi-axis mixture appendix — that analysis is unwritten). **Live
+> contradiction to adjudicate:** Shukor `2507.09404` (mixture scaling laws
+> extrapolate) versus DataComp-VLM's measured rank inversion (caption-heavy wins
+> at 1B×6.25B, instruction-heavy at 2B/4B×25B+) — neither cites the other on it.
+> Public checkpoints at four scales turn a ~25,000 H100-h study into ~500.
+> **Sharpened question:** can the small→large mixture-ranking crossover be
+> *predicted* without paying for the large runs? A negative invalidates
+> small-proxy mixture search. Watch: the consortium runs this as a competition.
+> See [[Direction-Reevaluation-2026-08]].
 
 **Filtering is dead; mixing is alive.** DataComp-VLM (`2606.28551`) verbatim:
 *"no quality filter we tested produces a robust and significant improvement"* —
@@ -408,6 +362,36 @@ objective lane); Bottleneck Tokens and MoCa (embedding lane resets roughly every
 two months); CABS (CVPR 2026, holds the concept-annotation data).
 
 ## T4 — anneal-window data allocation *(strongest paper; three sweeps converged)*
+
+> **DOWNGRADED 2026-08-02: ★★★★★ → ★★. Do not start this.** Everything below is
+> preserved as record, but the central premise — "there is no method paper for
+> anneal-window data selection" — was **false when written**.
+> [[Direction-Reevaluation-2026-08]] found the lane scooped three times:
+> **DiReCT** (`2605.31175`, 29 May 2026) contains our exact motivation paragraph
+> ("effectively selecting training data during this phase remains a key
+> challenge... lack a principled grounding") at Llama-3-8B/300B with theory and
+> code; **QAFSL** (`2605.25698`) owns "decay reduces update intensity exactly
+> when high-quality data becomes available" with +1.70 over WSD at 15B-MoE; and
+> **MIRA** (`2605.30288`) owns mid-training-selection-is-distinct. DiReCT had
+> been public for ~8 weeks when the July sweep declared the lane empty.
+> Compounding it: the small-scale moat is now citable *against* us
+> (`2606.07597`: forked-decay extrapolation "frequently fails" when high-quality
+> data repeats — our exact protocol); the object may dissolve entirely (WSM,
+> WSO and `2604.13627` independently converge on less or no decay); the
+> schedule-coupled subgenre has **zero top-venue acceptances**; and
+> Compute-Constrained Data Selection (ICLR'25) shows gradient-class selectors —
+> T4's lever — are almost never compute-optimal, so any survivor must carry its
+> cost-aware baseline curve.
+>
+> **What remains is cheap, unclaimed and mechanism-shaped:** does the
+> per-document value ranking *reorder* between stable-phase and decay-phase
+> learning rates? Rank correlation on a shared trunk discriminates the "wasted
+> data" story from the "sharpness" story, and a null undercuts the three papers
+> that scooped the lane.
+>
+> **The process lesson (recorded in [[Direction-Reevaluation-2026-08]]):** an
+> empty lane must explain *why* it is empty before being credited for emptiness,
+> and any gate older than ~6 weeks needs re-running before compute is committed.
 
 **The hole.** arXiv sweeps for `"annealing data"`, `"decay phase"`,
 `"cooldown phase"`, `"annealing phase"` in cs.CL 2025-2026 return **essentially
@@ -457,6 +441,15 @@ worth more than the method contribution itself — RegMix-D publicly concedes
 
 ## Crowding verdicts from the same sweep
 
+> **Read these as saturation evidence, not as crowd counts (2026-08-02).** The
+> selection criterion behind this list was corrected in
+> [[Direction-Reevaluation-2026-08]]: *a topic is not filtered out by being
+> hot — only by having fewer remaining opportunities.* The specific verdicts
+> below still carry their evidence (Aioli's null, the 22 mixers, the
+> repeat-placement gap), but "SATURATED" and "cleanest hole" labels derived from
+> paper counts should not be trusted on their own. The anneal/decay entry in
+> particular was wrong; see the T4 downgrade above.
+
 - **Data mixture optimization: SATURATED, do not enter head-on.** At least 22
   methods between Jan 2025 and Jul 2026, **plus two surveys**. Aioli showed
   **no existing method consistently beats stratified sampling** (some up to
@@ -486,6 +479,12 @@ worth more than the method contribution itself — RegMix-D publicly concedes
 
 ## Choosing between T1 and T4
 
+> **Moot as of 2026-08-02 — T4 is dead (★★, scooped 3×).** The comparison is
+> kept because its *reasoning* is still the right way to choose between two
+> training studies, and because it is the clearest example of how the analysis
+> can be sound while resting on a stale emptiness claim. The live comparison is
+> now T1 versus **T3** (both ★★★★½); see [[Direction-Reevaluation-2026-08]].
+
 **T1 (VLM freeze x objective x stage)** is cheaper (~300-600 GPU-h), sits in the
 domain where infrastructure already exists, and resolves a three-way
 disagreement. **T4 (anneal window)** has the larger effect size, a genuinely
@@ -493,3 +492,11 @@ empty lane confirmed by three independent sweeps, and a more elegant design —
 but costs ~1,000 H100-h and is further from prior experience.
 
 **T1 is the better fit; T4 is the stronger paper.**
+
+> **What the re-gate proved about this judgement.** "Confirmed by three
+> independent sweeps" was worth nothing: all three sweeps shared the same
+> keyword vocabulary and all three missed a paper that had been public for two
+> months. Independence of *searches* is not independence of *evidence*. Crowd
+> count predicted nothing either — every crowding-based downgrade in the July
+> ranking (T3, AHD, self-improvement, KV) was reversed, and both
+> emptiness-credited directions (T4, B1) fell.

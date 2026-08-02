@@ -1,13 +1,22 @@
 # Field Scouting Survey — Beyond Compositional VLMs
 
-Status: **In progress 2026-07-25.** Scientific-ML and agentic/world-model legs
-complete. Representation-geometry, emerging-topics, and math-venue legs still
-running.
+Status: **Survey legs complete 2026-07-25.** Scientific-ML and
+agentic/world-model legs are below; the representation-geometry,
+emerging-topics and math-venue legs finished separately in
+[[Math-Grounded-Direction-Survey]].
+
+**Updated 2026-08-02 for the general research wiki.** Several verdicts below
+were changed by later gates and by the 2026-08-02 re-evaluation; the
+supersession notes are inline at each conflict point, and the original text is
+preserved as record. Current authority:
+[[Direction-Reevaluation-2026-08]] and [[Top-Researcher-Scan-2026-08]].
 
 Written after [[Calibration-Prior-Art-Gate]] closed the last candidate in the
-compositional-VLM space. Constraints applied as filters throughout: **one
-person, 4-16 GPUs (L40S/A100/H100/H200), no pretraining budget,
-pre-registration-friendly, comparative advantage in controls and falsification.**
+compositional-VLM space (that project's own evidence base — probes, stages and
+paper numbers — is not reproduced here; full detail: svib repo wiki).
+Constraints applied as filters throughout: **one person, 4-16 GPUs
+(L40S/A100/H100/H200), no pretraining budget, pre-registration-friendly,
+comparative advantage in controls and falsification.**
 
 ## The organising observation
 
@@ -28,6 +37,18 @@ empty for lack of people, not lack of merit.
 | World-model benchmarks ("we introduce") | 295 | **1** metric-validity paper |
 | Neural combinatorial optimization | 524 | ~10 (and now well-covered) |
 | LLM automatic heuristic design | 82+ | **1** (a workshop suite) |
+
+> **Superseded in part, 2026-08-02.** The ratio locates a *lane*; it does not
+> tell you whether the *specific question* is claimed, and it says nothing about
+> how fast the lane closes. Both failure modes fired within weeks of this page
+> being written: the weather and AHD critique items below were scooped while
+> the ratio still looked favourable. The criterion that survived re-evaluation
+> is "is the question surface expanding faster than papers close it, **and is
+> this particular question claimed**" ([[Direction-Reevaluation-2026-08]],
+> meta-lesson 1), plus the standing portfolio rule that every audit names, at
+> pre-registration time, the method paper it unlocks and ships a reusable
+> artifact ([[Top-Researcher-Scan-2026-08]]). Audit-shaped work is on a clock;
+> arbitration and mechanism work is not.
 
 ## Ranked opportunities so far
 
@@ -58,7 +79,31 @@ fps, resolution); whether benchmark score predicts downstream planning utility.
 Risk is **venue fit, not scoop risk** — CVPR/ICCV reward new benchmarks over
 meta-evaluation. Target the World Model workshops, TMLR, or D&B tracks.
 
+> **Update 2026-08-02 — direction survives, scope enlarged, priority moderated.**
+> The re-scan found the same vacancy at many more targets than world models:
+> at least five released judge/evaluator systems have zero independent validity
+> audits, and eight senior people independently name verification as the
+> bottleneck. The unit is therefore **one pre-registered audit methodology
+> applied across targets** (a program, not a paper) — Tier 1 in
+> [[Top-Researcher-Scan-2026-08]]. Against that, the world-model judge audit
+> taken alone sits at ★★★ in [[Status-And-Survivors]]: cheapest real result,
+> gated and held, but audit-shaped and therefore on a clock. Pair it with the
+> method paper it unlocks before committing.
+
 ### 2. Weather/climate ML — a live contradiction, near-zero compute
+
+> **SUPERSEDED 2026-07-26 — the contradiction was not live.** The gate found
+> that `2606.21170` explicitly cites the Science Advances paper, diagnoses the
+> discrepancy (twPCRPS measures information content, not deterministic
+> accuracy; the forecaster's dilemma makes conditioning on an extreme having
+> occurred an improper comparison) and publishes the mechanism. The factorial's
+> primary outcome — "which factor flips the sign" — is broken by a published
+> theorem. What survives is workshop-sized: out-of-sample validity of twPCRPS
+> at record thresholds, and ground truth as a first-class factor via METAR
+> station observations. Both need a meteorology collaborator; rated ★ in
+> [[Status-And-Survivors]]. Gate detail: [[Live-Research-Opportunities]],
+> section "Gated and killed: the weather-extremes adjudication". Original text
+> below is kept as record.
 
 Two 2026 papers using **the same WeatherBench 2 data** reach opposite
 conclusions:
@@ -91,6 +136,28 @@ Risk: competing with Gneiting's group and ECMWF, who are strong and fast.
 Budget ~3 weeks to learn proper scoring rules and the double-penalty problem.
 
 ### 3. LLM automatic heuristic design — near-empty critique space
+
+> **SUPERSEDED TWICE — read both notes before using this section.**
+>
+> **(a) 2026-07-26, the specific controls closed.** Three control papers landed
+> February–July 2026, one within a week of the gate. Seed variance and
+> best-of-N inflation: scooped at a scale not matchable. Harness ablation:
+> "selection adds little" published three times — only the strict non-LLM
+> proposer arm is unrun, and that is a section, not a paper. Transfer
+> evaluation: scooped twice. Surviving item: classical configurators (irace,
+> SMAC) as a **rival designer at matched wall-clock and dollars** on the
+> standard EoH/ReEvo TSP/BPP/CVRP set, framed as "which tool per dollar," not
+> as a takedown. Also open and uncontested: evaluation hacking, measured
+> exactly once. Detail: [[Live-Research-Opportunities]].
+>
+> **(b) 2026-08-02, the direction as a whole went up, ★★ → ★★★★.** Not by
+> reviving the audit above: the re-evaluation reframes AHD as (i) the
+> cost-normalized LLM-versus-classical frontier, which does not exist, and
+> (ii) a novelty audit grading rediscovery versus recombination versus new —
+> zero papers. Expansion outpaces controls roughly 10-15:1, and the
+> "automated heuristic design" abstract count runs 1/1/5/**17**
+> (2023/24/25/Jan–Jul 26). Caveat carried forward: coverage was arXiv-only,
+> so check GECCO/PPSN before committing. See [[Direction-Reevaluation-2026-08]].
 
 The FunSearch / EoH / ReEvo / AlphaEvolve lineage claims LLMs discover
 superhuman heuristics. Targeted critique queries return **1** result (a GECCO
@@ -170,13 +237,20 @@ npj Climate and Atmospheric Science; AIES (AMS); Science Advances.
 **Tier C.** ICBINB ("I Can't Believe It's Not Better") at NeurIPS, purpose-built
 for negative results; ML4PS; AI4Mat.
 
-## Open legs
+## Open legs — closed 2026-07-25
 
 Representation geometry (including the GeoLAN paper), emerging-topic scouting
 across 2025-26 best-paper and new-workshop lists, and recent math-venue results
-applicable to ML are still being surveyed. This page will be extended.
+applicable to ML were finished in [[Math-Grounded-Direction-Survey]]; the
+candidates they produced were then gated in [[Direction-Gate-Results]]. This
+page is not extended further.
 
 ## Related
 
+[[Direction-Reevaluation-2026-08]] · [[Top-Researcher-Scan-2026-08]] — current
+authority; supersede the ratings above where they conflict.
+[[Math-Grounded-Direction-Survey]] — the theory legs of the same effort.
+[[Live-Research-Opportunities]] — where the weather and AHD gates are recorded.
 [[Calibration-Prior-Art-Gate]] — closed the last compositional-VLM candidate.
 [[Next-Direction-Literature-Survey]] — the earlier, narrower survey.
+[[Status-And-Survivors]] — priority table across all surviving directions.

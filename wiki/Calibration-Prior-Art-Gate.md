@@ -1,8 +1,16 @@
 # Calibration Hypothesis — Prior-Art Gate
 
-Status: **Gate run 2026-07-25, after [[Conformal-Probe-Results]] closed the
-dispersion direction.** Executes decision #4 of that page: evaluate the
-proper-scoring calibration hypothesis on its own merits with its own gate.
+*Updated 2026-08-02 for the general research wiki.*
+
+Status: **Gate run 2026-07-25, after Conformal-Probe-Results (svib repo wiki)
+closed the dispersion direction.** Executes decision #4 of that page: evaluate
+the proper-scoring calibration hypothesis on its own merits with its own gate.
+
+Substrate note: the gate was run against the SVIB project's compositional
+image-text matching setting (CLIP-family scorers on SugarCrepe/NegCLIP/VALSE/
+Winoground). The transferable content is the prior-art verdict and the
+rank-invariance argument below; the project-side probe results live in the
+svib repo.
 
 **Verdict: both gaps survive as literally unclaimed, but the direction is not
 viable as framed, because the "fix" step is structurally unavailable.**
@@ -88,9 +96,10 @@ Ranked by strength. All three escape the rank-invariance problem.
    filters, caption rerankers, and reward signals. If systematically
    overconfident, a fixed-confidence filter admits measurably more bad pairs
    *even where top-1 accuracy improved*. This converts a calibration number
-   into a corpus-quality number, and it connects to our own Stage E result:
-   a model that confidently rejects valid rewrites is a filter that
-   systematically discards good data.
+   into a corpus-quality number, and it connects to the project's own Stage E
+   result — a model that confidently rejects valid rewrites is a filter that
+   systematically discards good data. (Full detail: svib repo wiki, Stage-E
+   pages.)
 3. **Cross-model fusion/routing.** Combining a contrastive scorer with an LVLM
    needs probabilities comparable across models; recalibration is not
    rank-preserving across the fused decision.
@@ -105,6 +114,8 @@ Ranked by strength. All three escape the rank-invariance problem.
 
 ## Related
 
-[[Conformal-Probe-Results]] — the negative result that triggered this gate.
 [[Calibration-Opportunity-Survey]] — the hypothesis being gated.
-[[Stage-E-Prior-Art-Audit]] — the standing rule requiring gates before runs.
+[[Home]] — the standing rule requiring a prior-art gate before any run (rule 1);
+originally recorded as Stage-E-Prior-Art-Audit (svib repo wiki).
+Conformal-Probe-Results (svib repo wiki) — the negative result that triggered
+this gate.

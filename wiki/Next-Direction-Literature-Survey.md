@@ -1,8 +1,30 @@
 # Next-Direction Literature Survey
 
-Status: **Survey complete 2026-07-25.** Assesses six candidate research
-directions against the 2025-2026 literature and against our measured assets.
-Written after [[Stage-E-Prior-Art-Audit]] closed the audit-paper path.
+Status: **Survey complete 2026-07-25.** The earliest and narrowest of the
+direction surveys: six candidates assessed against the 2025-2026 literature.
+Written after the Stage-E prior-art audit (svib repo wiki) closed the
+audit-paper path.
+
+**Updated 2026-08-02 for the general research wiki.** Read this as a record of
+what was checked, not as live guidance — **almost every candidate below was
+subsequently gated, and the outcomes live elsewhere**:
+
+- [[Direction-Gate-Results]] — the distillation capacity gap (scooped: the
+  U-shape theorem was already published, ICML 2025 appendix), plus the
+  benchmark-unidimensionality, succinctness and C-RASP gates.
+- [[Temperature-Confound-Preregistration]] — the distillation temperature
+  follow-up; gate failed, protocol must not be run.
+- [[Calibration-Draw-Preregistration]] — the calibration-draw noise-floor
+  protocol; scooped by an ACL 2024 paper that ran the identical design.
+- [[Calibration-Prior-Art-Gate]] — closed the calibration/selective-prediction
+  line: both gaps are literally unclaimed, but post-hoc recalibration is
+  monotone and therefore cannot change accuracy, AURC or any risk-coverage
+  curve, so the "fix" step is structurally unavailable.
+- [[Direction-Reevaluation-2026-08]] and [[Top-Researcher-Scan-2026-08]] —
+  current direction ranking and current opportunity map.
+
+Project-specific evidence (SVIB probe numbers, stage results, script names) has
+been condensed here; full detail: svib repo wiki.
 
 Verdicts are SATURATED (do not enter), ACTIVE (crowded, entry needs a sharp
 angle), or OPEN (specific unclaimed gap named).
@@ -18,6 +40,13 @@ angle), or OPEN (specific unclaimed gap named).
 | Distillation to smaller models | **Mostly industry; one live niche** | CompoDistill (ICLR 2026) distills *compositional* ability via visual-attention alignment: 60.7→66.7 where general KD gives 61.5. Note "When Better Teachers Don't Make Better Students" (2511.17886): stronger CLIP teachers do not reliably give better students |
 | **Conformal / selective prediction for VL matching** | **ACTIVE field; tested signal closed** | ICLR 2026 already claims compositional risk-coverage, and the locked four-model probe finds no practically meaningful dispersion gain beyond a learned margin-only selector |
 
+**Outcome notes 2026-08-02.** Row 5 (distillation): the theory-side reframing
+this survey later attracted was gated and killed — see
+[[Direction-Gate-Results]] and [[Temperature-Confound-Preregistration]]. Row 6
+(conformal/selective prediction): closed for a structural reason rather than a
+crowding reason — [[Calibration-Prior-Art-Gate]]. Rows 1–4 were not re-gated;
+treat their 2026-07 crowding counts as stale.
+
 ## The two open gaps
 
 ### Gap 1 (revised): equivalence-class dispersion as an incremental selective-prediction signal
@@ -30,8 +59,8 @@ risk-coverage results on SugarCrepe, Winoground, What'sUp, VL-Checklist, and
 Foil. **Look Again Before You Abstain** (arXiv `2606.16667`, v4) also makes the
 broad VLM conformal-abstention space active rather than open.
 
-The surviving narrow gap is tested in
-[[Conformal-Probe-Preregistration]]:
+The surviving narrow gap was tested in Conformal-Probe-Preregistration
+(svib repo wiki):
 
 > Does score dispersion across multiple equivalent human captions add
 > selective-prediction signal beyond minimum/mean confidence margins and a
@@ -39,12 +68,20 @@ The surviving narrow gap is tested in
 
 This is a feasibility question, not yet a paper claim.
 
-**Outcome correction 2026-07-25.** [[Conformal-Probe-Results]] finds that
-dispersion improves over raw minimum/mean margins but not by the locked
-practical threshold over a feature-matched learned margin selector on any of
-four COCO models. The narrow signal gap is therefore tested and negative. The
+**Outcome correction 2026-07-25.** Conformal-Probe-Results (svib repo wiki)
+finds that dispersion improves over raw minimum/mean margins but not by the
+locked practical threshold over a feature-matched learned margin selector on any
+of four COCO models. The narrow signal gap is therefore tested and negative. The
 large all-realizations gap survives as a reporting observation, not as a new
 selective-prediction method.
+
+**And then the whole line closed, 2026-07-25.** [[Calibration-Prior-Art-Gate]]
+ran on the successor calibration hypothesis and killed it for a reason that
+applies to everything in this section: temperature scaling is monotone, so on a
+two-way caption decision it cannot change which caption wins, and AURC and
+risk-coverage curves depend only on the *ranking* of confidences. Both metric
+families used by this literature are invariant to the only fix such a paper
+would offer — decision delta exactly zero.
 
 ### Superseded search record
 
@@ -102,12 +139,12 @@ encoded crops, training-free) = 24.9** versus **TFLocal (patch tokens, 13.3M
 trained params) = 13.2**. The crop route beats the patch-token route on their
 own OOD diagnostic and they offer no explanation and no head-to-head ablation.
 
-Our Stage A result is the same phenomenon with a granularity signal attached:
-patch-grid loses `1.32` on CLIP ViT-B/32 (49 tokens) but only `0.32` on
-SigLIP2 ViT-B/16-256 (256 tokens). Candidate mechanisms — contrastive-manifold
-drift for tight crops versus spatial-correlation collapse under pooling — are
-unstudied and directly testable with infrastructure we already built and
-validated.
+Our own probes showed the same phenomenon with a granularity signal attached:
+the patch-grid penalty shrinks by roughly 4× going from a 49-token to a
+256-token backbone. Candidate mechanisms — contrastive-manifold drift for tight
+crops versus spatial-correlation collapse under pooling — are unstudied and
+directly testable on existing infrastructure. Full detail: svib repo wiki,
+page Post-Rebuttal-Measurement-Sprint.
 
 C2LIP asserts the adjacent claim ("final global pooling leads to loss of
 binding information") but supports it with architectural argument and attention
@@ -137,25 +174,29 @@ maps, not a controlled experiment. That is the exploitable soft spot.
 
 ## Why Gap 1 fits this group specifically
 
-Three method campaigns (SVIB, SVIB2 v1-v4, claim-level pilot) failed, and each
-had the same dependency: success required beating a benchmark number. Gap 1
-does not. Success is "we defined a meaningful reliability target and
+The generalizable version of the argument: three consecutive method campaigns
+failed on the same dependency — success required beating a benchmark number.
+Gap 1 does not. Success is "we defined a meaningful reliability target and
 characterized how models behave under it," which removes that failure mode and
-plays to the measurement discipline that has consistently produced real
-findings here.
-
-The existing assets map directly. Stage B already computes repair precision
-(`2.90%`), repair coverage (`55.26%`), harm rate (`2.02%`), oracle headroom
-(`+3.99`), and margin-decile firing rates — that is most of a deferral
-analysis. `analyze_equivalent_positive_stability.py` and
-`analyze_routing_mechanisms.py` sit on Gaps 1 and the routing sub-gap
-respectively. The multi-backbone harness reproduces six external systems.
+plays to the measurement discipline. The prior campaigns had also already
+produced most of a deferral analysis (repair precision and coverage, harm rate,
+oracle headroom, margin-decile firing rates) plus a multi-backbone harness
+reproducing six external systems, so the assets mapped directly. Full detail:
+svib repo wiki, page Post-Rebuttal-Measurement-Sprint.
 
 Compute is not the constraint: this direction is inference plus post-hoc
-calibration. The binding constraint is calibration-set size, not GPUs.
+calibration. The binding constraint is calibration-set size, not GPUs. **But
+see the note above** — [[Calibration-Prior-Art-Gate]] later showed that the
+metrics this direction would report are invariant to the fix it would propose,
+which is what actually closed it.
 
 ## Related
 
-[[Stage-E-Prior-Art-Audit]] — why the audit-paper path closed.
-[[Post-Rebuttal-Measurement-Sprint]] — Stage A patch-grid and Stage B gate
-audit, both of which feed the gaps above.
+Stage-E-Prior-Art-Audit (svib repo wiki) — why the audit-paper path closed.
+Post-Rebuttal-Measurement-Sprint (svib repo wiki) — the Stage A patch-grid and
+Stage B gate audit that feed the gaps above.
+[[Direction-Gate-Results]] · [[Calibration-Prior-Art-Gate]] ·
+[[Calibration-Draw-Preregistration]] ·
+[[Temperature-Confound-Preregistration]] — where the outcomes live.
+[[Field-Scouting-Survey]] · [[Math-Grounded-Direction-Survey]] — the later,
+broader surveys that replaced this one.

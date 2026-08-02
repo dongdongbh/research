@@ -1,10 +1,37 @@
 # Calibration for Discriminative Matching — Opportunity Survey
 
-Status: **Survey complete 2026-07-25; scope narrowed same day by the
-prior-art gate.** Two independent searches converged on the same gaps, but the
-gate run against [[Conformal-Probe-Preregistration]] falsified one leg of the
+Status: **Survey complete 2026-07-25; direction subsequently gated and NOT
+viable as framed.** *Updated 2026-08-02 for the general research wiki.* Two
+independent searches converged on the same gaps, but the gate run against the
+conformal probe pre-registration (svib repo wiki) falsified one leg of the
 original recommendation. See "Prior-art correction" below before using this
 page.
+
+> **Outcome, read this first (2026-08-02).** Two separate directions carry the
+> word "calibration" and **both were closed**. Do not restart either from this
+> page without re-reading its gate.
+>
+> 1. **This page's direction — proper-scoring calibration of the image-text
+>    matching decision.** [[Calibration-Prior-Art-Gate]] found both gaps
+>    literally unclaimed **but the direction not viable as framed**: temperature
+>    scaling is monotone, and AURC / risk-coverage curves depend only on the
+>    *ranking* of confidences, so the only fix a calibration paper would offer
+>    leaves both metric families **bit-identical**. Decision delta exactly zero
+>    against a bar of diagnosis → mechanism → fix → changed decision. The gate
+>    also found three papers that have since taken pieces of Gap A
+>    (`2607.03143`, three weeks old at gate time, publishes the exact protocol
+>    at ~400-way retrieval). Only the three escape routes listed there —
+>    threshold transfer, CLIP-as-scorer downstream, cross-model fusion — carry a
+>    changed decision.
+> 2. **The separately-named "calibration-draw" direction** (treating the
+>    *calibration set* as a random seed in LLM compression, a different topic
+>    that lives in [[Compression-Audit-Direction]]) was **GATE-FAILED — SCOOPED,
+>    do not run**: see [[Calibration-Draw-Preregistration]]. It was published in
+>    ACL 2024 and independently replicated twice.
+>
+> What stays useful here regardless: the saturation verdicts table, the
+> refuted K-mismatch hypothesis (so it is not retried), the terminology
+> disambiguation, and the rank-invariance trap.
 
 "Calibration" here means proper-scoring calibration (ECE, Brier, reliability
 diagrams), not conformal coverage.
@@ -92,11 +119,12 @@ fine-tuning worsens retrieval ECE. Murugesan et al.'s diagnosis — adaptation
 degrades calibration via **increased logit range** — transfers to this setting
 almost mechanically and nobody has run it.
 
-**We already own the exact instrument.** Stage E built five source-matched
-pairs with hashes, provenance, and reproduced published endpoints: NegCLIP and
-CE-CLIP against standard-GELU B/32, CLIC-B against QuickGELU B/32, CLIC-L
-against QuickGELU L/14, TripletCLIP against LaCLIP CC3M. Per-item records are
-in `results/stage_e/<model>/items.jsonl`.
+**The instrument for this already existed.** The SVIB project's Stage E built
+five source-matched checkpoint pairs (hard-negative-finetuned model versus its
+own pretraining source) with hashes, provenance and reproduced published
+endpoints, plus per-item records. Anyone testing Gap B needs exactly that
+construction — a *source-matched* pair, not a method comparison — and it is the
+expensive part. Full detail: **svib repo wiki**, Stage-E pages.
 
 ## My K-mismatch hypothesis was wrong, and is recorded here so it is not retried
 
@@ -149,11 +177,14 @@ right 95% versus 72% of the time when they report 90% confidence.
 ## Why this should merge with the conformal probe
 
 **Outcome update 2026-07-25.** The locked conformal probe is now complete and
-its distinctive dispersion signal fails H2 for all four COCO models; see
-[[Conformal-Probe-Results]]. Therefore the proper-scoring calibration direction
-must **not** inherit a method contribution from equivalence dispersion. It may
-reuse the verified score artifacts and abstention baselines, but it needs an
-independent prior-art gate and a standalone diagnosis/mechanism/fix case.
+its distinctive dispersion signal fails its main hypothesis on every model
+tested (detail: svib repo wiki, Conformal-Probe-Results). Therefore the
+proper-scoring calibration direction must **not** inherit a method contribution
+from equivalence dispersion. It may reuse the verified score artifacts and
+abstention baselines, but it needs an independent prior-art gate and a
+standalone diagnosis/mechanism/fix case. *(That independent gate was then run —
+[[Calibration-Prior-Art-Gate]] — and the standalone fix case failed on
+rank-invariance. The merged-paper plan below is therefore historical.)*
 
 The two directions share every asset and answer complementary halves of one
 question. Calibration asks *is the confidence number correct*; selective
@@ -169,10 +200,11 @@ compositional risk-coverage is already published:
 - **Consequence** — reliability rankings differ from accuracy rankings. Cite the existing risk-coverage work rather than claiming the protocol.
 - **Fix** — source-matched recalibration restores usable reliability behaviour.
 
-It also supplies the mechanism behind our own Stage E result: CE-CLIP
-contracting `-23.52` and falling **below chance** on Swap-Attribute (`37.39`)
-is exactly the signature of a confidently-wrong, margin-inflated model under
-surface-form shift.
+It would also supply the mechanism behind a result the SVIB project measured
+independently: a hard-negative-finetuned checkpoint contracting sharply and
+falling **below chance** on a swap-attribute split is exactly the signature of
+a confidently-wrong, margin-inflated model under surface-form shift. (Numbers:
+svib repo wiki, Stage-E pages.)
 
 ## Terminology disambiguation required in any writeup
 
@@ -195,6 +227,13 @@ the uncertainty-versus-recall curves of the PCME line.
 
 ## Related
 
-[[Conformal-Probe-Preregistration]] — the probe this should merge into.
-[[Stage-E-Results]] — the five source-matched pairs and per-item records.
+[[Calibration-Prior-Art-Gate]] — the gate that closed this direction as framed,
+and the three escape routes that carry a changed decision.
+[[Calibration-Draw-Preregistration]] — the *other* calibration direction
+(calibration-set draw noise floor), gate-failed and scooped.
+[[Compression-Audit-Direction]] — where that draw direction was proposed.
 [[Next-Direction-Literature-Survey]] — the survey that selected this family.
+Conformal-Probe-Preregistration and Conformal-Probe-Results (svib repo wiki) —
+the probe this was meant to merge into, and its negative outcome.
+Stage-E pages (svib repo wiki) — the five source-matched pairs and per-item
+records.

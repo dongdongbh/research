@@ -1,5 +1,12 @@
 # Anvil H100 Qwen3.6 vLLM Benchmark
 
+Updated 2026-08-02 for the general research wiki.
+
+Context: a dated (2026-07-17) measurement of self-hosted 27B-class serving
+throughput and SU cost on one Anvil H100, run for svib2's teacher-model
+selection. It is kept here as the lab's reference point for "what one H100 can
+do with vLLM", not as a statement about any current project's teacher choice.
+
 Purpose: deployment and throughput reference for serving Qwen3.6-27B BF16 on a
 single Anvil H100 with vLLM — working configuration, startup failure fixes, and
 4/16/32-worker concurrency measurements.
@@ -12,7 +19,7 @@ workload: vLLM reported 51.1 GiB for model loading, 17.45 GiB available for
 KV cache, 165,660 cached tokens, and a theoretical maximum concurrency of
 40.44 requests at the configured 4,096-token context.
 
-For the SVIB2 teacher pipeline, 32 client workers were fastest among the
+For the teacher pipeline under test, 32 client workers were fastest among the
 tested settings. They processed the fixed 100-image qualification shard in
 85.41 seconds wall time, 4.54 times faster than four workers. One H100 is
 therefore sufficient for Qwen3.6-27B; a future four-H100 production run should
@@ -52,32 +59,19 @@ should be tested with one image rather than assumed to be text-only. Model
 capability does not prove that a particular hosted backend exposes or has all
 dependencies for its vision path.
 
-That vision test was completed on 2026-07-18. Hosted AnvilGPT Qwen3.6 processed
-all 175 definitive role-development rows but achieved only precision 0.379 and
-recall 0.116. On the 100-row attribute slice it normalized 99 rows and reached
-precision 0.964, but its fail-closed recall was only 27/82 = 0.329. It is not a
-production image gate; this does not change its separately calibrated role as
-a text teacher.
+That vision test was completed on 2026-07-18 and both the hosted and the local
+BF16 deployment failed svib2's image-judge bar; neither gained gate authority.
+Those judge-selection verdicts are project decisions, not cluster facts — full
+detail: svib2 repo wiki, pages Local-Vision-Judge-Qualification and
+Current-Standard.
 
-The first same-checkpoint local BF16 vision launch loaded the 51.1 GiB model
-and reached FlashInfer GDN prefill compilation, where parallel `cicc` processes
-were killed by signal 9 under the 96 GiB Slurm host-memory limit. FlashInfer
-0.6.13 honors `MAX_JOBS`; serial compilation confirmed the diagnosis. The
-completed qualification used vLLM's supported
-`--gdn-prefill-backend triton`, retained the same BF16 checkpoint, and served
-all 280 image requests without schema errors.
-
-Local BF16 still failed role direction (precision 0.415/recall 0.179), but
-provisionally passed the 100-row attribute development bar (precision 0.968,
-fail-closed recall 30/82 = 0.366). It needs a disjoint attribute validation
-slice before gaining authority. Hosted/local decisions agreed on 164/180 role
-rows and 94/99 common-success attribute rows. See
-[[Local-Vision-Judge-Qualification]].
-
-**Superseded (2026-07-19):** the provisional attribute pass did not convert
-into authority. Per [[Current-Standard]], self-hosted Qwen3.6 is among the
-failed judges; attribute-gate authority is held by hosted AnvilGPT Gemma 4
-image-first.
+One deployment fact from that run generalizes and is worth keeping: the first
+same-checkpoint local BF16 vision launch loaded the 51.1 GiB model and reached
+FlashInfer GDN prefill compilation, where parallel `cicc` processes were killed
+by signal 9 under the 96 GiB Slurm host-memory limit. FlashInfer 0.6.13 honors
+`MAX_JOBS`; serial compilation confirmed the diagnosis. The completed run used
+vLLM's supported `--gdn-prefill-backend triton`, retained the same BF16
+checkpoint, and served all 280 image requests without schema errors.
 
 Qwen3.6-27B is not Qwen3-VL-32B-Instruct. Both accept images, but they are
 separate model families and checkpoints:
@@ -89,7 +83,7 @@ separate model families and checkpoints:
 | Language backbone | 27B, 64-layer hybrid Gated DeltaNet/full-attention model with MTP | Dense 32B Qwen3-VL model with Interleaved-MRoPE and DeepStack vision-feature fusion |
 | Native context | 262,144; documented extension to 1,010,000 | 262,144; documented extension to 1,000,000 |
 | Official serving minimum | vLLM >= 0.19.0; latest Transformers | vLLM >= 0.11.0; Transformers >= 4.57.0 |
-| SVIB2 result represented here | Text-teacher throughput only | Separate frozen image-gate calibration; not evidence about Qwen3.6 vision quality |
+| Result represented on this page | Text-teacher throughput only | Separate frozen image-gate calibration; not evidence about Qwen3.6 vision quality |
 
 Sources: official
 [Qwen3.6 usage and serving guide](https://huggingface.co/Qwen/Qwen3.6-27B#quickstart),
@@ -115,14 +109,14 @@ example ordering without a paired order-control measurement.
 - No multi-node or multi-GPU resources were used
 - The job was exited immediately after the benchmark; no GPU job remained
 
-The durable artifacts are under:
+The durable artifacts are under (svib2 repo, ignored run storage):
 
 ```text
 runs/vllm_qwen36_h100_interactive_20260717/job-19329291/
 ```
 
 They include both server logs, the server model-list and parse smoke outputs,
-all three worker runs, quality reports, and Gemini audit outputs.
+all three worker runs, quality reports, and audit outputs.
 
 ## Working Server Configuration
 
@@ -152,8 +146,8 @@ export CXX="$(command -v g++)"
 export LD_LIBRARY_PATH="$VLLM_ENV/lib/python3.12/site-packages/nvidia/cu13/lib:${LD_LIBRARY_PATH:-}"
 ```
 
-The reusable repository job is
-`scripts/benchmark_qwen36_vllm_h100.sbatch`. It now includes the required
+The reusable batch job lives in the svib2 repo at
+`scripts/benchmark_qwen36_vllm_h100.sbatch`. It includes the required
 `--max-num-seqs 128` and `--gdn-prefill-backend triton` settings and the
 4/16/32-worker sweep. `GDN_PREFILL_BACKEND` remains an environment override,
 but the safe Anvil default is Triton because FlashInfer's GDN path performs a
@@ -226,27 +220,30 @@ production SU because prompt length and rejection behavior changed.
 
 ## Production Recommendation
 
-Status note (2026-07-19): per [[Current-Standard]], teacher production now uses
-the hosted Gemma 4 -> Qwen 3.6 cascade plus local generation restricted to
-attribute/spatial targets (role-swap text generation is banned for every
-deployment). The checklist below is retained as the deployment record.
+Status note (2026-07-19): svib2 subsequently moved teacher production to a
+hosted cascade with local generation restricted to a narrow target set
+(svib2 repo wiki, page Current-Standard). The checklist below is retained as
+the deployment record and as a reusable pattern for any self-hosted serving
+decision.
 
-1. Complete the fixed 100-row prompt-v3 model gate and independent semantic
-   audit before spending GPU SU.
-2. If Qwen3.6 remains the teacher, run one cached H100 replica with 32 workers
-   as the single-GPU baseline.
+1. Complete a fixed small-sample model gate and an independent semantic audit
+   before spending GPU SU.
+2. If the model is retained as the teacher, run one cached H100 replica with 32
+   workers as the single-GPU baseline.
 3. Test 48 or 64 workers briefly; do not assume they improve on 32 because the
    configured server capacity is about 40 full-length concurrent requests.
 4. For four H100s, use data-parallel serving/replicas and shard requests across
    GPUs. Do not request multiple nodes for this model.
 5. Record exact prompts, every retry, raw request/response bodies, model IDs,
-   usage counts, and validator/auditor versions. The generation pipeline now
-   does this with teacher exchange schema v1.
+   usage counts, and validator/auditor versions under a versioned exchange
+   schema.
 
 ## Related Notes
 
 - [[CUDA-Compatibility-and-vLLM]]
-- [[AnvilGPT-Teacher-Model-Selection]]
-- [[Offline-Teacher-Data-Generation]]
-- [[Running-Code]]
-- [[Anvil-vs-Delta-for-SVIB2]]
+- [[Anvil-vs-Delta]]
+- [[Anvil-Interactive-GPU-Workflow]]
+- [[Data-and-Caches]]
+- Teacher-model selection, offline generation, and repo run commands:
+  svib2 repo wiki, pages AnvilGPT-Teacher-Model-Selection,
+  Offline-Teacher-Data-Generation, and Running-Code.

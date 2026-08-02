@@ -3,8 +3,13 @@
 > **Verdict superseded 2026-08-02.** The "do not enter" recommendation below
 > used crowd-count logic the PI has since corrected (filter by remaining
 > opportunity, not heat). A dedicated re-evaluation reversed it for the
-> mechanism-arbitration lane: see [[Direction-Reevaluation-2026-08]]. The
-> taxonomy and evidence sections below remain valid.
+> mechanism-arbitration lane, which now rates ★★★★: see
+> [[Direction-Reevaluation-2026-08]]. The specific reversal is O1 in Part 4 —
+> the question this page downgraded to ★★☆☆☆ is now a recommended direction.
+> The taxonomy, failure-mode and saturation-evidence sections below remain
+> valid and are why the reversal is defensible.
+
+Updated 2026-08-02 for the general research wiki.
 
 Status: **Survey, 2026-07-27.** Literature sweep plus a gated opportunity
 assessment. Method searches across arXiv, Semantic Scholar, OpenAlex, DBLP,
@@ -210,6 +215,18 @@ academia-scale compute.
 **This was my initial recommendation and it does not survive the prior-art gate.
 Recorded in full because the failure is instructive.**
 
+> **Reversed 2026-08-02 → ★★★★.** The downgrade below is the single verdict on
+> this page that the re-evaluation overturned. What changed: the crowded
+> entropy lane turns out not to intersect this question on any of three axes
+> (no entropy paper tests sequential campaigns, code graders, or ~20-step
+> cliffs), the timescales do not match (entropy decay is slow; the cliff is a
+> phase transition), and the two published collapse regimes have mutually
+> exclusive explanations that nobody has reconciled. The narrow residual
+> identified at the end of this section — collapse under a *ground-truth*
+> grader — is precisely the surviving direction, reframed as four-mechanism
+> arbitration rather than another intervention method. Full argument:
+> [[Direction-Reevaluation-2026-08]].
+
 The pitch was: F1 documents within-campaign rise-and-collapse with the mechanism
 unexplained; the entropy-covariance work supplies a candidate mechanism F1 never
 tested; the Reasoning Boundary Paradox supplies a second. Join the three
@@ -265,16 +282,17 @@ asking whether RLVR extends VLM reasoning boundaries at all.
 The transfer idea: **compositional consistency is a free, label-free verifier for
 vision-language models.** If a caption and its hard negative are both scored, a
 swap must flip the ordering; an equivalent positive must not. That is a checkable
-constraint requiring no labels, and it is precisely the machinery we already
-built — SugarCrepe++, Winoground, BiVLC, the `alpha=1` evaluator invariant, the
-corrected baselines, the paired-CI harness.
+constraint requiring no labels, and the harness for it already exists in-house
+(compositional benchmark battery, `alpha=1` evaluator invariant, paired CIs;
+detail in the svib repo wiki).
 
-**Honest caution, and it is serious.** Our wiki already records six
-mechanistically distinct probes rejected in the frozen-dual-encoder local-branch
-family, and rates further work there ★. This idea is *different* — generative VLM
-self-training rather than frozen-encoder fusion — but it is adjacent enough that
-the same failure mode could recur, and the same benchmarks that failed to
-separate methods before may fail again. Gate it on a pilot before committing.
+**Honest caution, and it is serious.** Six mechanistically distinct probes were
+already rejected in the frozen-dual-encoder local-branch family, and further work
+there rates ★ (see [[Status-And-Survivors]]). This idea is *different* —
+generative VLM self-training rather than frozen-encoder fusion — but it is
+adjacent enough that the same failure mode could recur, and the same benchmarks
+that failed to separate methods before may fail again. Gate it on a pilot before
+committing.
 
 ## O3 — Capability-preserving lifelong evolution ★★☆☆☆
 
@@ -292,6 +310,14 @@ third-in-line behind work that already exists.
 ---
 
 # Part 5 — Recommendation
+
+> **Superseded 2026-08-02.** Both halves of this section have been overturned:
+> the "do not enter" verdict (reversed to ★★★★ for the collapse-arbitration
+> lane) and the fallback advice below, which points at a T4 rating that has
+> since dropped from ★★★★★ to ★★ after three scoops. Read
+> [[Direction-Reevaluation-2026-08]] instead. The reasoning is preserved
+> because the meta-lesson — that a saturation count is not a gate, and that a
+> paper's own novelty claim is not prior art — was drawn from this page.
 
 **Do not enter this field.** After gating, nothing here clears the bar.
 
@@ -325,5 +351,10 @@ or RL post-training stability.
 
 ## Related
 
-[[Status-And-Survivors]] — the SVIB standing and the other live directions.
+[[Direction-Reevaluation-2026-08]] — current verdict; supersedes Parts 4 (O1)
+and 5 of this page.
+[[Top-Researcher-Scan-2026-08]] — convergence "D" (diversity collapse under
+optimization pressure) is the people-level view of Part 2's F2.
+[[Status-And-Survivors]] — the other live directions (its star table is itself
+superseded).
 [[Method-Opportunities]] · [[Live-Research-Opportunities]]

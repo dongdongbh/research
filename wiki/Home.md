@@ -43,9 +43,11 @@ repo proper (see `results/`), not in the wiki.
   GPU work on Anvil.
 - [[Delta-Setup-and-Parallel-Workflow]] — NCSA Delta setup and running
   Anvil+Delta in parallel.
-- [[Anvil-vs-Delta-for-SVIB2]] — cluster comparison (partitions, quotas,
-  queueing) — written for svib2 but generally applicable.
+- [[Anvil-vs-Delta]] — cluster comparison across Anvil, Delta, DeltaAI, and
+  Bridges-2 (hardware, partitions, quotas, queueing, accounting).
 - [[CUDA-Compatibility-and-vLLM]] — CUDA/driver/vLLM compatibility notes.
+- [[Data-Transfer-Between-Clusters]] — how to move large files between Anvil,
+  Delta, and OrangeGrid (Globus / rsync / staging recipes; croc as fallback).
 - [[Data-and-Caches]] — where datasets, feature caches, and artifacts live
   under `/anvil/projects/x-cis261253/`, and provenance rules.
 - [[Research-Automation-Tools]] — installed automation/skills tooling.

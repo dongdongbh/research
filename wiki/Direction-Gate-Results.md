@@ -1,5 +1,13 @@
 # Direction Gate Results
 
+*Updated 2026-08-02 for the general research wiki.*
+
+Later development: the generating-process lesson below (scan for empty areas →
+the area is never empty) was revised by [[Direction-Reevaluation-2026-08]],
+which found crowd-count filtering predicted nothing and replaced it with
+"filter by remaining opportunity, and an empty lane must explain why it is
+empty." The gate verdicts on this page stand as recorded.
+
 Status: **Four gates run 2026-07-25.** Three candidates killed, one downgraded.
 Two survivors, both of which put measurement rather than theory on the critical
 path. Gates ordered by how instructive the failure was.
@@ -163,4 +171,5 @@ ICML 2026 paper (104 pages) decompiles transformers to RASP.
 ## Related
 
 [[Math-Grounded-Direction-Survey]] — where these candidates came from.
-[[Stage-E-Prior-Art-Audit]] — the standing rule that produced these gates.
+[[Home]] — the standing prior-art-gate rule that produced these gates (rule 1);
+originally recorded as Stage-E-Prior-Art-Audit (svib repo wiki).

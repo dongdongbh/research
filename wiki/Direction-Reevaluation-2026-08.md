@@ -1,5 +1,9 @@
 # Direction Re-evaluation — 2026-08-02
 
+Updated 2026-08-02 for the general research wiki. **This page is the current
+authority on the direction star ranking**; older star tables elsewhere in this
+wiki are superseded by it.
+
 Status: **Complete.** Eight parallel deep-search agents (Opus), one per
 direction, each instructed to judge by **remaining opportunity** rather than
 crowd count, per the PI's corrected criterion: *"a topic can not be filtered
@@ -195,11 +199,12 @@ SVIB write-up (★★★★☆) was not re-evaluated; unchanged.
 3. **Recency decays fast.** T4 and B1 were scooped between April and June;
    the July survey was already stale in one lane when written. Any gate older
    than ~6 weeks needs a re-run before compute is committed.
-4. Related process rules: [[filter-by-saturation-not-crowding]] (memory),
+4. Related process rules: filter-by-saturation-not-crowding (memory),
    prior-art gate before experiments, never trust a paper's own novelty claim.
 
 ## Related
 
 [[Self-Improving-AI-Survey]] (July verdict superseded for the collapse lane) ·
+[[Top-Researcher-Scan-2026-08]] (people-level openings, same date) ·
 [[Method-Opportunities]] · [[Live-Research-Opportunities]] ·
 [[Status-And-Survivors]] (star table superseded by this page)

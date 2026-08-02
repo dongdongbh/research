@@ -1,5 +1,7 @@
 # KD Evidence Audit — Gate Result
 
+*Updated 2026-08-02 for the general research wiki.*
+
 Status: **Gated 2026-07-25. SURVIVES WITH A REQUIRED PIVOT.** First candidate in
 eleven to clear a gate. The gate also found a stronger asset than the one
 proposed, and corrected three factual errors in the brief.
@@ -134,7 +136,8 @@ shipped artifact, competing with EasyOPD on the axis it lacks.
 1. **OpenReview reviews unverified** — forum `rc65N9xIrY` sits behind a
    Cloudflare challenge and ICML does not publicly release reviews. Whether
    reviewers raised the missing error bars is unknown and material.
-2. The Gate 6 "nobody is doing this" finding rests on arXiv API queries only;
+2. The "nobody is doing this" finding (gate 6 of the numbered gate sequence
+   kept in the svib repo wiki) rests on arXiv API queries only;
    the WebSearch budget was exhausted. Weaker than the other negatives.
 3. Verify the table-integrity observation independently before any use.
 
@@ -142,3 +145,5 @@ shipped artifact, competing with EasyOPD on the axis it lacks.
 
 [[LLM-KD-Direction-Gates]] — the survey this came from, and the
 generating-process lesson that produced it.
+[[KD-Noise-Floor-Stage1]] — what Stage 1 of the staged plan above became
+(broadened to two literatures, then suspended).

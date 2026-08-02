@@ -5,8 +5,20 @@ GeoLAN, representation geometry, math/TCS results with unclaimed ML surface, and
 emerging low-crowding topics. Companion to [[Field-Scouting-Survey]], which
 covers the empirical/measurement legs.
 
-**No prior-art gate has been run on any candidate below.** Per the standing rule
-from [[Stage-E-Prior-Art-Audit]], nothing here is actionable until gated.
+**Updated 2026-08-02 for the general research wiki.** Original wording is
+preserved; outcome notes were added inline where a later gate changed the
+verdict.
+
+**The candidates below have since been gated, and most did not survive.** When
+this page was written none had been: *"No prior-art gate has been run on any
+candidate below. Per the standing rule (Stage-E-Prior-Art-Audit — svib repo
+wiki), nothing here is actionable until gated."* Four gates were then run on
+2026-07-25 and are recorded in [[Direction-Gate-Results]]; the KV-cache
+candidate was re-scoped by [[Direction-Reevaluation-2026-08]]. **Read the gate
+page before acting on anything here.** Its headline lesson: candidates die
+either because the gap is one line for an insider, or because an older
+literature solved it under different vocabulary — both invisible to
+method-name search.
 
 ## GeoLAN is decorative theory — read this before using it as a model
 
@@ -62,8 +74,11 @@ contribution lands in this space.
 
 ### 1. GPTQ / lattice reduction — **GATED AND KILLED 2026-07-25**
 
-The prior-art gate closed this comprehensively. Recorded in full because the
-failure modes are instructive.
+The prior-art gate closed this comprehensively (see also
+[[Direction-Gate-Results]], which counts this as the first of the five gates and
+reads it as the archetype of failure mode 1 — the gap was the anchor paper's own
+future-work sentence). Recorded in full because the failure modes are
+instructive.
 
 1. **It is the literal stated future-work sentence of the anchor paper**, and of
    a second one. Chen et al. write: "open the door to importing decades of
@@ -138,6 +153,21 @@ breaks, that is the better paper.
 
 ### 2. Distillation capacity gap — a published theorem contradicts universal observation
 
+> **GATED AND KILLED 2026-07-25; the framing here was factually wrong.** The
+> target theorem exists and is named: Busbridge et al., *Distillation Scaling
+> Laws* (`2502.08606`, ICML 2025), **Appendix C.1.3, "U-shape in the student
+> error"** — two lemmas, an interior optimum at `m ~ n`, closed with a QED. The
+> claim below that it is "*fitted*, not derived" is wrong and is corrected in
+> [[Direction-Gate-Results]]. The motivating contradiction also does not exist:
+> Menon et al. contains a subsection titled *"Why can more accurate teachers
+> distill worse?"* and reports an optimal depth. A second gate,
+> [[Temperature-Confound-Preregistration]], separately failed the follow-up
+> protocol — per-teacher temperature tuning was already run at larger scale
+> (18 teachers, NeurIPS 2022) and does not remove the gap. Survivor: the
+> *deflationary* paper — that the U-shape is a property of the coupled KL
+> objective rather than of capacity, and dissolves under a decoupled loss.
+> That one needs controls, not theory.
+
 A stronger teacher can make a small student **worse**. Universally observed,
 no theory.
 
@@ -160,9 +190,21 @@ methods, zero theory**. Busbridge et al. (`2502.08606`, ICML 2025) is a
 
 Note this reframes the distillation direction previously rejected in
 [[Next-Direction-Literature-Survey]] as industry-dominated: **the method side is
-owned, the theory side is empty.**
+owned, the theory side is empty.** (The gate above shows the theory side was
+not empty either.)
 
 ### 3. Benchmark unidimensionality as a spiked-covariance / BBP problem
+
+> **GATED AND KILLED 2026-07-25 — scooped twice.** Statistically this is Horn's
+> parallel analysis (1965), with the RMT replacement already published
+> (Dobriban & Owen, JRSS-B 2019; Dobriban, Ann. Stat. 2020) and factor-number
+> determination via BBP settled in econometrics. Empirically it is already
+> answered on the same data: *AI Cartography* (`2605.25272`) runs item-level
+> CFA/SEM over 4,000+ models and six benchmarks with permutation controls. Two
+> technical landmines make the pre-registration below ill-posed anyway: a
+> binary response matrix gives a generalized MP law with a variance profile,
+> not standard MP, and item nesting within benchmarks guarantees a second
+> spike. Detail: [[Direction-Gate-Results]].
 
 Psychometric methods now used to *audit* benchmarks (IRT, mean-score summaries)
 assume a unidimensional latent construct, and that assumption is nowhere tested.
@@ -186,6 +228,18 @@ model pairs reverse order between mean score and factor-1 score.
 months). 6-12 months.
 
 ### 4. Adversarially robust streaming x KV-cache eviction
+
+> **Re-scoped 2026-08-02.** The KV direction as a whole moved up — but only
+> when narrowed to **safety-aware allocation** (★★★★ narrowed / ★★★ as
+> originally scoped). Two of the slots this section relies on have since been
+> taken: the long-horizon slot is claimed (CONF-KV `2605.24786`) and
+> compounding error is remedied three ways (SQuat/KVarN/VeriCache). The kernel
+> objection was also refuted — KVTuner, EvolKV and SCBench published with zero
+> kernel work. What is unclaimed is a safety-objective allocator (six searches,
+> zero hits), with one falsifiable sweep: safety-optimal versus
+> perplexity-optimal per-layer allocation. See
+> [[Direction-Reevaluation-2026-08]]. The adversarial-streaming framing below
+> was never gated on its own.
 
 Autoregressive decoding is **definitionally adaptive**: the eviction policy's
 own decisions determine the next token, which becomes the next query. That is
@@ -246,6 +300,34 @@ representation learning (every named open problem claimed within ~12 months).
 phase-transition geometry and computational-hardness legs remain.
 
 ## New top candidate: transformer succinctness
+
+> **GATED 2026-07-25 — headline claims did not survive; one branch did.**
+> Full detail in [[Direction-Gate-Results]], gate 3. Three findings:
+> **(i)** the anchor paper is less novel than reported here — the core
+> technique dates to Meyer & Stockmeyer 1972 ("economy of description," 1971),
+> and a full-text citation audit found zero occurrences of Horne & Hush
+> (NIPS 1993, matching RNN size bounds), Sanford/Hsu/Telgarsky (NeurIPS 2023,
+> a transformer-vs-RNN *size* separation) or Gelade & Neven (STACS 2008, tight
+> matched double-exponential bounds). What is genuinely its own: the UHAT
+> counter construction, the exponential UHAT-to-LTL translation, and
+> EXPSPACE-**completeness**.
+> **(ii)** The SSM/Mamba succinctness problem named below is **scooped and
+> killed** — it is a one-line corollary of the paper's own Prop 1, asserted in
+> the camera-ready abstract with no body proof, and Jelassi et al. (ICML 2024)
+> published a transformer-vs-SSM size separation with experiments.
+> **(iii)** The **empirical** branch survives, and is better motivated than
+> this page argued: the descriptional-complexity community's own flagged open
+> problem is intrinsic size measures (parameters × precision as a trade-off
+> surface), and measuring bits actually used sidesteps the unsettled
+> definition of "SSM size." Protocol shape and the 12–18 month window are on
+> the gate page. The "beyond fixed precision" branch is open but hard for a
+> principled reason and now crowded.
+>
+> *Attribution note:* a later summary of this outcome credited the headline
+> scoop to "Lan et al., ACL 2024." No such citation appears anywhere in this
+> wiki's gate record, and it is not repeated here — the scoop evidence on file
+> is the Meyer & Stockmeyer / Gelade & Neven / Jelassi chain above. Re-verify
+> before citing either version.
 
 Found while closing the two acknowledged survey holes. **This displaces the
 GPTQ candidate.**
@@ -322,6 +404,17 @@ likewise annexed by Merrill and Sabharwal. **C-RASP** is the one adjacent live
 frontier (~10 papers, nearly all 2025-26), with the expressivity-to-learnability
 bridge explicitly named as open in a self-described "preliminary" 9-page paper.
 
+> **Gated 2026-07-25 — thin spot, not thin field.** The C-RASP learnability
+> candidate found a real seam and mislocated it. Two funded, prize-winning,
+> mutually collaborating groups placed roughly six ICML/ICLR 2026 papers
+> between them, and the framing claim ("little work investigates learnability")
+> is contradicted by five named papers. What is actually thin is *sample*
+> complexity specifically; the least-contested seam is joint length × sample
+> complexity, with the honest caveat that the accessible half is the upper
+> bound and the paper-making half is the lower bound. Tempo warning on the
+> page: an explicitly named open problem here was fully resolved inside one
+> conference cycle. [[Direction-Gate-Results]], gate 4.
+
 ## Caveats the surveys raised about themselves
 
 1. **Search budgets were exhausted**, so all crowding counts are lower bounds
@@ -339,5 +432,12 @@ bridge explicitly named as open in a self-described "preliminary" 9-page paper.
 
 ## Related
 
+[[Direction-Gate-Results]] — the four gates run on the candidates above; read
+this before acting on any of them.
+[[Direction-Reevaluation-2026-08]] — current direction ranking; re-scopes the
+KV-cache candidate.
+[[Temperature-Confound-Preregistration]] — the failed gate on the distillation
+capacity-gap follow-up.
 [[Field-Scouting-Survey]] — the empirical/measurement legs.
-[[Stage-E-Prior-Art-Audit]] — the standing rule requiring a gate before any run.
+Stage-E-Prior-Art-Audit (svib repo wiki) — the standing rule requiring a gate
+before any run; the general form of it is rule 1 on [[Home]].

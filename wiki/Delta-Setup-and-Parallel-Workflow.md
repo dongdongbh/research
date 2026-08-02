@@ -1,14 +1,22 @@
 # Delta Setup and Parallel Workflow
 
-Purpose: the observed Delta bootstrap state and the rules for running SVIB2 on
-Delta as a second execution site in parallel with Anvil.
+Updated 2026-08-02 for the general research wiki.
+
+Purpose: the observed NCSA Delta bootstrap state and the rules for running a
+project on Delta as a second execution site in parallel with Anvil.
 
 Status: live bootstrap snapshot from `dt-login03.delta.ncsa.illinois.edu` on
-2026-07-18, reconciled against the current NCSA Delta Red Hat 9 documentation.
-This page records the **actual Delta installation** plus the remaining workflow
-for using Delta as a second SVIB2 execution site. Git/GitHub coordinates source
-history; Anvil remains authoritative for the existing verified corpus and
-Anvil-specific generated artifacts.
+2026-07-18 (taken while bootstrapping the svib2 repo), reconciled against the
+current NCSA Delta Red Hat 9 documentation. This page records the **actual
+Delta installation** plus the workflow for using Delta as a second execution
+site for any of the lab's projects. Git/GitHub coordinates source history;
+Anvil remains authoritative for existing verified corpora and Anvil-specific
+generated artifacts.
+
+Account note: the Delta account is `dli26` (Anvil account: `x-dli26`). Paths
+below are Delta-side unless stated otherwise; substitute your own username and
+allocation where they appear. `<project>` stands for the repository being
+bootstrapped (svib2 in the snapshot).
 
 ## Current state at a glance
 
@@ -17,7 +25,7 @@ Anvil-specific generated artifacts.
 | User/login | `dli26` on `dt-login03.delta.ncsa.illinois.edu` |
 | Allocation | `bhvn`; group `delta_bhvn` |
 | Charge accounts | `bhvn-delta-gpu` is active; no CPU charge account is currently listed |
-| Repository | `/projects/bhvn/dli26/code/svib2`, branch `master`, base commit `45b9cfcbcf328905c3e93b0b5d08383c63c6966b` |
+| Repository | `/projects/bhvn/dli26/code/<project>`, branch `master`, at a recorded base commit |
 | Dataset root | `/work/hdd/bhvn/dli26/datasets` |
 | Download staging | `/work/nvme/bhvn/dli26/dataset-downloads` |
 | Python tooling | `uv 0.11.29`; uv-managed CPython `3.12.13` |
@@ -29,17 +37,18 @@ Anvil-specific generated artifacts.
 
 ## Recommendation
 
-Delta is now bootstrapped as a practical second site for SVIB2. It is an
-x86-64 NVIDIA system whose current base CUDA is 12.8, matching the CUDA 12.8
-PyTorch wheels pinned in `pyproject.toml`. The repository environment was
-rebuilt locally from `uv.lock`; no Anvil `.venv`, cache, absolute symlink, or
-Slurm script was copied.
+Delta works as a practical second site. It is an x86-64 NVIDIA system whose
+current base CUDA is 12.8, matching CUDA 12.8 PyTorch wheels pinned in
+`pyproject.toml`. The repository environment was rebuilt locally from
+`uv.lock`; no Anvil `.venv`, cache, absolute symlink, or Slurm script was
+copied.
 
 Delta does **not** provide AnvilGPT or Anvil's shared COCO/Visual Genome
-collection. Existing AnvilGPT-generated rows remain reusable after transfer,
-but new Delta teacher work must use a self-hosted OpenAI-compatible server or
-an independently authorized external API. Image-dependent work must use data
-materialized, downloaded, or transferred to Delta.
+collection. Rows already generated through AnvilGPT remain reusable after
+transfer, but new hosted-LLM work on Delta must use a self-hosted
+OpenAI-compatible server or an independently authorized external API.
+Image-dependent work must use data materialized, downloaded, or transferred to
+Delta.
 
 The bootstrap has completed repository setup, Python/Node tooling, locked
 dependency installation, metadata download, and COCO staging. The next gating
@@ -95,13 +104,14 @@ reconnect to that host rather than the round-robin alias. Login nodes currently
 enforce per-user CPU and memory cgroups and have no GPU.
 [Delta login limits and tmux](https://docs.ncsa.illinois.edu/systems/delta/en/latest/user_guide/login.html)
 
-## 2. Delta storage layout for SVIB2
+## 2. Delta storage layout
 
 Delta does not have Anvil's `/anvil/projects`, `/anvil/scratch`, or shared RCAC
 COCO/VG mounts. The active layout is deliberately flat under the per-user
-allocation directories; there is no `/work/hdd/bhvn/dli26/svib2` directory.
+allocation directories; there is no per-project work root such as
+`/work/hdd/bhvn/dli26/<project>`.
 
-| Role | Active path | SVIB2 use |
+| Role | Active path | Use |
 |---|---|---|
 | Home | `/u/dli26` | uv/Node binaries, uv-managed Python, current uv cache, shell configuration, secrets |
 | Project | `/projects/bhvn/dli26` | repository and `.venv`; future manifests/checkpoints/runs as appropriate |
@@ -123,7 +133,7 @@ export DELTA_ALLOCATION=bhvn
 export DELTA_PROJECT=/projects/bhvn/dli26
 export DELTA_WORK_HDD=/work/hdd/bhvn/dli26
 export DELTA_WORK_NVME=/work/nvme/bhvn/dli26
-export SVIB2=/projects/bhvn/dli26/code/svib2
+export PROJECT_REPO=/projects/bhvn/dli26/code/<project>
 export DATASETS=/work/hdd/bhvn/dli26/datasets
 export DATASET_STAGING=/work/nvme/bhvn/dli26/dataset-downloads
 ```
@@ -163,20 +173,18 @@ regenerate.
 
 ## 3. Repository, Python, Node, and packages
 
-The repository is already present at:
+Clone or check the repository under project space:
 
 ```bash
-cd /projects/bhvn/dli26/code/svib2
+cd /projects/bhvn/dli26/code/<project>
 git rev-parse HEAD
 git status --short
 ```
 
-At snapshot time the branch is `master`, the base commit is
-`45b9cfcbcf328905c3e93b0b5d08383c63c6966b`, and `origin` uses
-`git@github.com:dongdongbh/svib2.git`. The bootstrap worktree is intentionally
-not yet clean because the Delta download scripts and this wiki update are being
-developed locally. Commit or otherwise reconcile those changes before running
-parallel work from both sites.
+At snapshot time the branch was `master` at a recorded base commit, with
+`origin` on GitHub over SSH. Record the base commit in the run manifest, and
+commit or otherwise reconcile any bootstrap-time working-tree changes before
+running parallel work from both sites.
 
 The live module stack includes GCC 13.2 and `cudatoolkit/25.3_12.8`. The system
 `python3` is only 3.9.18 and is too old for this project's intended environment.
@@ -201,7 +209,7 @@ uv python install 3.12
 The complete locked environment was installed with:
 
 ```bash
-cd /projects/bhvn/dli26/code/svib2
+cd /projects/bhvn/dli26/code/<project>
 UV_LINK_MODE=copy \
   uv sync --python 3.12 --locked --all-extras --all-groups
 ```
@@ -247,7 +255,7 @@ rehash
 node --version
 npm --version
 npx --version
-cd /projects/bhvn/dli26/code/svib2
+cd /projects/bhvn/dli26/code/<project>
 npx skills@latest add mattpocock/skills
 ```
 
@@ -319,9 +327,11 @@ Use this order:
    libraries as a fallback, and qualify it with the same smoke.
 
 Never install a CUDA-13 vLLM/PyTorch wheel on driver 570 as the first path:
-CUDA 13 requires an R580-or-newer driver. Also never install vLLM into
-SVIB2's `.venv`; run the server from `$VLLM_ENV` and the SVIB2 client from the
-repository environment over `http://127.0.0.1:8000/v1`.
+CUDA 13 requires an R580-or-newer driver. Also never install vLLM into the
+project's `.venv`; run the server from `$VLLM_ENV` and the project client from
+the repository environment over `http://127.0.0.1:8000/v1`. For the CUDA
+forward-compatibility workaround used when a wheel outruns the installed
+driver, see [[CUDA-Compatibility-and-vLLM]].
 
 ## 4. Secrets and external services
 
@@ -330,11 +340,11 @@ scripts, logs, W&B config, or Globus-shared directories. A minimal arrangement
 is:
 
 ```bash
-mkdir -p "$HOME/.config/svib2"
-chmod 700 "$HOME/.config/svib2"
-$EDITOR "$HOME/.config/svib2/api_keys"
-chmod 600 "$HOME/.config/svib2/api_keys"
-source "$HOME/.config/svib2/api_keys"
+mkdir -p "$HOME/.config/<project>"
+chmod 700 "$HOME/.config/<project>"
+$EDITOR "$HOME/.config/<project>/api_keys"
+chmod 600 "$HOME/.config/<project>/api_keys"
+source "$HOME/.config/<project>/api_keys"
 ```
 
 The private file can export only the providers needed on Delta, such as
@@ -362,7 +372,7 @@ site-policy uncertainty.
 Authenticate W&B and Hugging Face without exposing tokens in shell history:
 
 ```bash
-source "$HOME/.config/svib2/api_keys"
+source "$HOME/.config/<project>/api_keys"
 printf '%s' "$WANDB_API_KEY" | uv run wandb login --relogin
 uv run hf auth whoami
 ```
@@ -386,76 +396,45 @@ The following public metadata is downloaded under the flat HDD root:
 
 The durable metadata occupies about 39 MB. Resumable sparse Git checkouts are
 kept at `/work/nvme/bhvn/dli26/dataset-downloads` and occupy about 54 MB. The
-repository links currently resolve as:
+repository's git-ignored `data/` symlinks point at the HDD dataset root rather
+than at Anvil paths, one link per dataset directory.
 
-```text
-data/negclip      -> /work/hdd/bhvn/dli26/datasets/negclip
-data/scpp         -> /work/hdd/bhvn/dli26/datasets/sugarcrepepp
-data/sugarcrepe   -> /work/hdd/bhvn/dli26/datasets/sugarcrepe
-data/sugarcrepepp -> /work/hdd/bhvn/dli26/datasets/sugarcrepepp
-data/vsr          -> /work/hdd/bhvn/dli26/datasets/vsr
-```
+Two portability requirements fall out of this and apply to any dataset
+bootstrap script:
 
-`scripts/download_datasets.sh` now supports `--skip-shared-datasets`, which
-omits the Anvil-only COCO/VG module checks and links. Its base metadata path no
-longer requires uv; uv is required only for the gated/external options. To
-refresh the base metadata without creating another nested `svib2` work root:
+- it must accept a flag that skips Anvil-only shared-dataset checks and links
+  (svib2 uses `--skip-shared-datasets`), because `/anvil/datasets/ai/...` does
+  not exist on Delta; and
+- every root it writes to must be overridable by environment variable
+  (project, datasets, features, scratch, staging), so the same script produces
+  the flat Delta layout without creating a nested work root.
 
-```bash
-cd /projects/bhvn/dli26/code/svib2
-
-PROJECT=/projects/bhvn/dli26 \
-SVIB2=/projects/bhvn/dli26/code/svib2 \
-DATASETS=/work/hdd/bhvn/dli26/datasets \
-FEATURES=/work/hdd/bhvn/dli26/artifacts/svib_features \
-SCRATCH=/work/nvme/bhvn/dli26 \
-STAGING=/work/nvme/bhvn/dli26/dataset-downloads \
-bash scripts/download_datasets.sh --skip-shared-datasets
-```
-
-Winoground, external-compositional data, and SVIB feature artifacts are not
-currently staged or linked on Delta.
+Gated datasets, external-compositional corpora, and feature artifacts were not
+staged on Delta at snapshot time. Full detail on svib2's downloader flags:
+svib2 repo wiki, page Data-and-Caches.
 
 ### COCO and Visual Genome: public archive download
 
-The owner chose a one-time login-node download of the official public archives.
-The checked-in resumable downloader is:
+The owner chose a one-time login-node download of the official public archives
+(an explicit exception to the "no production work on login nodes" rule, granted
+because the job is a resumable public download rather than computation). A
+resumable downloader script lives in the svib2 repo at
+`scripts/download_coco_visual_genome_delta.sh`; the reusable requirements are:
 
-```text
-scripts/download_coco_visual_genome_delta.sh
-```
+- retain COCO train2017, val2017, and train/val annotations plus both Visual
+  Genome image ZIPs;
+- test every archive before extraction and overwrite partial extractions safely;
+- validate 118,287 COCO train, 5,000 COCO validation, and 108,077 combined
+  Visual Genome JPEGs, and create the `data/` links only after validation
+  succeeds; and
+- log to the dataset root and treat the bootstrap as incomplete until the
+  script prints its terminal validation message.
 
-It downloads and retains COCO train2017, val2017, and train/val annotations;
-downloads and retains both Visual Genome image ZIPs; tests every archive before
-extraction; overwrites partial extractions safely; validates 118,287 COCO train,
-5,000 COCO validation, and 108,077 combined Visual Genome JPEGs; and creates
-`data/coco` and `data/VisualGenome` links only after all validation succeeds.
-The COCO server's HTTPS certificate did not match its hostname on Delta, so the
-script uses COCO's official HTTP archive URLs. Visual Genome uses the Stanford
-HTTPS archive URLs.
-
-Start or resume from the repository root:
-
-```bash
-./scripts/download_coco_visual_genome_delta.sh 2>&1 |
-  tee -a /work/hdd/bhvn/dli26/datasets/download-coco-vg.log
-```
-
-Monitor from another shell:
-
-```bash
-tail -F /work/hdd/bhvn/dli26/datasets/download-coco-vg.log
-```
-
-At the wiki snapshot, all COCO archives were complete and extracted, with
-completion markers present. The Visual Genome part 1 archive was complete and
-part 2 was downloading; extraction and final image-count validation had not
-started. The script process was active, so do not call the image bootstrap
-complete until the log ends with:
-
-```text
-[svib2-image-data] download and validation complete
-```
+Two site facts worth carrying forward: on Delta the COCO server's HTTPS
+certificate did not match its hostname, so COCO's official HTTP archive URLs
+were used; Visual Genome downloads over the Stanford HTTPS archive URLs
+normally. Run under `tee` into a log on the dataset root and monitor with
+`tail -F` from another shell.
 
 The resulting raw layout is:
 
@@ -475,12 +454,11 @@ The resulting raw layout is:
 └── images2.zip
 ```
 
-Raw COCO directories match benchmark sampling and teacher-corpus paths. Some
-existing MVP and Visual Genome utilities instead require Anvil's
-`coco_2017.lmdb` or `visualgenome.lmdb`; raw JPEG completion does not satisfy
-those interfaces. Transfer the LMDB stores with Globus, build a qualified LMDB
-conversion, or add an explicit raw-directory adapter before running those
-commands.
+Raw COCO directories satisfy code that reads image files by path. Code written
+against Anvil's shared `coco_2017.lmdb` / `visualgenome.lmdb` stores does
+**not** accept raw JPEG directories: transfer the LMDB stores with Globus,
+build a qualified LMDB conversion, or add an explicit raw-directory adapter
+before running those commands. Raw-image completion is not LMDB completion.
 
 ### Cross-site data movement
 
@@ -491,10 +469,10 @@ and work file systems.
 [Anvil transfer guide](https://docs.rcac.purdue.edu/userguides/anvil/file_management/#globus),
 [Delta Globus collections](https://docs.ncsa.illinois.edu/systems/delta/en/latest/user_guide/data_mgmt.html#globus)
 
-Transfer in this order:
+Transfer in this order (cheapest and most authoritative first):
 
 1. accepted/human-verified record JSONL, frozen exclusions, and manifests;
-2. one known-compatible feature H5 for a reproduction smoke;
+2. one known-compatible feature cache (H5) for a reproduction smoke;
 3. required LMDB stores or exact selected-image materializations;
 4. filtered external subsets only for an assigned ablation;
 5. large model weights and additional feature caches only after the smoke.
@@ -539,7 +517,7 @@ salloc \
   --gpus-per-node=1 \
   --time=04:00:00 \
   --constraint="projects&work" \
-  --job-name=svib2-dev
+  --job-name=<project>-dev
 ```
 
 Once Slurm grants the allocation, the `salloc` shell remains on the login node.
@@ -548,7 +526,7 @@ Run an interactive compute-node shell as a Slurm job step:
 ```bash
 srun --pty bash -l
 
-cd /projects/bhvn/dli26/code/svib2
+cd /projects/bhvn/dli26/code/<project>
 nvidia-smi
 uv run --locked python
 ```
@@ -589,7 +567,7 @@ lose the work. Create the output directory before submission because Slurm
 opens the log before executing the script:
 
 ```bash
-mkdir -p /projects/bhvn/dli26/code/svib2/runs/delta-logs
+mkdir -p /projects/bhvn/dli26/code/<project>/runs/delta-logs
 ```
 
 ```bash
@@ -602,8 +580,8 @@ mkdir -p /projects/bhvn/dli26/code/svib2/runs/delta-logs
 #SBATCH --mem=64g
 #SBATCH --gpus-per-node=1
 #SBATCH --time=48:00:00
-#SBATCH --job-name=svib2-delta
-#SBATCH --output=/projects/bhvn/dli26/code/svib2/runs/delta-logs/%x-%j.out
+#SBATCH --job-name=<project>-delta
+#SBATCH --output=/projects/bhvn/dli26/code/<project>/runs/delta-logs/%x-%j.out
 #SBATCH --constraint="projects&work"
 #SBATCH --requeue
 
@@ -614,15 +592,15 @@ module list
 export DELTA_PROJECT=/projects/bhvn/dli26
 export DELTA_WORK_HDD=/work/hdd/bhvn/dli26
 export DELTA_WORK_NVME=/work/nvme/bhvn/dli26
-export SVIB2=/projects/bhvn/dli26/code/svib2
+export PROJECT_REPO=/projects/bhvn/dli26/code/<project>
 export HF_HOME=/work/nvme/bhvn/dli26/cache/huggingface
 export TORCH_HOME=/work/nvme/bhvn/dli26/cache/torch
 export WANDB_DIR=/work/hdd/bhvn/dli26/runs/wandb
 
 mkdir -p "$HF_HOME" "$TORCH_HOME" "$WANDB_DIR"
 
-cd "$SVIB2"
-uv run --locked python -m svib2.cli.run_verifier_pipeline ...
+cd "$PROJECT_REPO"
+uv run --locked python -m <project>.cli.<pipeline_entry_point> ...
 ```
 
 NCSA asks jobs to declare file-system dependencies. `projects` identifies
@@ -630,14 +608,14 @@ NCSA asks jobs to declare file-system dependencies. `projects` identifies
 [Delta file-system dependency labels](https://docs.ncsa.illinois.edu/systems/delta/en/latest/user_guide/running_jobs.html#file-system-dependency-specification-for-jobs)
 Delta does not automatically requeue/restart jobs unless `--requeue` is added,
 and the script must be checkpoint/resume safe because requeue starts it from
-the beginning. SVIB2's resumable pipeline is suitable when invoked with a
-fixed configuration and `--resume` after its initial run directory exists.
+the beginning. A resumable pipeline qualifies only when invoked with a fixed
+configuration and a `--resume`-style flag after its run directory exists.
 [Delta requeue policy](https://docs.ncsa.illinois.edu/systems/delta/en/latest/user_guide/running_jobs.html#job-and-node-policies)
 
-Use one GPU for compact verifier training. For self-hosted Qwen3.6-27B BF16,
+Use one GPU for compact model training. For a self-hosted 27B-class BF16 model,
 one Delta 40-GB A100 is not expected to fit; first test one 141-GB H200, or a
 quantized deployment, before requesting multi-GPU A100 tensor parallelism.
-This is an SVIB2 engineering inference, not a Delta capacity guarantee. Delta
+This is an engineering inference, not a Delta capacity guarantee. Delta
 documents quad-A100, octa-A100, and octa-H200 node types and shared-node
 scheduling.
 [Delta architecture](https://docs.ncsa.illinois.edu/systems/delta/en/latest/user_guide/architecture.html),
@@ -645,9 +623,9 @@ scheduling.
 
 ### API-only CPU batch
 
-Remote teacher APIs do not require a GPU. However, `accounts` does not currently
-list a Delta CPU charge account for `dli26`, so this template is **blocked until
-a CPU account is provisioned**. Do not charge API-only work to
+Remote LLM APIs do not require a GPU. However, `accounts` did not list a Delta
+CPU charge account for `dli26` at snapshot time, so this template is **blocked
+until a CPU account is provisioned**. Do not charge API-only work to
 `bhvn-delta-gpu` merely to bypass that missing account.
 
 ```bash
@@ -659,14 +637,14 @@ a CPU account is provisioned**. Do not charge API-only work to
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32g
 #SBATCH --time=48:00:00
-#SBATCH --job-name=svib2-api
+#SBATCH --job-name=<project>-api
 #SBATCH --constraint="projects&work"
 
 set -euo pipefail
 module reset
-source "$HOME/.config/svib2/api_keys"
-cd /projects/bhvn/dli26/code/svib2
-uv run --locked python -m svib2.cli.run_teacher_generation ...
+source "$HOME/.config/<project>/api_keys"
+cd /projects/bhvn/dli26/code/<project>
+uv run --locked python -m <project>.cli.<generation_entry_point> ...
 ```
 
 Only use this after the exact API endpoint succeeds from a `cpu` compute node.
@@ -679,8 +657,8 @@ working directory.
 ### Code ownership
 
 - Keep `master` clean on both sites.
-- Create task/system branches such as `delta/vismin-ablation` or
-  `anvil/vg-gating`; do not edit the same files independently on both systems.
+- Create task/system branches such as `delta/<task>` or `anvil/<task>`; do not
+  edit the same files independently on both systems.
 - Fetch and rebase/merge deliberately before pushing. Never move uncommitted
   work by copying the repository directory.
 - Record `git rev-parse HEAD`, `sha256sum uv.lock`, `module list`, and
@@ -696,7 +674,8 @@ working directory.
 - Never let both sites resume the same run directory, W&B run ID, teacher
   shard, or checkpoint.
 - Merge only completed shards whose configuration hash, prompt version,
-  validator version, source split, and schema version match.
+  validator version, source split, and schema version match (the provenance
+  fields listed in [[Data-and-Caches]]).
 - Transfer completed immutable outputs plus checksums; do not synchronize
   partially written JSONL/H5/checkpoints.
 - Keep frozen benchmark exclusions and no-leakage filters identical on both
@@ -706,8 +685,8 @@ working directory.
 
 | Anvil | Delta |
 |---|---|
-| authoritative existing verified corpus, generated artifacts, and RCAC-resident COCO/VG stores | independent verifier/VisMin ablations on fixed transferred bundles |
-| AnvilGPT-hosted teacher and validated existing corpus | CPU API experiments only after compute-node network smoke |
+| authoritative existing verified corpora, generated artifacts, and RCAC-resident COCO/VG stores | independent ablations on fixed transferred bundles |
+| AnvilGPT-hosted generation and validated existing corpora | CPU API experiments only after a compute-node network smoke |
 | dataset mining that depends on shared RCAC LMDB/S3 | H200 memory-fit tests or overflow A100 training |
 | authoritative long-lived copy of generated artifacts | disposable work-space mirrors and site-specific caches |
 
@@ -718,8 +697,9 @@ explicit common commit.
 
 ## 8. Bring-up acceptance checklist
 
-Checked items were observed directly on 2026-07-18. Do not call Delta
-production-ready for SVIB2 until the remaining items pass:
+Checked items were observed directly on 2026-07-18 during the svib2 bootstrap.
+Reuse the list for any project; do not call Delta production-ready for a
+project until the remaining items pass for it:
 
 - [x] NCSA password plus NCSA Duo login works for `dli26`.
 - [x] Allocation `bhvn` and GPU charge account `bhvn-delta-gpu` are active.
@@ -735,8 +715,9 @@ production-ready for SVIB2 until the remaining items pass:
 - [x] COCO train2017, val2017, and annotations are downloaded and extracted.
 - [ ] Visual Genome parts 1 and 2 finish, validate, extract, and link.
 - [ ] A one-GPU Slurm smoke reports the expected device and executes a CUDA op.
-- [ ] One OpenCLIP/text-embedding smoke and one H5 read complete on a GPU node.
-- [ ] One known verifier run reproduces within an agreed tolerance.
+- [ ] One encoder/text-embedding smoke and one feature-cache (H5) read complete
+  on a GPU node.
+- [ ] One known training/eval run reproduces within an agreed tolerance.
 - [ ] A verified bundle/feature H5 or required LMDB is transferred with hashes.
 - [ ] API/Hugging Face/W&B access is tested from the exact compute partition,
   with secrets absent from logs.
@@ -753,17 +734,17 @@ production-ready for SVIB2 until the remaining items pass:
 3. **Full CPU test result:** dependency checks and collection pass, but the full
    406-test run has not yet been executed.
 4. **GPU runtime:** the CUDA 12.8 wheels import on the login node, but there is
-   no device there. CUDA execution, OpenCLIP, H5, and verifier reproduction
-   remain unqualified.
+   no device there. CUDA execution, encoder inference, feature-cache reads, and
+   run reproduction remain unqualified.
 5. **Visual Genome completion:** the public archive download was still active
    when this snapshot was written. Require the script's terminal validation
    message before marking it complete.
-6. **Raw images versus LMDB:** multiple MVP/VG workflows require the Anvil LMDB
-   schemas. Raw JPEG directories need an adapter, qualified conversion, or
-   Globus transfer of the source stores.
-7. **Provider replacement:** Delta has no AnvilGPT facility. Preserve teacher
-   provenance when using transferred outputs, self-hosted models, or external
-   providers.
+6. **Raw images versus LMDB:** workflows written against the Anvil LMDB schemas
+   need an adapter, a qualified conversion, or a Globus transfer of the source
+   stores. Raw JPEG directories do not satisfy them.
+7. **Provider replacement:** Delta has no AnvilGPT facility. Preserve
+   generation provenance when using transferred outputs, self-hosted models, or
+   external providers.
 8. **Queue state:** documented limits can change. Use `sinfo`, `scontrol show
    partition`, and `accounts` before every large reservation.
 

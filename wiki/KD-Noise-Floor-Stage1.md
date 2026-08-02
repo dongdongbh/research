@@ -3,6 +3,15 @@
 *(Filename is legacy — this began as a distillation-only Stage 1 and is now a
 two-literature study. Kept for link integrity.)*
 
+*Updated 2026-08-02 for the general research wiki.*
+
+Later development: see [[Direction-Reevaluation-2026-08]], whose meta-lesson 2
+("method spaces saturate in months; arbitration/diagnostic spaces stay empty")
+bears on the class of work this protocol belongs to. **It does not reverse the
+suspension** — the objection below is about audience and incentives, not about
+emptiness — but it is why the wiki's standing rules now pair every arbitration
+with a released artifact ([[Home]], rules 3-4 and 6).
+
 Status: **SUSPENDED 2026-07-26 on owner objection. Do not proceed without
 resolving the two problems below.** The measurements remain verified and the
 protocol is sound; the difficulty is audience and incentives, which no

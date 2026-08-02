@@ -1,7 +1,18 @@
 # Live Research Opportunities
 
-Status: **Active 2026-07-26.** Produced after recalibrating the selection bar.
-A third survey (mature-theory transfer) is still running and will be appended.
+Status: **Written 2026-07-26; partly superseded.** *Updated 2026-08-02 for the
+general research wiki.* Produced after recalibrating the selection bar.
+A third survey (mature-theory transfer) was appended (Cluster C, below).
+
+> **Supersession banner (2026-08-02).** [[Direction-Reevaluation-2026-08]] is
+> the current authority on direction ratings. Effects on this page: **B1
+> (diversity-collapse attribution) is DOWNGRADED to ★★★ — scooped April 2026**;
+> the **AHD** direction below is *upgraded* to ★★★★ on the one axis this page
+> already identified as load-bearing; and the closing argument that positive
+> contributions beat audits is **reversed in its general form** — see the dated
+> notes at each point. **A1, A2, A3, B2, B3 and Cluster C were not re-gated and
+> stand as written.** [[Top-Researcher-Scan-2026-08]] additionally promotes the
+> A1 methodology into a multi-target program (convergence "V").
 
 ## The bar was wrong, and that was the session's real failure
 
@@ -41,6 +52,21 @@ hierarchy) are pure position papers with no experiments. `2607.07196`
 on visual quality ranks lower on action-following.
 
 ## A1 — "Your judge was never validated" (start here: under 100 GPU-hours)
+
+> **Update 2026-08-02 — rating unchanged, scope enlarged.**
+> [[Top-Researcher-Scan-2026-08]] found the same hole at eight independent
+> targets and names it convergence **V**: "verification is the bottleneck, and
+> the verifiers are unaudited" (Karpathy, Finn, Neubig, Wei, D. Zhou,
+> Sutskever, Bengio all point at it). At least five released judge/evaluator
+> systems have **zero independent validity audits** — world-model evaluators,
+> SC3-Eval, DreamGen Bench's VLM judge, DriveJudge, VLM reward judges — and the
+> owning labs structurally cannot self-audit. **One pre-registered methodology
+> (confound battery, gameability, OOD policies, judge-swap reordering), many
+> targets: this is a program, not a paper**, and it is a new top-tier candidate
+> alongside T1/T3. Two standing rules attach to it: pair the audit with a
+> released reusable artifact (diagnostics buy credibility, artifacts buy
+> citations), and name at pre-registration time the **method** paper the
+> diagnosis unlocks.
 
 **The concrete finding, verifiable from the paper.** VBench-2.0's human-alignment
 claim is computed **at the model level over four models** (Sora, Kling 1.6,
@@ -137,6 +163,22 @@ productive pattern is authors describing **a specific design they could not
 run**, or **a mechanism they observed but could not explain**.
 
 ## B1 — isolate whether diversity collapse comes from method or data
+
+> **DOWNGRADED 2026-08-02: ★★★★ → ★★★.** Per
+> [[Direction-Reevaluation-2026-08]], the paper quoted below as the *opening*
+> is also the paper that **closes** it: `2604.16027` (Karouzos, Tan, Aletras,
+> 2026-04-17) already publishes the headline — "collapse is embedded in the
+> model weights by training data, not imposed by the generation format" — and
+> its authors **named the causal crossover as their own next step**, so the
+> interventional version below is claimed in intent by the group best positioned
+> to run it. Apple/CMU (`2605.09995`) added an untested scale axis ("worsens
+> with scale"). The compute estimate here was also low: a full SFT/DPO/RLVR
+> crossover with a scale arm **exceeds 400 GPU-h**, not "1-7B on 8 GPUs" as a
+> weekend job. The *area* remains opportunity-rich (~10 papers/month, no
+> survey — and [[Top-Researcher-Scan-2026-08]] logs 7+ independent sightings of
+> diversity collapse where "the measurement layer is owned, the mechanism layer
+> is open at every level"), but this **specific** question is closed and any
+> entry would now be adjudication-framed and contested.
 
 *Where does output diversity collapse in post-training?* (`2604.16027`, Apr 2026)
 states verbatim: *"No existing study isolates the role of the training method
@@ -329,12 +371,27 @@ outcome publishable.
 **C2 as the follow-on** that spends the GPUs, and the natural second paper in
 the error-structure program.
 
+> **Sequencing note 2026-08-02.** Strike B1 from this list (scooped; see the
+> note in its own section). C1, A1, B2 and C2 stand. Note that **B2 partially
+> overlaps T1** in [[Method-Opportunities]] — both hinge on a freeze/unfreeze
+> intervention during visual instruction tuning — so if T1 runs, B2's decisive
+> experiment comes nearly free as a secondary measurement on the same
+> checkpoints. The live top-tier list is now T1, T3 and the judge/verifier audit
+> program; see [[Direction-Reevaluation-2026-08]] and
+> [[Top-Researcher-Scan-2026-08]].
+
 ## Related
 
+[[Direction-Reevaluation-2026-08]] — current direction ratings; supersedes B1
+and the AHD verdict on this page.
+[[Top-Researcher-Scan-2026-08]] — the judge/verifier-audit convergence that
+enlarges A1, plus the portfolio and operating rules.
 [[Field-Scouting-Survey]] — where world-model evaluation was first ranked and
 then left ungated.
+[[Method-Opportunities]] — the method-side directions (T1–T4, KV-cache).
 [[KD-Noise-Floor-Stage1]] — suspended; its incentive objection is why B1's
-positive framing matters.
+positive framing mattered, and is still the reason C1 ships a concrete
+alternative analysis rather than an exhortation.
 
 ---
 
@@ -388,6 +445,29 @@ credible at more than workshop scale.
 ---
 
 # Gated: LLM automatic heuristic design audit — mostly closed
+
+> **UPGRADED 2026-08-02: ★★ → ★★★★, and the "mostly closed" headline is wrong.**
+> [[Direction-Reevaluation-2026-08]] re-ran this lane by remaining opportunity
+> rather than by control-paper count. The finding: the ~13 control papers in 24
+> months each closed **one sliver** (`2605.15221` is circle packing at n=26 only,
+> and concedes it "lacks comparison to domain-specific classical optimization
+> methods") while ~20 new application domains opened in the same window —
+> "automated heuristic design" abstracts run 1 / 1 / 5 / **17** for
+> 2023 / 2024 / 2025 / Jan–Jul 2026, a **claims-to-controls ratio of ~10–15:1**.
+> The section below already identified the one load-bearing survivor and it is
+> the right one: **the cost-normalized LLM-versus-classical frontier does not
+> exist** (three targeted searches returned zero results; only LLaMEA, the
+> proposer, ever ran against CMA-ES/DE). Two paper shapes now: **(a)** the
+> cost-crossover frontier — tokens plus CPU in one currency, testing whether
+> landscape ruggedness predicts the crossover, with CostAda (`2607.26828`) for
+> the cost formalism and BLADE for the harness; **(b)** a **novelty audit** —
+> grading rediscovery versus recombination versus genuinely new, against the
+> 19× OOD degradation RAISE measured. **Zero papers exist on (b).** DeepMind's
+> own `2602.16928` supplies the motivating quote: after distillation "the true
+> driver of generalization lies in a minimal algorithmic core."
+> **Caveats before committing:** van Stein/Bäck and DeepMind are adjacent, and
+> the re-gate was arXiv-only — **check GECCO and PPSN proceedings**, which are
+> venue-native for this community and were not swept.
 
 **Three control papers landed between February and July 2026, one six days ago.**
 
@@ -444,3 +524,31 @@ contributions are not on the clock the same way.
 **Honest status: A1 and the weather/AHD/compression items are gated. C1, B1, B2
 and the two surviving AHD items are NOT.** Do not treat the ungated ones as
 solid — that pattern has cost this session repeatedly.
+
+> **REVERSED 2026-08-02 — this generalization does not hold.** The eight-lane
+> re-gate ([[Direction-Reevaluation-2026-08]]) found the **opposite** pattern in
+> five of eight lanes: *method spaces saturate in months; arbitration and
+> diagnostic spaces stay empty.* The stated cause is structural — **method
+> groups cannot afford to publish nulls on their own mechanisms**, so the
+> null-tolerant work is exactly what stays unclaimed. The re-ranking above
+> failed on its own terms too: B1, the positive contribution promoted here, was
+> the one that got scooped, and the AHD lane inferred to be closing was in fact
+> expanding at ~10:1 claims-to-controls.
+>
+> **What was actually right in this section** is narrower and still true: the
+> *particular* audits enumerated above (seed variance, best-of-N inflation,
+> transfer evaluation) were scooped fast, and a takedown-framed critique ages
+> badly. The durable rules that replace the sweeping version:
+> - Frame as **"which tool per dollar"**, or as arbitration between competing
+>   mechanisms — never as a takedown.
+> - **Pair every arbitration with a released reusable artifact** (harness,
+>   benchmark, metric): diagnostics buy credibility, artifacts buy citations
+>   (measured at 0.3–0.8 vs 9–12 cites/month in
+>   [[Top-Researcher-Scan-2026-08]]).
+> - **Name, at pre-registration time, the method paper the diagnosis unlocks.**
+> - Judge a direction by whether the **question surface is expanding faster than
+>   papers close it**, and whether the *specific* question is claimed — not by
+>   whether the area is crowded, and not by whether the shape is audit or method.
+>
+> The "do not treat ungated items as solid" warning stands unchanged, and gains
+> a corollary: **re-run any gate older than ~6 weeks before committing compute.**

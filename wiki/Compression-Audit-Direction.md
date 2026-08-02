@@ -1,8 +1,41 @@
 # White-Box Compression — Survey, and the Convergence with the KD Audit
 
-Status: **Surveyed 2026-07-26.** Produces the best-fitting candidate of the
-session, and it is **the same study as [[KD-Noise-Floor-Stage1]] in a second
-literature** — with a better feasibility profile and a published precedent.
+Status: **Surveyed 2026-07-26; the headline candidate is DEAD on both legs.**
+*Updated 2026-08-02 for the general research wiki.* The survey text below is
+preserved as record; the recommendation it reaches was falsified within days.
+
+> **Outcome, read this first (2026-08-02). Do not run the study this page
+> recommends.** Both halves of the "convergence" failed, for different reasons:
+>
+> 1. **The calibration-draw noise floor (the lead candidate below) — GATE
+>    FAILED, SCOOPED.** See [[Calibration-Draw-Preregistration]]. Williams &
+>    Aletras, *On the Impact of Calibration Data in Post-training Quantization
+>    and Pruning* (`2311.09755`, **ACL 2024**) ran exactly this experiment down
+>    to the token count — ten non-overlapping draws per source, 1,800 compressed
+>    models, 19,800 evaluations — and it has been independently replicated twice
+>    (`2410.17711` ICLR 2025 with 20 seeds; `2410.17170` NAACL 2025). The wedge
+>    asserted below ("prior work varies calibration *source or configuration*;
+>    nobody varies *draws from the same source*") is **factually false** and was
+>    asserted without reading the paper it cites. The measured answer, the thin
+>    residue that genuinely remains (AWQ's hardcoded seed, aggressive
+>    bit-widths, generative/reasoning metrics, Hessian concentration theory, the
+>    calibration monoculture), and the full post-mortem are on that page.
+> 2. **The KD half — SUSPENDED**, not scooped. See [[KD-Noise-Floor-Stage1]].
+>    It cleared every prior-art gate and then failed on audience and incentives:
+>    the field already knows the norm, has measured it, published against it,
+>    and continued, so the barrier is not knowledge. Plus a reviewer
+>    conflict-of-interest problem inherent to auditing N papers.
+>
+> **The two general rules this cost bought.** (a) *Never state a wedge of the
+> form "nobody varies X" from a paper's framing — open the method section and
+> read what they varied.* (b) *Before drafting, answer: who changes their
+> behaviour if this is true, and what stops them today?* If the answer is "the
+> field already knows and the incentives are unchanged," the work is not worth
+> doing however cleanly it gates. Both are now standing rules on [[Home]].
+>
+> **What on this page is still live:** the OpenReview access finding, the
+> handling rules for numerical irregularities, the compression-landscape survey,
+> and supporting questions Q3–Q5 (which were never gated — gate them before use).
 
 ## OpenReview chase — resolved, and the answer is mundane
 
@@ -74,6 +107,14 @@ PTQ paper now needs custom CUDA kernels — a multi-person quarter. The IT threa
 (Ordentlich/Polyanskiy, HUJI + MIT) is pure theory, which is why an outsider
 cannot win there either.
 
+> **Partial correction (2026-08-02).** The custom-kernel bar is **not** general
+> to compression. [[Direction-Reevaluation-2026-08]] refutes it for the
+> KV-cache lane specifically: KVTuner (ICML 2025), EvolKV (EMNLP) and SCBench
+> (ICLR 2025) all published with **zero kernel work** — the actual bar there is
+> serving-compatible granularity plus throughput on top of existing kernels.
+> Treat "needs custom kernels" as a claim about weight-PTQ competition against
+> the named industrial groups, not as a property of compression research.
+
 **"Smarter" saliency is mostly repackaged.** Magnitude → Wanda → GPTQ/SparseGPT
 (Hessian/OBS) → AWQ → Fisher-based (YAQA, GFWSVD) are one second-order idea with
 better curvature estimators. Circuit-aware compression is thin **for a reason**:
@@ -84,7 +125,19 @@ choice.
 
 Which is exactly where the opening is.
 
-## The candidate: the calibration-draw noise floor
+## The candidate: the calibration-draw noise floor *(GATE FAILED — do not run)*
+
+> **Scooped, confirmed 2026-07-26.** Everything in this section is retained as
+> record of the error. The wedge stated in the next-but-one paragraph is the
+> false claim; the correct facts are in [[Calibration-Draw-Preregistration]].
+> Three further factual errors were found in the same gate: SparseGPT and Wanda
+> both already report mean ± std over 5 seeds in their appendices; QuIP#/QTIP do
+> **not** use 128 C4 sequences (6,144 RedPajama sequences) and AWQ uses 16
+> Pile-val sequences at length 512, so "everyone uses ~128 random C4" is wrong
+> for three of the five methods named below; and AQLM's published SD (`0.127` at
+> 128 sequences → `0.005` at 4,096) predicts the effect is negligible at the
+> sample counts modern methods actually use. **The expected result was null and
+> that was knowable from the papers being cited.**
 
 **Nobody treats the calibration set as a random seed.** PTQ papers use "128
 random C4 sequences" and virtually none report *which* 128, let alone resample.
@@ -146,6 +199,18 @@ for reasoning) with a documented calibration-*language* confound (`2408.14398`).
 compression is the most crowded area in the field (556 hits, new papers weekly)
 and already has its own critique layer.
 
+> **Superseded 2026-08-02 — the KV-cache "avoid" was a crowd-count verdict, and
+> crowd counts predicted nothing.** [[Direction-Reevaluation-2026-08]] rates
+> KV-cache **★★★★ when narrowed to safety-aware allocation**: six targeted
+> searches found no safety-objective allocator at all, KVFundaBench v2 dropped
+> safety from its abstract, and `2510.00231` documents instructions "completely
+> ignored" under compression. The crowded part is the perplexity-objective part.
+> Note the direction of the correction — **a direction is filtered out only when
+> the remaining opportunity is gone, never because it is hot** — and note that
+> Q4 below (compression × probability calibration) survives for the same reason:
+> the objective everyone optimizes is loosely coupled to what matters. See
+> [[Method-Opportunities]] Cluster 2.
+
 ## The convergence
 
 The compression Q1 and the KD Stage 1 are **the same study**: take a randomness
@@ -159,7 +224,25 @@ has a published precedent. The KD analysis then becomes the second case study,
 carrying the free self-refutation hook without carrying the reputational risk of
 being the headline.
 
+> **Both legs dead — see the banner at the top of this page.** The compression
+> leg was scooped ([[Calibration-Draw-Preregistration]]); the KD leg was
+> suspended on incentives ([[KD-Noise-Floor-Stage1]]). The observation that the
+> two are *the same study* was correct and is the one thing worth carrying
+> forward: a noise-floor instrument built once transfers across literatures.
+> But it also concentrated the risk — a single false premise about "unreported
+> randomness" took out both case studies at once. **When two candidates share
+> an instrument, they usually share a failure mode; gate the shared premise
+> first, not each case study separately.**
+
 ## Related
 
-[[KD-Noise-Floor-Stage1]] — the verified companion analysis.
-[[KD-Evidence-Audit-Gate]] — its gate, and the handling rules.
+[[Calibration-Draw-Preregistration]] — the gate that killed the lead candidate,
+with the measured answer and the thin residue that remains.
+[[KD-Noise-Floor-Stage1]] — the companion analysis; measurements verified,
+study suspended on audience/incentive grounds.
+[[KD-Evidence-Audit-Gate]] — its gate, and the handling rules for numerical
+irregularities.
+[[Direction-Reevaluation-2026-08]] — current direction ratings; corrects the
+KV-cache and custom-kernel verdicts on this page.
+[[Calibration-Opportunity-Survey]] — the *other* "calibration" direction, also
+closed; the two are frequently confused.
