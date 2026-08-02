@@ -38,6 +38,15 @@ needs one pass, is the method.
   Our −1.32 evidence concerns region information for grid+attention gains,
   not only binding — but reviewers will conflate them, so the aggregation
   fix is a pre-registered **arm and kill criterion**, not a citation.
+- **Wave-2 gate addendum (2026-08-02, [[Method-Gates-Wave-2-2026-08]]):**
+  "LABCLIP" identified as **arXiv 2502.03566 (ICLR 2026)** — a D×D
+  text-side matrix on *frozen* encoders (~590K params, shuffled-negative
+  training, ARO+SugarCrepe). It and DCSM are the published **concrete
+  instantiations of A5** (use them, not a home-built aggregation fix) and
+  both become named baseline rows. The gate's neighborhood read supports
+  §2's positioning: every 1× competitor (DCSM, LABCLIP, ABE-CLIP, TF-Local)
+  reads out existing frozen features; none injects a stronger teacher
+  signal into the patch path.
 - SILC / SigLIP-2 self-distillation is pretraining-time local-to-global on
   the training pipeline's own crops — different direction, setting, and
   objective from post-hoc crop→patch distillation on a frozen model.

@@ -107,4 +107,6 @@ bench). The judge-audit (ICLR) and 1-NFE (CVPR) diagnostics are unchanged.
 ## Related
 
 [[Unified-Direction-Ranking-2026-08]] · [[Prereg-RoboJudge-Audit]] ·
-[[Prereg-1NFE-Diversity]] · [[Status-And-Survivors]]
+[[Prereg-1NFE-Diversity]] · [[Status-And-Survivors]] ·
+[[Method-Gates-Wave-2-2026-08]] (wave 2, 2026-08-02: 15 ideas → 7 live
+gates → 1 narrowed survivor; both flagships stand)
