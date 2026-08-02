@@ -39,6 +39,9 @@ repo proper (see `results/`), not in the wiki.
 
 ## Cluster setup and best practice (from svib2)
 
+- [[GPU-Resources-Across-Clusters]] — what GPUs we have where (OrangeGrid
+  L40S/A100 no-credit no-time-limit; Anvil A100 + H100 "Anvil AI"; Delta),
+  and what to run on which.
 - [[Anvil-Interactive-GPU-Workflow]] — the default workflow for interactive
   GPU work on Anvil.
 - [[Delta-Setup-and-Parallel-Workflow]] — NCSA Delta setup and running
