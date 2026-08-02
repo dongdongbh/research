@@ -1,6 +1,17 @@
 # Pre-registration: How Much of Autonomous ML Research Is Noise — and the Accept Rule That Fixes It
 
-Status: **DRAFT v1, 2026-08-03 — for professor sign-off.** The noise-floor
+Status: **DECLINED as a paper, 2026-08-03 (owner decision).** The lab owner
+judged noise-floor measurement and statistical accept rules to be
+engineering/hygiene rather than a research contribution — consistent with
+the earlier KD-noise-floor suspension ("the field already knows; nothing
+forces change"). Replaced as the ICLR method flagship by
+[[Prereg-ParallelRL-Factorial]]. Kept as record; the noise-floor protocol
+retains INTERNAL value for how we run our own agent loops (apply Act 1
+informally before trusting any agent-reported improvement). The
+"statistical stopping rule" scope claim struck from the collapse direction
+now reverts to unassigned.
+
+Original draft status line: DRAFT v1, 2026-08-03 — for professor sign-off. The noise-floor
 protocol (§4, Act 1) must be locked BEFORE any campaign runs; the FDR
 estimator and bake-off arms lock with it. Deviations reported as deviations.
 

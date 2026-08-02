@@ -22,7 +22,7 @@ abstract is committed.
 
 | # | Direction | ★ | Cost / cluster | ICLR? | Method-unlock |
 |---|---|---|---|---|---|
-| 1 | **Autoresearch FDR + sound accept rule** (one paper: noise floor → FDR of greedy accept → racing rule that wins on discoveries-surviving/GPU-h) | **★★★★★** | 500–800 GPU-h · OrangeGrid-native (5-min jobs + persistent agent) | **Yes** | The accept rule IS the method; drop-in program.md for 13.2k forks |
+| 1 | **Autoresearch FDR + sound accept rule** — **DECLINED as a paper by owner 2026-08-03** (statistics-as-contribution reads as engineering; see [[Prereg-Autoresearch-Accept-Rule]]). Retained as internal tooling only | ~~★★★★★~~ | — | — | — |
 | 2 | **Judge/evaluator validity-audit program** (anchor: RoboReward; + DreamGen judge-swap + off-the-shelf VLM judges; ground truth = RoboArena human dumps) | **★★★★½** | 250–500 GPU-h · inference-only, OrangeGrid | **Yes** | Rank-calibrated evaluator + "evaluator report card" |
 | 3 | **Abbeel parallel-RL factorial** (BRC vs TD-overfitting contradiction; factorial around authors' own published config) | **★★★★½** | 400–650 GPU-h · OrangeGrid, MuJoCo-only | **Yes** | Minimal FastTD3 recipe |
 
@@ -75,11 +75,10 @@ generator as the artifact).
 ## Recommended portfolio (professor's decision; our suggestion)
 
 **Start now, aimed at ICLR Sep 18** (pre-registrations drafted:
-[[Prereg-Autoresearch-Accept-Rule]], [[Prereg-RoboJudge-Audit]]):
-1. **Autoresearch FDR + accept rule** (#1) — lab-defining, perfectly
-   OrangeGrid-shaped, diagnosis and method in one paper. Conditions: second
-   substrate; noise floor pre-registered before any campaign.
-2. **Judge-audit program first paper** (#2) — uses the VLM eval infra,
+[[Prereg-ParallelRL-Factorial]], [[Prereg-RoboJudge-Audit]]):
+1. **Parallel-RL factorial** (method flagship; swapped in 2026-08-03 after
+   the autoresearch paper was declined — this uses its now-or-never window).
+2. **Judge-audit program first paper** — uses the VLM eval infra,
    inference-only, disjoint resources from #1. Week-1 go/no-go: RoboArena
    dump storage footprint.
 3. **Cheap bolt-ons in parallel:** MOCHI (20–60), calibration tension test

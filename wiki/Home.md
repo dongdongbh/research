@@ -20,7 +20,8 @@ repo proper (see `results/`), not in the wiki.
   week-one zero-cost gates.
 - **Pre-registrations (DRAFT, awaiting sign-off):**
   ICLR 2027 — [[Prereg-RoboJudge-Audit]] (diagnostic) ·
-  [[Prereg-Autoresearch-Accept-Rule]] (method).
+  [[Prereg-ParallelRL-Factorial]] (method; replaces the declined
+  [[Prereg-Autoresearch-Accept-Rule]]).
   Next cycle — [[Prereg-1NFE-Diversity]] (CVPR 2027) ·
   [[Prereg-SigLIP2-Ingredient-Ladder]] (ICML 2027, engineering starts now).
   Each: problem statement, research state, novelty, locked
