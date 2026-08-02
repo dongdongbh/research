@@ -85,7 +85,14 @@ generator as the artifact).
 3. **Cheap bolt-ons in parallel:** MOCHI (20–60), calibration tension test
    (100–250), Bundle A if the Jaccard gate passes (<100).
 
-**Hold for next cycle (ICML/CVPR 2027):** Abbeel factorial (or swap it in
+**Next cycle — SELECTED (pre-registrations drafted):** 1-NFE diversity →
+CVPR 2027 ([[Prereg-1NFE-Diversity]]); SigLIP-2 ingredient ladder → ICML
+2027 ([[Prereg-SigLIP2-Ingredient-Ladder]], OpenCLIP engineering starts
+immediately). The Abbeel factorial is deliberately NOT held for ICML — its
+scoop risk grows with time (source group sweeping the axes serially); it is
+a swap-in for the ICLR slate or it expires.
+
+**Also holdable for next cycle:** Abbeel factorial (or swap it in
 for #2 if the professor prefers a method-flavored flagship), SigLIP-2
 ingredient ranking (start OpenCLIP engineering now), replay arbitration
 (or run now — it also fits ICLR), provenance study (decide within 2 weeks).

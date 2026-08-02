@@ -19,10 +19,12 @@ repo proper (see `results/`), not in the wiki.
   published at top venues), ten candidates killed with evidence, and the
   week-one zero-cost gates.
 - **Pre-registrations (DRAFT, awaiting sign-off):**
-  [[Prereg-RoboJudge-Audit]] (diagnostic flagship) ·
-  [[Prereg-Autoresearch-Accept-Rule]] (method flagship) — problem statement,
-  research state, novelty, locked hypotheses/arms/metrics, kill criteria,
-  week-by-week timeline to ICLR Sep 18.
+  ICLR 2027 — [[Prereg-RoboJudge-Audit]] (diagnostic) ·
+  [[Prereg-Autoresearch-Accept-Rule]] (method).
+  Next cycle — [[Prereg-1NFE-Diversity]] (CVPR 2027) ·
+  [[Prereg-SigLIP2-Ingredient-Ladder]] (ICML 2027, engineering starts now).
+  Each: problem statement, research state, novelty, locked
+  hypotheses/arms/metrics, kill criteria, timeline.
 - [[Top-Researcher-Scan-2026-08]] — 26 leading researchers profiled:
   convergence map (verification bottleneck, diversity collapse, unarbitrated
   mechanism claims), ranked opportunities, method directions, operating
