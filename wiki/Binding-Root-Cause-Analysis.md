@@ -113,6 +113,49 @@ suppression [2106.11230](https://arxiv.org/abs/2106.11230),
 [2301.10352](https://arxiv.org/abs/2301.10352). Caveat: OpenReview unswept
 (APIs exhausted) — re-check before any prereg.
 
+## 6. Probe outcome (2026-08-03) — suppression confirmed, with two caveats
+
+Run as an **underpowered pilot** (pre-registered blocked trigger fired:
+only 173 usable swap pairs < 300 floor; resolution limit 0.65 vs the 0.55
+bar — but the headline contrast sits far outside it). n=173 pairs/346
+images, grouped 5-fold, 5 seeds, 10k paired bootstrap, Holm.
+
+- **Locus (i) frozen ROI/patch features: 93.2% (L6) → 99.0% (L9) →
+  99.9% (L12)** linearly decodable role assignment.
+- **Locus (ii) pooled image embedding: 52.5% — chance** (Holm p=.056).
+- **Locus (iv) the model's own scoring axis: 50.3% — exactly chance.**
+- Locus (iii) text: 67.5%, order-driven (scrambled control at chance).
+- **The inversion:** the untrained region-text readout is ANTI-correlated —
+  a parameter-free sign flip recovers **100.0%** at L12, and a
+  roi_align-free localization audit shows entity similarity peaks in the
+  OTHER entity's box (own>other in only 3–13% of slots). The frozen
+  encoder has the answer; the native readout holds it exactly backwards.
+  (Known CLIP dense-feature pathology family — cite, verify novelty
+  before claiming; it directly motivates the A4/CLIPSelf-repair arm.)
+
+**Caveat 1 — scope:** all 173 pairs are SPATIAL relations (on/left/right/
+above/below…). Zero verb agent-patient swaps survive in our filtered
+corpora (COCO-Counterfactuals: 0/11,194 — it is substitution, not
+permutation; VisMin filtered lost ~97.5% of its relation subset to the
+fail-closed provenance rule because those images are fully synthetic).
+This probe settles **who-is-where**, not who-chases-whom.
+**Caveat 2 — synthetic images** (diffusion, layout-conditioned, clean
+backgrounds): locus (i)'s near-perfect number is likely an upper bound.
+
+**Verdict pattern (spatial roles): (i)=1, (ii)=0, (iv)=0 → suppression at
+the readout is the proximal mechanism; "encoders never extract roles" is
+refuted in the spatial case.** Algebraic-binding kill-arm A CLEARS for
+spatial roles; the verb-argument case is open pending data (below).
+
+**Unblock decision (owner):** (a) use VisMin-bench relation — 622
+human-verified exact role swaps, 1.5 GB, immediate — but it is the lab's
+protected test-only corpus and fitting probes burns it; (b) re-stream the
+full VisMin relation subset (~6,973 pairs, 39 GB) under a documented
+waiver of the fail-closed rule (image contamination impossible by
+construction — synthetic, no COCO ancestry; caption overlap to be
+measured); (c) both, holding (a) out as the untouched confirmation set.
+Worker and coordinator both recommend **(b) with (a) held out**.
+
 **The convergence that matters:** the gate's kill-arm A — "can a head over
 frozen ViT patches assign agent/patient WITHOUT the caption?" (~10 GPU-h,
 likely to fire; OC-CLIP dodged it via caption-queried slots) — is the SAME
