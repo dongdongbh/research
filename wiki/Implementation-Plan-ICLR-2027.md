@@ -25,6 +25,29 @@ verified live today are marked (✓ 2026-08-02).
 - **CLIPSelf checkpoints**: `wusize/clipself` exists on HF (plus the GitHub
   releases). No license (known) — evaluate, never fork.
 
+## Corrections (2026-08-02, evening — from the blocked SigLIP2-cache probe)
+
+- **Our Anvil account `cis261253-ai` is AI-partition-only.** `sbatch` to the
+  A100 `gpu` partition is REJECTED ("Please use --partition=ai"). Every
+  "Anvil A100" placement below is stale — Anvil work runs on `ai` (H100)
+  only, proportionally shaped (1 GPU → 24 CPU / 250 GB). Observed `ai`
+  queue: 97 pending, ~7-day estimated start (`sbatch --test-only`, free
+  probe) — **book 72B-judge and DreamGen windows NOW or use Delta 8×H200 as
+  primary**, not fallback.
+- **SigLIP2 secondary backbone is pinned to `ViT-B-16-SigLIP2-256`/webli
+  via open_clip** (the lab's backbone of record — all svib configs, cache
+  names, and the rebuttal provenance). The HF `google/siglip2-base-*` tags
+  are NOT loadable by the existing extractor backend. The staged 224 HF
+  checkpoint stays unused.
+- **SigLIP2 teacher-cache build moves to OrangeGrid**: the extraction
+  pipeline lives in `svib` (cropdistill reuses it), its required template
+  H5s (the frozen image-set/exclusion specs: VG 108,073 rows, COCO 5,000,
+  WG 800) and the 193 GB of existing caches are OG-resident, and OG has
+  the images as files. Anvil has none of these. Grid definition confirmed:
+  GRID_LEVELS 20 local + 1 global, roi_align 1×1 aligned.
+- RoboJudge small-judge sweeps: OG primary (unchanged); the "Anvil A100
+  data-local" alternative is void per the partition fact.
+
 ## Cluster assignment
 
 | Work item | Cluster | Why |

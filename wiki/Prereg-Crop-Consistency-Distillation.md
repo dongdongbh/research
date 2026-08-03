@@ -1,7 +1,35 @@
 # Pre-registration: Crop-Consistency Distillation — Region Information at Single-Pass Cost
 
-Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Locks after the
-week-1 decisive checks (§8). Target venue: **ICLR 2027** (abstracts Sep 18).
+Status: **LOCK HOLD, 2026-08-02.** The confirmatory literature pass found
+**arXiv 2604.11496** (Apr 2026, 3.5/4-axis match): its TF_Local publishes
+the headline insight (fine-grained alignment over FROZEN patch/token
+features → large compositional gains, retrieval preserved; SugarCrepe
+73.0→86.3) and its §3 diagnostic is our crop teacher. Surviving delta:
+**distillation into ROI-pooled patch features that preserves ~1.1×
+DUAL-ENCODER inference with cacheable embeddings** — TF_Local is a per-pair
+cross-encoder. Also: **FineCLIP (NeurIPS 2024)** shows region
+self-distillation helps compositionality when the backbone trains → the A4
+conclusion must be scoped to "CLIPSelf's released checkpoint, frozen ITM."
+**Re-gate verdict (2026-08-02): SURVIVES-NARROWED, level 2/5, ★★.** The
+exact cell (crop/cross-encoder teacher → ROI-pooled frozen-backbone student,
+compositional benchmarks, efficiency frontier) is empty, but every
+ingredient is owned: DCLIP (2505.21549) publishes the efficiency thesis
+verbatim in the retrieval-only cell ("without requiring region processing
+at inference"); CPRD (CVPR 2024) owns cross→bi VLM distillation; CLIPSelf/
+DeCLIP own the crop-teacher→ROI mechanism; CLIC owns retrieval
+preservation. Reviewer shape: "DCLIP + SugarCrepe." TF_Local code and
+BiSCoR-Ctrl are UNRELEASED (repo is a "Coming soon" stub, 0 citations) →
+the upper anchor must be re-implemented. 2604.11496 never discusses cost/
+cacheability — the whitespace is real but reads as an obvious follow-up,
+and concurrent NeurIPS'26/ICLR'27 submissions in this cell are invisible
+by construction. ★★½ only if: ≥10× cost advantage at ≥70% gain retention,
+paired CIs on ≥2 benchmarks, end-to-end latency (not FLOPs). ★½ if the
+TF_Local re-implementation fails to reproduce.
+**Decision at sign-off: proceed-reframed (★★ shape) vs bench the method**
+(A4/A5 results then fold into the SVIB write-up narrative). Prior status: DRAFT v1 for
+professor sign-off; week-1 decisive checks complete (§8). Target venue:
+**ICLR 2027** (abstracts Sep 18) — deadline unchanged, reframe cost is
+wording + one added baseline, not new experiments for the abstract.
 
 Paper type: **METHOD** (owner definition: a new approach — here, a training
 procedure that breaks the assumption that patch tokens already carry region
@@ -141,9 +169,28 @@ analysis. Wk7: write-up. Abstract needs A3-vs-A1 on the primary backbone.
 ## 8. Lock checklist
 
 1. Professor sign-off on §4 (esp. attempt budget and kill criteria).
-2. Week-1 A4/A5 results in hand.
-3. Confirmatory literature pass, most recent 8 weeks explicit.
-4. → LOCKED + git hash; deviations logged below this line.
+2. ~~Week-1 A4/A5 results in hand.~~ **DONE 2026-08-02, both as predicted,
+   neither kill criterion fires** (cropdistill repo, results/a4 + results/a5,
+   manifested + same-day wiki records):
+   - **A4/H3 TRUE, kill (i) cleared decisively:** CLIPSelf ROI-pooled lands
+     8–10 pts BELOW the base patch arm on every seed (locked A4−A1 = −12.8,
+     CI [−14.1, −11.5]); its global endpoint collapses to 42.7 vs 68.6 —
+     the dense-prediction objective destroys compositional ITM rather than
+     injecting region information.
+   - **A5/H4 TRUE, kill (ii) cleared:** LABCLIP closure vs the (A2−A1) gap
+     is negative on all three seeds (−0.97/−0.32/−0.18) while the same
+     matrices replicate the paper's +5.2 SugarCrepe gain (reimplementation
+     validated; null localized to the strict SCPP++ protocol). α=1 arm
+     reproduction check: 5.1e-7.
+3. **PIN BEFORE LOCK (from the A4/A5 runs):**
+   (a) A5 closure-anchor choice — A0- vs A1-anchored ratio (both computed;
+   pin one). (b) A4 conclusion worded as "A4 ≪ A1", not a closure ratio —
+   EVA02's native crop-vs-patch gap is small/noisy (one seed exactly 0).
+   (c) A5 leakage deviation from the published recipe recorded: 19,006
+   Karpathy-train rows excluded.
+4. Confirmatory literature pass, most recent 8 weeks explicit (incl.
+   OpenReview — tooling installed 2026-08-02).
+5. → LOCKED + git hash; deviations logged below this line.
 
 ## Related
 

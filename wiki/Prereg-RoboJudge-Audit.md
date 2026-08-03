@@ -43,20 +43,32 @@ Three facts define the opening:
    evaluator–human misalignment rate. Ours is the embodied instance.
 3. **The ground truth already exists in public.** RoboArena released its raw
    evaluation dumps (`RoboArena/DataDump_02-03-2026`, MIT): 3,284 double-blind
-   pairwise human comparisons, 9,589 real-robot episodes across 15 policies
-   (8 policies with 600–1,650 episodes), with per-episode `binary_success`,
-   `partial_success`, videos, and free-text rationales. Builders cannot
+   pairwise human comparisons, 9,589 real-robot episodes across 15 policies,
+   with per-episode `binary_success`, `partial_success`, videos, and
+   free-text rationales. **Corrected against the parsed dump (2026-08-02,
+   pre-lock): exactly 7 policies have ≥600 episodes (1,068–1,431); the 8th,
+   `pi05_droid`, has 564. The earlier "8 policies with 600–1,650" was wrong.
+   The ≥600 RULE stands; the count is corrected — we do not bend thresholds
+   to recover expected counts.** Builders cannot
    credibly audit themselves; we can, without a single robot.
 
 ## 3. Our method and novelty
 
 **One pre-registered protocol, applied to multiple evaluators, against human
-ground truth.** Novelty claims (each verified unclaimed in the Aug 2026
-lane sweep):
+ground truth.** Novelty claims — **repositioned 2026-08-02 pre-lock**: the
+confirmatory pass found **2606.01036 (ICML 2026, Tian/Wu/Bajcsy)** already
+uses RoboArena human pairwise labels as ground truth for three reward models
+(rollout-pair agreement 0.72–0.77 on easy tasks → 0.52–0.62 on Tool Use)
+— so "first to use the dump as evaluator ground truth" is CEDED; it becomes
+motivating prior evidence, cited as such. Everything below remains verified
+unclaimed (their study has no policy leaderboard, no RoboReward/VLM-judge
+family, no blind floor, no CIs, no injection, no judge-swap; RoboArena's 68
+and RoboReward's 37 citing papers contain zero independent audits):
 
-- **First independent rank-validity audit** of any robot policy evaluator:
-  does the evaluator's induced policy ranking match the human preference
-  ranking, with honest uncertainty at realistic n?
+- **First policy-level rank-validity audit** of robot policy evaluators:
+  does the evaluator's induced policy RANKING (leaderboard, not per-pair
+  agreement) match the human preference ranking, with honest uncertainty at
+  realistic n?
 - **The blind floor:** how much of the reported agreement is recoverable by
   an evaluator that never sees the pixels (language/duration priors only)?
   Nobody has measured this for any embodied evaluator.
@@ -71,9 +83,15 @@ lane sweep):
 
 ## 4. Pre-registered design
 
-**Fixed corpus:** RoboArena dump; primary set = the 8 policies with ≥600
-episodes; the human ranking is computed once from pairwise preferences via
-Bradley–Terry, with bootstrap CIs, before any evaluator is run, and frozen.
+**Fixed corpus:** RoboArena dump; primary set = the policies with ≥600
+episodes (measured 2026-08-02: exactly **7** — see §2 correction); the human
+ranking is computed once from pairwise preferences via Bradley–Terry
+(ties = half-win each side; session-level bootstrap, 10,000 draws), before
+any evaluator is run, and frozen. **Frozen 2026-08-02** (regenerated post-review with corrected flip
+semantics; θ bitwise identical): robojudge `runs/ranking_freeze/2026-08-02/`
+— top-1 `pi0_fast_droid` stable in **94.0%** of draws, bottom-1 in 100%;
+adjacent-pair flip probabilities 2↔3 = 0.38, 3↔4 = 0.44, 4↔5 = 0.22 —
+the middle of the human ranking is statistically indistinguishable.
 
 **Evaluator arms:**
 - A1: RoboReward-4B and -8B (released weights, `teetone/*`).
@@ -155,10 +173,33 @@ Wk1 gate + ranking freeze → Wk2–3 A1/A2 → Wk4 A3/A4 → Wk5 A5 → Wk6 ana
 
 ## 8. Week-1 go/no-go checklist (locks the prereg)
 
-1. Verify dump size + hydration; parse one session end-to-end.
-2. Compute the frozen human ranking + bootstrap CIs; produce the H3 figure.
-3. Confirmatory literature pass (recent 8 weeks explicitly).
-4. Professor sign-off → mark this page LOCKED with date + git hash.
+1. ~~Verify dump size + hydration; parse one session end-to-end.~~ DONE
+   2026-08-02: 18.5 GB verified via API pre-download; 3,284/3,284 sessions
+   parse cleanly (0 failures); preferences exactly {A:1404, B:1401, TIE:479}.
+2. ~~Compute the frozen human ranking + bootstrap CIs; produce the H3
+   figure.~~ DONE 2026-08-02 (robojudge `runs/ranking_freeze/2026-08-02/`,
+   `runs/h3_figure/2026-08-02/`; regenerated post-review with
+   unit-variance normal scores). H3 n=7 bands: raw-strength scale
+   **[0.51, 0.96]** for r*=0.929 (does NOT contain 0.5 — the earlier
+   [0.40, 0.95] used under-dispersed scores); copula scale [0.86, 0.99].
+   Abstract phrasing: "a true r*=0.929 yields measured r anywhere in
+   [0.51, 0.96] at n=7."
+3. **PIN BEFORE LOCK: the H3/H3-test Pearson scale** — raw-strength
+   (attenuated by the binning-droid outlier; prereg prediction holds) vs
+   copula/normal-scores (unbiased; prediction flips). Both computed and
+   stored in `h3_draws.npz`. Decide with the professor; record the choice
+   and rationale here.
+4. **PIN BEFORE LOCK:** keep `paligemma_binning_droid` in the primary set
+   (it clears ≥600 but is a near-degenerate outlier, 17W/511L, θ=−2.47,
+   which dominates the strength marginal) — default: keep, per the rule.
+5. ~~Confirmatory literature pass (recent 8 weeks explicitly).~~ DONE
+   2026-08-02: partial threat 2606.01036 → repositioned (§3); RoboWorld v4
+   now claims r=0.989 (n-sensitivity figure sharpened); ArmnetBench
+   (2607.24481, 3,118 human-scored episodes) is a scoop-enabler — window
+   argument strengthened. **Caveat: OpenReview rate-limited during the
+   sweep — run one manual OpenReview pass (ICLR'27/NeurIPS'26 submissions)
+   before lock.**
+6. Professor sign-off → mark this page LOCKED with date + git hash.
 
 ## Related
 
