@@ -1,173 +1,191 @@
 # Pre-registration: Epistemic Contextualization — the First Implementation
 
-Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Pipeline
-engineering starts on sign-off; design locks at the fidelity gate (§8).
-Target venue: **ICML 2027** (~Jan 28 — confirm at lock).
+Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
+pipeline after approval. Lock the design after the fact-accuracy check in §8.
+Target venue: **ICML 2027**, around Jan 28; confirm the date before lock.
 
-Paper type: **METHOD** (owner definition: changed data/workflow — breaking
-the assumption that all pretraining text is a ground-truth assertion). Gate
-record: [[Method-Gates-2026-08]]. Companion CVPR diagnostic:
-[[Prereg-1NFE-Diversity]].
+Paper type: **METHOD**. Under the owner's definition, this changes the data and
+workflow. It challenges the usual assumption that every sentence in pretraining
+text is a true statement. Check record: [[Method-Gates-2026-08]]. Related CVPR
+diagnostic: [[Prereg-1NFE-Diversity]].
 
 ---
 
-## 1. The problem, in plain language
+## 1. The problem
 
-Language models are trained as if everything in the corpus were true. Every
-rumor, sales pitch, and disputed claim enters the model the same way as a
-physics fact — which is a plausible root of miscalibration on contested
-topics, sycophancy (agreeing with the loudest source), and models "adopting"
-goals expressed in text they merely read.
+Language models train as if every sentence in their data is true. A rumor, a
+sales pitch, a disputed claim, and a physics fact all enter the model in the
+same form. This may help explain why models can be poorly calibrated on
+disputed topics, flatter people by agreeing with the loudest source, and
+"adopt" goals that appeared in text they merely read.
 
-Bengio's Scientist AI program — the [Feb 2025 position paper
-(2502.15657)](https://arxiv.org/abs/2502.15657) and the [Jun 2026 technical
-paper (2606.29657)](https://arxiv.org/abs/2606.29657) — names the fix:
-rewrite the corpus so every record distinguishes *"X is true"* from
-*"source S claimed X at time T in venue V"*. The technical paper formalizes
-it as **Def. 3.22** and states, verbatim: **"contextualization is specified
-solely at the level of requirements (i.e., we do not provide a completed
-algorithm)."** *(Citation corrected 2026-08-02: the quote and Def. 3.22 are
-in 2606.29657, not the position paper — verified against both PDFs.)*
-Eighteen months after the direction was named, and with the requirements
-now formal for a month, nobody — including [LawZero](https://lawzero.org)
-(no public code; pipeline team still hiring) — has built it. We build it,
-and measure what it actually buys.
+Bengio's Scientist AI program—the [Feb 2025 position paper
+(2502.15657)](https://arxiv.org/abs/2502.15657) and the [Jun 2026 technical paper
+(2606.29657)](https://arxiv.org/abs/2606.29657)—proposes a fix. Rewrite the data so each record shows the
+difference between *"X is true"* and *"source S claimed X at time T in venue
+V."* The technical paper defines this in **Definition 3.22** and says:
+**"contextualization is specified solely at the level of requirements (i.e., we
+do not provide a completed algorithm)."** The citation was corrected on
+2026-08-02. The quote and Definition 3.22 are in 2606.29657, not the position
+paper; we checked both PDFs.
 
-## 2. Current research state (gated 2026-08-03)
+The direction was named eighteen months ago, and its requirements have been
+formal for one month. Nobody has built it, including [LawZero](https://lawzero.org). LawZero has no
+public code and is still hiring a pipeline team. We will build the first
+version and measure what it actually changes.
 
-- **No implementation exists** (re-verified incl. the most recent weeks).
-- **The dangerous neighbor is tag conditioning, and it is distinct:**
-  source-aware training ([2404.01019](https://arxiv.org/abs/2404.01019)) associates *document ID tags* with
-  content for attribution, on synthetic data — no rewriting, no
-  calibration/sycophancy outcomes; [CTRL-style codes](https://arxiv.org/abs/1909.05858) likewise; [GenProve](https://arxiv.org/abs/2601.04932) is
-  generation-side provenance. Nothing restructures the text itself into
-  epistemically scoped records.
-- Corpus rewriting at scale is established practice (densifying rewrites,
-  ["Synthetic Rewriting as a Quality Multiplier"](https://arxiv.org/abs/2603.24826) with placebo controls) — so
-  the *pipeline* is feasible and the placebo arm is hygiene; the epistemic
-  schema and its measured effects are the contribution.
-- **Ready evaluation assets (verified live):** ConflictBank ([2408.12076](https://arxiv.org/abs/2408.12076),
-  knowledge conflicts), "How LLMs Balance Internal Knowledge with User and
-  Document Assertions" ([2604.22193](https://arxiv.org/abs/2604.22193) — near-exact fit), standard sycophancy
-  suites, standard capability battery for the tax.
+## 2. What recent work has shown (checked 2026-08-03)
+
+- **No working implementation exists.** We checked again, including the most
+  recent weeks.
+- **The closest idea adds tags, which is different.** Source-aware training
+  ([2404.01019](https://arxiv.org/abs/2404.01019)) connects *document ID tags* with content so a model can name its
+  sources. It uses synthetic data and does not rewrite the text. It does not
+  measure calibration or sycophancy. [CTRL-style codes](https://arxiv.org/abs/1909.05858) also add labels to
+  the input. [GenProve](https://arxiv.org/abs/2601.04932) tracks the source of generated text. None changes the
+  text itself into records that show the limits and source of a claim.
+- Rewriting large datasets is already practical. Examples include denser
+  rewrites and ["Synthetic Rewriting as a Quality Multiplier"](https://arxiv.org/abs/2603.24826), which uses
+  placebo controls. This shows that the *pipeline* can work. A placebo arm is a
+  basic control. Our new contribution is the schema for claims and the measured
+  effects of using it.
+- **Ready evaluation tools, checked directly:** ConflictBank ([2408.12076](https://arxiv.org/abs/2408.12076)) for
+  conflicting knowledge; "How LLMs Balance Internal Knowledge with User and
+  Document Assertions" ([2604.22193](https://arxiv.org/abs/2604.22193)), which almost exactly matches our
+  question; standard sycophancy test sets; and standard ability tests to
+  measure any cost.
 
 ## 3. The method
 
-**Schema** (Def 3.22-inspired, ours to concretize): each document is
-transformed into records where factual observations remain assertions and
-communicated claims become attributed: source, venue, date, stance, and
-scope markers — in natural language (no special tokens required), so any
-architecture trains on it unchanged.
-**Rewriter:** an open 4–8B model with constrained prompting + rule
-validators; a **fact-fidelity audit** on stratified samples (LLM-judge +
-human spot-check) with a pre-registered pass threshold.
-**Corpus:** ~2B tokens — a [DCLM](https://arxiv.org/abs/2406.11794)/[FineWeb](https://arxiv.org/abs/2406.17557) subset enriched with a
-contested-claims-rich slice (news/forums/reviews) so the intervention has
-signal to change.
-**Training regime (revised 2026-08-04, owner concern: from-scratch
-pretraining too costly):** **continued pretraining (mid-training) on a
-fully-open base model — [OLMo-2-1B](https://huggingface.co/allenai/OLMo-2-0425-1B)** — whose raw pretraining data is public,
-so the pre-intervention diet is known. This is also the deployable form of
-the method: no lab re-pretrains from scratch; contextualization would enter
-real pipelines as a mid-training/annealing intervention. A from-scratch
-arm (0.5B × 8B tokens) is retained as a **gated escalation** (§4), run only
-if Phase-1 effects are positive.
+**Data format, inspired by Definition 3.22 and made concrete by us:** keep
+direct factual observations as statements. Rewrite communicated claims to name
+their source, venue, date, stance, and limits. Write the records in normal
+language, with no required special tokens, so the method works with any model
+design.
 
-## 4. Pre-registered design
+**Rewriter:** use an open 4–8B model with a tightly limited prompt and automatic
+rule checks. Before rewriting the full dataset, check fact accuracy on samples
+from different groups. Use both an LLM judge and a human spot-check. Fix a pass
+threshold before the check.
 
-**Arms (× 2 seeds = 8 continued-pretraining runs on OLMo-2-1B, 2B tokens
-each):**
-- C0 raw corpus.
-- C1 **contextualized** (full epistemic rewriting).
-- C2 **tag-only** — identical metadata prepended as tags, text unchanged.
-  *This is the decisive control:* it separates epistemic rewriting from
-  metadata conditioning and pre-empts the "source-aware training
-  rediscovered" objection.
-- C3 placebo rewrite — paraphrase at matched token budget and perplexity
-  (controls for "any rewriting helps").
+**Dataset:** about 2B tokens from a [DCLM](https://arxiv.org/abs/2406.11794) or [FineWeb](https://arxiv.org/abs/2406.17557) subset. Add a
+larger share of news, forums, and reviews because they contain many disputed
+claims and give the method something to change.
 
-**Hypotheses (directional, locked):**
-- **H1:** C1 beats C0, C2, and C3 on calibration-under-conflict
-  (ConflictBank: accuracy + ECE on conflicting-source items).
-- **H2:** C1 reduces sycophancy versus all controls.
-- **H3:** C1 improves assertion-balancing behavior ([2604.22193](https://arxiv.org/abs/2604.22193) metrics)
-  beyond C2 — i.e., rewriting adds over tags.
-- **H4:** capability tax of C1 ≤ 2.0 points average on the standard suite
-  vs C0.
-- **H5 (escalation gate, replaces the old scale hypothesis):** if H1–H3
-  are positive, the from-scratch escalation arm (0.5B × 8B tokens, 4 arms ×
-  2 seeds, ~+300 GPU-h incl. extra rewriting) reproduces the C1 > C2
-  ordering — testing whether the effect also forms without a raw-text
-  pretraining history. Run ONLY on a positive Phase-1; its result extends
-  the paper, it does not gate it.
+**Training plan, revised 2026-08-04 after the owner's concern that training
+from scratch costs too much:** continue pretraining, also called mid-training,
+on the fully open [OLMo-2-1B](https://huggingface.co/allenai/OLMo-2-0425-1B) base model. Its original training data is public, so we
+know what the model saw before our change. This is also how the method would be
+used in practice. Labs do not restart pretraining; they would add
+contextualized data during mid-training or learning-rate annealing. Keep one
+from-scratch arm, 0.5B × 8B tokens, as a **later test allowed only by the rule
+in §4**. Run it only if Phase 1 helps.
 
-**Decision rules:** bootstrap CIs over seeds; Holm across H1–H5; all
-metrics and prompts frozen at lock; the fidelity threshold (≥97%
-fact-preservation on audited samples) is fixed before any rewriting at
-scale.
+## 4. Exact experiment plan
 
-**Branch, not kill:** if C2 ≈ C1 on all primaries, the honest headline is
-"metadata conditioning suffices — the cheap version of Scientist AI's data
-mechanism," which is itself a method result (tags are ~free; rewriting is
-not). Pre-registered as the alternative branch.
+**Four data arms, each with 2 seeds, giving 8 continued-pretraining runs on
+OLMo-2-1B with 2B tokens each:**
 
-**Kill criteria:** (i) rewriter fails the fidelity gate after two
-prompt-engineering rounds → stop and report the pipeline difficulty (a
-short honest note, not a paper). (ii) LawZero or anyone ships an
-implementation before our lock → re-gate within 48h; our tag-only control
-and measured-effects framing likely survive as the *evaluation* of their
-method, but the framing changes.
+- C0: raw dataset.
+- C1: **contextualized**, with the full claim-aware rewrite.
+- C2: **tags only**. Add the same metadata as tags but leave the text unchanged.
+  *This is the deciding control.* It tells us whether rewriting helps beyond
+  metadata. It also answers the likely objection that we rediscovered
+  source-aware training.
+- C3: placebo rewrite. Paraphrase the text while matching token budget and
+  perplexity. This controls for the possibility that any rewrite helps.
 
-**What we will NOT claim:** any safety *guarantee* (we measure premises and
-benefits, not the Scientist AI theorem); anything at frontier scale;
-goal-adoption prevention beyond the probe suite's proxy.
+**Predictions, fixed before the run:**
 
-## 5. Expected outcomes
+- **H1:** C1 beats C0, C2, and C3 on calibration during source conflict. On
+  ConflictBank, measure accuracy and expected calibration error (ECE) on items
+  with conflicting sources.
+- **H2:** C1 reduces sycophancy more than every control.
+- **H3:** C1 improves the assertion-balancing measurements from
+  [2604.22193](https://arxiv.org/abs/2604.22193) more than C2. In other words, rewriting adds a benefit beyond
+  tags.
+- **H4:** C1 loses no more than 2.0 points on average across the standard
+  ability test set compared with C0.
+- **H5, rule for allowing the extra phase, replacing the older scale
+  hypothesis:** if H1–H3 are positive, train the from-scratch 0.5B × 8B-token
+  experiment with 4 arms × 2 seeds. It costs about +300 GPU-h including extra
+  rewriting. Test whether C1 still beats C2 when the model has no earlier
+  history of raw-text pretraining. Run this **ONLY** after a positive Phase 1.
+  Its result can make the paper stronger, but does not decide whether the Phase
+  1 paper succeeds.
 
-- **Central:** contextualized models are measurably better calibrated under
-  source conflict and less sycophantic at a small capability tax — the
-  first empirical grounding for a widely cited but never-built proposal,
-  with the pipeline, corpus, and checkpoints released.
-- **Tag-suffices branch:** the community gets the cheap version validated
-  and the expensive version honestly priced.
-- **Null branch:** the first evidence that the Scientist AI data mechanism
-  does not deliver its promised benefits at academic scale — publishable,
-  and the field's only measurement either way.
+**Decision rules:** use bootstrap confidence intervals over seeds and Holm
+correction across H1–H5. Freeze every measurement and prompt when the design
+locks. Before rewriting at scale, fix the fact-preservation pass threshold at
+≥97% on the checked samples.
 
-## 6. Resources and timeline
+**An alternate result, not a reason to stop:** if C2 ≈ C1 on every main
+measurement, report the honest result: "metadata conditioning is enough—the
+cheap version of Scientist AI's data mechanism." This is still a method result
+because tags cost almost nothing and rewriting does not. This branch is fixed
+in advance.
 
-**Cost (revised): ~300–450 GPU-h for Phase 1** — rewriting 2B tokens
-through a 4–8B rewriter ≈ 150–250 H100-h; 8 continued-pretraining runs at
-1B × 2B tokens ≈ 100 H100-h; evals ≈ 30. The gated from-scratch escalation
-adds ~300 GPU-h only if Phase 1 is positive. **Clusters: OrangeGrid/Anvil
-suffice for Phase 1** (Delta H200 optional for rewriter batch throughput;
-no longer required). Engineering (schema, rewriter, validators, fidelity
-audit) starts now — it needs no GPUs the ICLR papers want.
+**Reasons to stop:** (i) if the rewriter fails the fact-accuracy check after two
+rounds of prompt improvement, stop. Report the pipeline difficulty as a short,
+honest note, not a paper. (ii) If LawZero or another group releases an
+implementation before our lock, re-check the research space within 48h. Our
+tag-only control and effect measurements may still work as an *evaluation* of
+their method, but the paper's framing must change.
 
-**Timeline:** Aug–Sep schema + rewriter + fidelity gate → Oct lock +
-rewrite at scale → Nov pretraining arms → Dec evals + analysis → Jan
-write-up and submission.
+**Claims we will not make:** any safety *guarantee*. We test starting claims and
+possible benefits, not the Scientist AI theorem. We also will not claim results
+at frontier scale or prevention of goal adoption beyond what the test suite can
+stand in for.
 
-## 7. Risks and scoop watch
+## 5. What each possible result means
 
-- **LawZero (NVIDIA-backed) shipping first** is the structural risk —
-  window estimated 6–12 months; they cannot publish an honest negative
-  about their own thesis, and they will ship a system, not a
-  placebo-and-tag-controlled study. Watch: lawzero.org, their hiring page,
-  citations of [2606.29657](https://arxiv.org/abs/2606.29657). Re-gate at every milestone.
-- Rewrite fidelity is the main technical risk → gated first, before any
-  scale spend.
-- Effect sizes unknown (nobody has measured any of this) → scales and the
-  contested-claims-rich corpus slice are chosen to maximize detectable
-  signal; H5 guards against small-model artifacts.
+- **Main result:** contextualized models are better calibrated during source
+  conflict and less sycophantic, with a small loss of general ability. This is
+  the first evidence for a widely discussed but never built proposal. Release
+  the pipeline, data, and checkpoints.
+- **Tags are enough:** release and validate the cheap approach, and report the
+  real cost of the more expensive rewrite.
+- **No effect:** provide the first evidence that the Scientist AI data idea does
+  not give its promised benefits at academic scale. This is publishable and is
+  the field's only measurement either way.
 
-## 8. Lock checklist
+## 6. Resources and schedule
 
-1. Professor sign-off on §4 (esp. the C2 tag-only control, fidelity
-   threshold, branch-vs-kill framing).
-2. Fidelity gate passed on the pilot slice.
-3. Confirmatory literature pass, most recent 8 weeks explicit.
-4. ICML 2027 exact deadline confirmed. → LOCKED + git hash.
+**Revised Phase-1 cost: about 300–450 GPU-h.** Rewriting 2B tokens with a 4–8B
+model costs about 150–250 H100-h. Eight continued-pretraining runs at 1B × 2B
+tokens cost about 100 H100-h. Evaluations cost about 30. The from-scratch second
+phase adds about 300 GPU-h only after a positive Phase 1.
+
+**OrangeGrid and Anvil are enough for Phase 1.** Delta H200 may help with
+rewriter batch speed but is no longer required. Work on the schema, rewriter,
+automatic checks, and fact-accuracy audit can begin now without using the GPUs
+needed by ICLR papers.
+
+**Schedule:** Aug–Sep: schema, rewriter, and fact-accuracy check → Oct: lock and
+rewrite at scale → Nov: pretraining arms → Dec: evaluations and analysis → Jan:
+write and submit.
+
+## 7. Risks and competing work to watch
+
+- The main risk is that **LawZero, backed by NVIDIA, releases first**. The
+  estimated window is 6–12 months. They cannot publish an honest negative about
+  their own main idea, and they are likely to release a system rather than a
+  study with placebo and tag controls. Watch lawzero.org, its hiring page, and
+  citations of [2606.29657](https://arxiv.org/abs/2606.29657). Check again at every milestone.
+- Fact accuracy after rewriting is the main technical risk. Test it before
+  spending at scale.
+- Nobody knows the effect sizes. The chosen scales and the disputed-claim-heavy
+  part of the dataset make a measurable effect more likely. H5 checks whether a
+  result is only an artifact of small models.
+
+## 8. Checklist before locking
+
+1. Professor approval of §4, especially C2, the fact-accuracy threshold, and
+   which results lead to an alternate claim versus stopping.
+2. Pass the fact-accuracy check on the pilot data.
+3. Repeat the literature search with the most recent 8 weeks named directly.
+4. Confirm the exact ICML 2027 deadline.
+5. Mark the page LOCKED and record the git hash.
 
 ## Related
 

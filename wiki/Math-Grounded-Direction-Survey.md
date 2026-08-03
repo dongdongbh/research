@@ -1,443 +1,500 @@
 # Math-Grounded Direction Survey
 
-Status: **Complete 2026-07-25.** Covers the theory legs of the scouting effort:
-[GeoLAN](https://arxiv.org/abs/2603.19460), representation geometry, math/TCS results with unclaimed ML surface, and
-emerging low-crowding topics. Companion to [[Field-Scouting-Survey]], which
-covers the empirical/measurement legs.
+Status: **Complete on 2026-07-25.** This page covers the theory parts of the
+scouting work: [GeoLAN](https://arxiv.org/abs/2603.19460), the shape of learned
+representations, math and theoretical-computer-science (TCS) results with open
+ML uses, and newer topics with few papers. [[Field-Scouting-Survey]] covers the
+experiment and measurement parts.
 
-**Updated 2026-08-02 for the general research wiki.** Original wording is
-preserved; outcome notes were added inline where a later gate changed the
-verdict.
+**Updated 2026-08-02 for the general research wiki.** The first version of each
+idea remains here. Dated notes explain when a later check changed the result.
 
-**The candidates below have since been gated, and most did not survive.** When
-this page was written none had been: *"No prior-art gate has been run on any
-candidate below. Per the standing rule (Stage-E-Prior-Art-Audit — svib repo
-wiki), nothing here is actionable until gated."* Four gates were then run on
-2026-07-25 and are recorded in [[Direction-Gate-Results]]; the KV-cache
-candidate was re-scoped by [[Direction-Reevaluation-2026-08]]. **Read the gate
-page before acting on anything here.** Its headline lesson: candidates die
-either because the gap is one line for an insider, or because an older
-literature solved it under different vocabulary — both invisible to
-method-name search.
+**Most ideas below were later checked and did not survive.** When this page was
+first written, none had been checked against all earlier work. Its warning was:
+*"No prior-art gate has been run on any candidate below. Per the standing rule
+(Stage-E-Prior-Art-Audit — svib repo wiki), nothing here is actionable until
+gated."* Here, a *prior-art gate* means checking whether recent or older work
+already did the idea. Four gates ran on 2026-07-25 and are recorded in
+[[Direction-Gate-Results]]. [[Direction-Reevaluation-2026-08]] later changed
+the KV-cache idea and is now a historical August 2 record. For current
+decisions, use [[Unified-Direction-Ranking-2026-08]]. **Read those results
+before acting on this page.** The main
+lesson was simple: an idea often fails because an expert can fill the gap in
+one line, or because an older field solved it under different terms. Searching
+only for a modern method name misses both problems.
 
-## [GeoLAN](https://arxiv.org/abs/2603.19460) is decorative theory — read this before using it as a model
+## [GeoLAN](https://arxiv.org/abs/2603.19460) uses math mostly as decoration
 
-Pan & Woodard, Findings of ACL 2026. Verified by reading the PDF directly.
+Pan & Woodard, Findings of ACL 2026. We checked these points by reading the PDF.
 
-It is a **training-time regularizer**, not a theory paper: two pre-existing
-techniques (isotropy regularization via random projections, attention
-spectral-entropy regularization) wrapped in Kakeya/Wolff branding.
+GeoLAN is a **training-time regularizer**, meaning an extra training penalty,
+not a theory paper. It combines two existing tools—isotropy regularization with
+random projections and attention spectral-entropy regularization—and presents
+them with Kakeya/Wolff language.
 
-- **No Kakeya result is invoked in any proof.** Wolff, Guth-Zahl, and [Wang-Zahl](https://arxiv.org/abs/2502.17655)
-  are motivation only.
-- Theorem 1 never uses its K-stickiness hypothesis.
-- Grains are *defined* as connected components, so Lemma 3 is point-set topology
-  true of any continuous trajectories — including an untrained model and
-  including total collapse.
-- The orthogonality claim is proved by noting components are disjoint, hence
-  `Vol(empty set) = 0 <= C/K`. The paper itself writes "**(trivially)**".
-- The Lipschitz bound is the trivial depth-composition product, exponential in
-  depth and vacuous at scale; K-dependence is smuggled in by *labelling* the
-  per-layer constants.
-- The linear-probe result **assumes** the operator-norm bound that is its
-  conclusion.
-- The chain Loss → isotropy/entropy → **???** → Axioms → Theorem 1 is broken in
-  the middle. **K is never measured.**
-- Empirics: ~25 Cohen's d values with signs both ways, no multiple-comparison
-  correction, n=4 seeds. `p=0.078` is called "significant"; `p=0.05`
-  "approaches significance". MMLU deltas of `+0.75/+0.55/+0.15%` are inside
-  seed noise.
-- Compute: ~1.8e22 FLOPs ≈ **6,300 B200-GPU-hours**, never reported in the
-  paper, far outside a 4-16 GPU budget. Advertised code repo is a stub.
+- **No Kakeya theorem appears in any proof.** Wolff, Guth-Zahl, and
+  [Wang-Zahl](https://arxiv.org/abs/2502.17655) are only motivation.
+- Theorem 1 never uses its K-stickiness assumption.
+- The paper defines grains as connected components. Lemma 3 is therefore a
+  basic fact from point-set topology for any continuous paths, including an
+  untrained model or a model whose features completely collapse.
+- For the orthogonality claim, the proof says the components do not overlap, so
+  `Vol(empty set) = 0 <= C/K`. The paper itself calls this **"(trivially)"**.
+- The Lipschitz bound simply multiplies a constant from each layer. It grows
+  exponentially with depth, so it tells us nothing for a large model. The
+  paper creates K-dependence only by *naming* the per-layer constants with K.
+- The linear-probe result **assumes** the operator-norm limit that it is meant
+  to prove.
+- The argument has a missing middle step:
+  Loss → isotropy/entropy → **???** → Axioms → Theorem 1. **K is never
+  measured.**
+- Experiments report about 25 Cohen's d values with positive and negative
+  signs, no correction for making many comparisons, and `n=4` seeds. The paper
+  calls `p=0.078` "significant" and says `p=0.05` "approaches significance."
+  MMLU changes of `+0.75/+0.55/+0.15%` are within random-seed noise.
+- The estimated training cost is about `1.8e22` FLOPs, or **6,300
+  B200-GPU-hours**. The paper never reports that number. It is far beyond a 4–16 GPU
+  budget. The advertised code repository is only a stub.
 
-**Do not use this as a template.** It is the anti-pattern: math as branding.
+**Do not copy this paper's style.** It is the bad pattern: math used as branding
+rather than as a tool that changes the result.
 
-## The rule that actually predicts acceptance
+## A simple rule for math papers that get accepted
 
-Three independent data points from the survey:
+The survey found three separate examples:
 
-- Xu et al.'s diagonalization-based *Hallucination is Inevitable* was **rejected
-  by TMLR**; [Kalai et al.](https://arxiv.org/abs/2509.04664)'s reduction-to-a-measurable-classifier version landed.
-- *[The Invisible Leash](https://arxiv.org/abs/2507.14843)* was **rejected at ICLR 2026**; the purely empirical
-  version of the same claim got a **NeurIPS 2025 Oral**.
-- A **single-author short proof** that GPTQ equals Babai's algorithm got an
-  **ICLR 2026 Poster**.
+- Xu et al.'s diagonalization proof in *Hallucination is Inevitable* was
+  **rejected by TMLR**. [Kalai et al.](https://arxiv.org/abs/2509.04664) instead
+  reduced the claim to a classifier that can be measured, and that version was
+  accepted.
+- *[The Invisible Leash](https://arxiv.org/abs/2507.14843)* was **rejected at
+  ICLR 2026**. A fully experimental paper making the same claim received a
+  **NeurIPS 2025 Oral**.
+- A short, **single-author proof** that GPTQ equals Babai's algorithm received
+  an **ICLR 2026 Poster**.
 
-> **The theorem must constrain a method someone is actually using, and its
-> constant must be readable off a real model.**
+> **A theorem should limit or guide a method people really use. A researcher
+> should also be able to read its constant from a real model.**
 
-[GeoLAN](https://arxiv.org/abs/2603.19460) fails this test on both clauses. The GPTQ result passes on both, and is
-the existence proof that a small, single-author, mathematically-grounded
-contribution lands in this space.
+[GeoLAN](https://arxiv.org/abs/2603.19460) fails both parts. The GPTQ paper
+passes both. It shows that one person can publish a small, math-based result in
+this area.
 
-## Ranked candidates
+## Ranked ideas
 
-### 1. GPTQ / lattice reduction — **GATED AND KILLED 2026-07-25**
+### 1. GPTQ and lattice reduction — **GATED AND KILLED 2026-07-25**
 
-The prior-art gate closed this comprehensively (see also
-[[Direction-Gate-Results]], which counts this as the first of the five gates and
-reads it as the archetype of failure mode 1 — the gap was the anchor paper's own
-future-work sentence). Recorded in full because the failure modes are
-instructive.
+The prior-work check fully closed this idea. [[Direction-Gate-Results]] counts
+it as the first of five gates and as the clearest example of a gap that was
+already a future-work sentence in the main paper. The full reasons remain here
+because they are useful warnings.
 
-1. **It is the literal stated future-work sentence of the anchor paper**, and of
-   a second one. Chen et al. write: "open the door to importing decades of
-   progress in lattice algorithms towards the design of future quantization
-   algorithms." Birnick's independent proof ([`2508.01077`](https://arxiv.org/abs/2508.01077), also ICLR 2026)
-   closes by "hinting at the possibility of using lattice basis reduction for
-   improved quantization." Two groups have publicly planted the flag.
-2. **Klein randomized rounding is already published.** OJBKQ ([`2602.08376`](https://arxiv.org/abs/2602.08376),
-   Feb 2026) applies box-constrained Babai plus extended Klein with K-best
-   residual selection to LLM post-training quantization.
-3. **The OJBKQ authors are Xiao-Wen Chang's group** — the canonical
-   LLL-for-integer-least-squares people. They had LLL/BKZ fully in hand, named
-   reduction as the textbook remedy in their own related work, and deliberately
-   used Klein instead. That is an informed negative signal, not an oversight.
-4. **The box constraint structurally forbids full reduction.** Reduction applies
-   a unimodular `U`, which maps the required box `{0..2^b-1}^n` to a skewed
-   parallelepiped. The box-constrained integer-least-squares literature already
-   knows this and can use only the column-permutation part of LLL.
-5. **Even the box-legal part is predicted to hurt here.** Wen & Chang prove that
-   when noise is relatively large, LLL-P *decreases* Babai's success
-   probability. 2-3 bit quantization is squarely the large-noise regime.
-6. **GPTQ already ships the box-legal part** as `act_order`/`desc_act`.
-7. **Measured headroom is ~0.03 perplexity.** Klein K-best is a strictly
-   stronger CVP solver than Babai and buys `9.38 -> 9.35` on 4-bit Llama3-8B,
-   saturating by K=5. Most of OJBKQ's gain came from the objective, not the
+1. **The idea is the exact future-work sentence in the main paper and a second
+   paper.** Chen et al. say their result can "open the door to importing decades
+   of progress in lattice algorithms towards the design of future quantization
+   algorithms." Birnick's separate proof
+   ([`2508.01077`](https://arxiv.org/abs/2508.01077), also ICLR 2026) ends by
+   "hinting at the possibility of using lattice basis reduction for improved
+   quantization." Two groups publicly claimed this path.
+2. **Klein randomized rounding was already used.** OJBKQ
+   ([`2602.08376`](https://arxiv.org/abs/2602.08376), February 2026) uses
+   box-constrained Babai plus extended Klein and keeps the K best remaining
+   errors for LLM post-training quantization.
+3. **The OJBKQ authors are from Xiao-Wen Chang's group**, a leading group for
+   LLL applied to integer least squares. They knew LLL/BKZ, called reduction the
+   standard fix in their related-work section, and still chose Klein. That is a
+   knowledgeable negative sign, not something they missed.
+4. **The required box makes full reduction impossible.** Reduction applies a
+   unimodular matrix `U`. It turns the required box `{0..2^b-1}^n` into a
+   slanted parallelepiped. Work on box-constrained integer least squares already
+   knows this problem and can use only the column-swapping part of LLL.
+5. **Even the legal part of LLL is expected to hurt here.** Wen & Chang prove
+   that when noise is fairly large, LLL-P lowers Babai's chance of success.
+   Two-bit and three-bit quantization are in that large-noise range.
+6. **GPTQ already includes that legal part** under the names `act_order` and
+   `desc_act`.
+7. **The measured room to improve is about 0.03 perplexity.** Klein K-best is
+   a stronger closest-vector-problem (CVP) solver than Babai, but on 4-bit
+   Llama3-8B it changes perplexity only by `9.38 -> 9.35`, with no more gain
+   after K=5. Most of OJBKQ's improvement came from its objective, not its
    solver.
-8. **The deepest objection: reduction changes the basis, not the lattice.**
-   Exact CVP is basis-independent, so reduction can only close the
-   Babai-to-exact-CVP gap. WaterSIC pins the residual gap *at* exact CVP to
-   `0.255` bits and attributes it to the suboptimality of the integer lattice
-   for vector quantization — a **codebook space-filling** problem that
-   reduction structurally cannot touch.
+8. **The deepest problem is that reduction changes the basis, not the lattice.**
+   Exact CVP gives the same answer for every basis. Reduction can only shrink
+   the difference between Babai and exact CVP. WaterSIC measures the remaining
+   error even at exact CVP as `0.255` bits. It says the integer lattice is a
+   poor shape for vector quantization. That is a **codebook space-filling**
+   problem, which basis reduction cannot fix.
 
-Only surviving door: WaterSIC discards the box constraint (unbounded integers
-plus entropy coding), under which full unimodular reduction becomes admissible
-and obstructions 4-5 dissolve. But that means competing with
-Ordentlich/Polyanskiy on their own turf for at most 0.255 bits, most of which
-reduction cannot reach. **Decision rule if ever revisited:** a two-hour check —
-LLL-reduce one 128-dim Cholesky block, measure the exact-CVP-versus-Babai
-residual gap. If under 1%, there is no paper.
+One path technically survives. WaterSIC removes the box restriction by using
+unbounded integers and entropy coding. Full unimodular reduction becomes legal,
+so objections 4 and 5 go away. But this would compete with
+Ordentlich/Polyanskiy on their own topic for at most 0.255 bits, and reduction
+cannot recover most of even that. **If this is ever reconsidered, use a two-hour
+stop test:** apply LLL to one 128-dimensional Cholesky block and measure the
+remaining gap between exact CVP and Babai. If it is below 1%, there is no paper.
 
-### 1b. Original entry, retained for the record
+### 1b. The original GPTQ idea, kept as history
 
-**The result.** Chen et al., [`2507.18553`](https://arxiv.org/abs/2507.18553) (**ICLR 2026**): run back-to-front,
-GPTQ is *mathematically identical* to Babai's nearest-plane algorithm for the
-closest-vector problem on the lattice defined by the layer's input Hessian, and
-inherits Babai's worst-case error bound. Independently, [`2603.04956`](https://arxiv.org/abs/2603.04956) proves GPTQ
-can be **arbitrarily far** from the information-theoretic limit and gives a
-waterfilling rate allocation provably within **0.255 bits** of it; [`2602.05790`](https://arxiv.org/abs/2602.05790)
-shows the price of a universal codebook is at most **0.11 bit**.
+**The result.** Chen et al.,
+[`2507.18553`](https://arxiv.org/abs/2507.18553) (**ICLR 2026**), show that if
+GPTQ runs from back to front, it is *exactly the same mathematically* as
+Babai's nearest-plane algorithm. The related closest-vector lattice is defined
+by the input Hessian of the layer, and GPTQ receives Babai's worst-case error
+limit. Separately, [`2603.04956`](https://arxiv.org/abs/2603.04956) proves GPTQ
+can be **arbitrarily far** from the best possible information limit and gives a
+waterfilling rate assignment within **0.255 bits** of that limit.
+[`2602.05790`](https://arxiv.org/abs/2602.05790) shows that using one general
+codebook costs at most **0.11 bit**.
 
-**Why it is open.** Two 2026 results independently say the standard method is a
-weak lattice algorithm. **Nobody has run LLL, BKZ, Klein randomized rounding, or
-block sieving on the Hessian lattice** — these are library calls in
-cryptanalysis. Difficulty: low. Called "the cheapest high-value item in the
-entire survey."
+**Why we first thought it was open.** Two 2026 papers independently called the
+standard method a weak lattice algorithm. We believed **nobody had tried LLL,
+BKZ, Klein randomized rounding, or block sieving on the Hessian lattice**.
+These are library calls in cryptanalysis, so the work looked easy. It was called
+"the cheapest high-value item in the entire survey."
 
-**Concrete attack.** BKZ-reduce the Hessian-derived basis per 128-column block
-(block size 20-40) before the nearest-plane pass; measure orthogonality defect
-against perplexity at 2/3/4-bit. Cost: CPU lattice reduction plus one normal
-GPTQ pass.
+**The first planned test.** For each 128-column block, run BKZ on the
+Hessian-based basis with block size 20–40 before Babai's nearest-plane pass.
+At 2/3/4 bits, compare the orthogonality defect with perplexity. Cost: CPU
+lattice reduction plus one normal GPTQ pass.
 
-**Second, equally open target:** waterfilling has been done for linear layers
-only. Nobody has done per-head/per-layer/per-position bit allocation for the
-**KV cache**, where covariance is wildly anisotropic.
+**A second opening we named:** waterfilling had been used only for linear
+layers. Nobody had assigned different bit counts by head, layer, or position
+for the **KV cache**, whose covariance is very uneven across directions.
 
-**Adjacent:** everyone uses E8 or Leech because the decoders are nice. Recent
-normalized-second-moment records (glued 12-D dethroning K12 after 40 years;
-SGD-designed lattices optimal in all dims <= 16) have **never been put in an LLM
-quantizer**. Test whether perplexity is monotone in NSM at fixed rate; if it
-breaks, that is the better paper.
+**Nearby idea:** most systems use E8 or Leech lattices because they are easy to
+decode. New records for normalized second moment (NSM) include a glued
+12-dimensional lattice that beat K12 after 40 years, and SGD-designed lattices
+that are best in every dimension up to 16. No LLM quantizer had used them. Test
+whether lower NSM always gives lower perplexity at the same bit rate. If it
+does not, that failure is the more interesting paper.
 
-### 2. Distillation capacity gap — a published theorem contradicts universal observation
+### 2. Distillation capacity gap — the target theorem already exists
 
-> **GATED AND KILLED 2026-07-25; the framing here was factually wrong.** The
-> target theorem exists and is named: Busbridge et al., *Distillation Scaling
-> Laws* ([`2502.08606`](https://arxiv.org/abs/2502.08606), ICML 2025), **Appendix C.1.3, "U-shape in the student
-> error"** — two lemmas, an interior optimum at `m ~ n`, closed with a QED. The
-> claim below that it is "*fitted*, not derived" is wrong and is corrected in
-> [[Direction-Gate-Results]]. The motivating contradiction also does not exist:
-> Menon et al. contains a subsection titled *"Why can more accurate teachers
-> distill worse?"* and reports an optimal depth. A second gate,
-> [[Temperature-Confound-Preregistration]], separately failed the follow-up
-> protocol — per-teacher temperature tuning was already run at larger scale
-> (18 teachers, NeurIPS 2022) and does not remove the gap. Survivor: the
-> *deflationary* paper — that the U-shape is a property of the coupled KL
-> objective rather than of capacity, and dissolves under a decoupled loss.
-> That one needs controls, not theory.
+> **GATED AND KILLED 2026-07-25; the old framing below was wrong.**
+> Busbridge et al., *Distillation Scaling Laws*
+> ([`2502.08606`](https://arxiv.org/abs/2502.08606), ICML 2025), already gives
+> the named theorem in **Appendix C.1.3, "U-shape in the student error."** Two
+> lemmas prove an inside optimum at `m ~ n`, and the proof ends with QED. The
+> old statement that the law was only fitted, not derived, is false. Menon et
+> al. also has a section called *"Why can more accurate teachers distill
+> worse?"* and reports a best depth, so the claimed conflict with Menon is not
+> real. A second gate, [[Temperature-Confound-Preregistration]], also stopped
+> the follow-up plan: a NeurIPS 2022 paper had already tuned temperature for 18
+> teachers at larger scale, and the gap remained. One idea survives: test
+> whether the U-shape comes from the coupled KL objective rather than model
+> capacity and disappears with a decoupled loss. That needs controls, not new
+> theory.
 
-A stronger teacher can make a small student **worse**. Universally observed,
-no theory.
+The original observation was that a stronger teacher can make a small student
+**worse**. We first called this universal and unexplained.
 
-Menon et al. ([`2005.10419`](https://arxiv.org/abs/2005.10419), soft labels reduce label variance) predicts
-**monotone** improvement in teacher quality, flatly contradicting the observed
-U-shape. Harutyunyan et al. ([`2301.12245`](https://arxiv.org/abs/2301.12245), supervision complexity w.r.t. the
-student's NTK) supplies the opposing force but never states the theorem. Ildiz
-et al. ([`2410.18837`](https://arxiv.org/abs/2410.18837)) already characterizes the optimal surrogate in
-high-dimensional ridgeless regression — a capacity-gap statement in a solvable
-model that nobody framed as one.
+The old reading was: Menon et al.
+([`2005.10419`](https://arxiv.org/abs/2005.10419)) says soft labels reduce label
+variation and therefore predicts that every improvement in teacher quality
+helps. Harutyunyan et al.
+([`2301.12245`](https://arxiv.org/abs/2301.12245)) studies supervision
+complexity compared with the student's neural tangent kernel (NTK) and seemed
+to give the force in the other direction, but did not state the theorem. Ildiz
+et al. ([`2410.18837`](https://arxiv.org/abs/2410.18837)) already finds the best
+surrogate in high-dimensional ridgeless regression, a solvable capacity-gap
+model that nobody had described in those words.
 
-**Crowding:** `distillation "capacity gap" theoretical` returns **7 papers, all
-methods, zero theory**. Busbridge et al. ([`2502.08606`](https://arxiv.org/abs/2502.08606), ICML 2025) is a
-*fitted*, not derived, law.
+The old crowding search, `distillation "capacity gap" theoretical`, returned
+**7 method papers and zero theory papers**. It incorrectly called Busbridge et
+al. ([`2502.08606`](https://arxiv.org/abs/2502.08606), ICML 2025) a law that was
+*fitted*, not proved.
 
-**Compute:** two-layer teacher-student plus a CIFAR ResNet-{8,20,56} grid.
+The planned compute was a two-layer teacher and student plus CIFAR
+ResNet-{8,20,56}. The target theorem was a student risk curve shaped like a U as
+teacher capacity changes, with its best point
+`p_T* ~ f(p_S, n, SNR)`. The proposed explanation balanced reduced variation
+against a harder target.
 
-**Target theorem:** student risk is U-shaped in teacher capacity with minimizer
-`p_T* ~ f(p_S, n, SNR)`, from variance-reduction versus target-complexity.
+This had changed the distillation decision in
+[[Next-Direction-Literature-Survey]] from "industry owns it" to "methods are
+owned, but theory is empty." The gate showed that the theory side was not empty.
 
-Note this reframes the distillation direction previously rejected in
-[[Next-Direction-Literature-Survey]] as industry-dominated: **the method side is
-owned, the theory side is empty.** (The gate above shows the theory side was
-not empty either.)
+### 3. Does one hidden ability explain a benchmark? — already done twice
 
-### 3. Benchmark unidimensionality as a spiked-covariance / BBP problem
+> **GATED AND KILLED 2026-07-25.** The statistical idea is Horn's parallel
+> analysis from 1965. Dobriban & Owen, JRSS-B 2019, and Dobriban, Annals of
+> Statistics 2020, already gave the random-matrix-theory (RMT) version. Work in
+> econometrics already uses the BBP transition to find the number of hidden
+> factors. The exact data question is also answered: *AI Cartography*
+> ([`2605.25272`](https://arxiv.org/abs/2605.25272)) runs item-level CFA/SEM on
+> more than 4,000 models and six benchmarks, with permutation controls. The
+> proposed plan had two more problems. A binary response matrix follows a
+> generalized MP law with different variances, not the standard MP law. Also,
+> putting items inside separate benchmarks guarantees a second spike. See
+> [[Direction-Gate-Results]].
 
-> **GATED AND KILLED 2026-07-25 — scooped twice.** Statistically this is Horn's
-> parallel analysis (1965), with the RMT replacement already published
-> (Dobriban & Owen, JRSS-B 2019; Dobriban, Ann. Stat. 2020) and factor-number
-> determination via BBP settled in econometrics. Empirically it is already
-> answered on the same data: *AI Cartography* ([`2605.25272`](https://arxiv.org/abs/2605.25272)) runs item-level
-> CFA/SEM over 4,000+ models and six benchmarks with permutation controls. Two
-> technical landmines make the pre-registration below ill-posed anyway: a
-> binary response matrix gives a generalized MP law with a variance profile,
-> not standard MP, and item nesting within benchmarks guarantees a second
-> spike. Detail: [[Direction-Gate-Results]].
+The original concern was that psychometric methods used for benchmark audits,
+including item response theory (IRT) and mean scores, assume one hidden ability.
+Two major 2026 papers ([`2511.16842`](https://arxiv.org/abs/2511.16842),
+[`2605.30504`](https://arxiv.org/abs/2605.30504)) state this assumption but do
+not test it.
 
-Psychometric methods now used to *audit* benchmarks (IRT, mean-score summaries)
-assume a unidimensional latent construct, and that assumption is nowhere tested.
-Two high-profile 2026 papers ([`2511.16842`](https://arxiv.org/abs/2511.16842), [`2605.30504`](https://arxiv.org/abs/2605.30504)) state it explicitly
-and do not test it.
+**Original math idea:** after removing overall model ability and item
+difficulty, asking whether a benchmark has one factor becomes a search for a
+second eigenvalue spike above the Marchenko-Pastur bulk. The known BBP phase
+change would give a best-possible detection limit based on the numbers of
+models and items and the signal-to-noise ratio (SNR).
 
-**Math core:** remove ability and difficulty main effects and "is this benchmark
-unidimensional?" becomes detecting a second spike above the Marchenko-Pastur
-bulk — a problem with a **known BBP phase transition** and therefore a
-ready-made minimax threshold in (#models, #items, SNR).
+**Compute would be zero.** The study would only reanalyze published
+model-by-item response tables.
 
-**Compute: zero.** Pure re-analysis of published model-by-item response
-matrices.
+The registered predictions were: P1, at least 5 of 9 benchmarks would have two
+or more eigenvalues above a threshold calibrated by permutation; P2, the most
+important claim, items loading on factor 2 would be unusually common among
+items independently marked as problematic; and P3, at least 10% of model pairs
+would swap order when changing from mean score to factor-1 score.
 
-**Pre-registrable:** P1, at least 5 of 9 benchmarks show >= 2 eigenvalues above
-a permutation-calibrated threshold. P2 (load-bearing), factor-2-loading items are
-enriched among independently flagged problematic items. P3, at least 10% of
-model pairs reverse order between mean score and factor-1 score.
+At the time, the IRT-for-benchmarks area had 108 papers and was adding about 20
+in eight months. The estimated window was 6–12 months.
 
-**Window:** IRT-for-benchmarks is at 108 papers and accelerating (~20 in 8
-months). 6-12 months.
+### 4. Adversarially robust streaming × KV-cache eviction
 
-### 4. Adversarially robust streaming x KV-cache eviction
+> **Re-scoped 2026-08-02.** The general KV direction rose in value only after
+> narrowing it to **safety-aware allocation**: ★★★★ for the narrow version and
+> ★★★ for the original. Two openings used by the old idea were taken. CONF-KV
+> [`2605.24786`](https://arxiv.org/abs/2605.24786) covers long use over many
+> steps. [SQuat](https://arxiv.org/abs/2503.24358),
+> [KVarN](https://arxiv.org/abs/2606.03458), and
+> [VeriCache](https://arxiv.org/abs/2605.17613) address errors that grow over
+> time. The belief that new kernels were required was also wrong:
+> [KVTuner](https://arxiv.org/abs/2502.04420),
+> [EvolKV](https://arxiv.org/abs/2509.08315), and
+> [SCBench](https://arxiv.org/abs/2412.10319) all published with no kernel work.
+> Six searches found no allocator designed for safety. The remaining clear
+> test compares the safest per-layer allocation with the allocation that gives
+> the best perplexity. See [[Direction-Reevaluation-2026-08]]. The original
+> adversarial-streaming proposal below never received its own full check.
 
-> **Re-scoped 2026-08-02.** The KV direction as a whole moved up — but only
-> when narrowed to **safety-aware allocation** (★★★★ narrowed / ★★★ as
-> originally scoped). Two of the slots this section relies on have since been
-> taken: the long-horizon slot is claimed (CONF-KV [`2605.24786`](https://arxiv.org/abs/2605.24786)) and
-> compounding error is remedied three ways ([SQuat](https://arxiv.org/abs/2503.24358)/[KVarN](https://arxiv.org/abs/2606.03458)/[VeriCache](https://arxiv.org/abs/2605.17613)). The kernel
-> objection was also refuted — [KVTuner](https://arxiv.org/abs/2502.04420), [EvolKV](https://arxiv.org/abs/2509.08315) and [SCBench](https://arxiv.org/abs/2412.10319) published with zero
-> kernel work. What is unclaimed is a safety-objective allocator (six searches,
-> zero hits), with one falsifiable sweep: safety-optimal versus
-> perplexity-optimal per-layer allocation. See
-> [[Direction-Reevaluation-2026-08]]. The adversarial-streaming framing below
-> was never gated on its own.
+Autoregressive generation changes as it runs: the cache-eviction choice affects
+the next token, and that token becomes the next query. This matches the threat
+model in adversarial streaming, where later input can depend on earlier choices.
+Yet empirical KV-compression work—
+[H2O](https://arxiv.org/abs/2306.14048),
+[SnapKV](https://arxiv.org/abs/2404.14469),
+[StreamingLLM](https://arxiv.org/abs/2309.17453), and
+[PyramidKV](https://arxiv.org/abs/2406.02069)—reports 30–90% compression even
+though Haris-Onak gives an unconditional `Theta(nd)` lower bound
+([`2502.15955`](https://arxiv.org/abs/2502.15955)). **Nobody had measured what
+special structure lets real models avoid the lower bound.**
 
-Autoregressive decoding is **definitionally adaptive**: the eviction policy's
-own decisions determine the next token, which becomes the next query. That is
-exactly the adversarial-streaming threat model. Meanwhile the empirical
-KV-compression literature ([H2O](https://arxiv.org/abs/2306.14048), [SnapKV](https://arxiv.org/abs/2404.14469), [StreamingLLM](https://arxiv.org/abs/2309.17453), [PyramidKV](https://arxiv.org/abs/2406.02069)) reports 30-90%
-compression against Haris-Onak's unconditional `Theta(nd)` lower bound
-([`2502.15955`](https://arxiv.org/abs/2502.15955)), and **nobody has measured which structural exemption is doing
-the work**.
+Two separate searches for `"adversarially robust" AND "KV cache"` returned
+**zero results**. ML papers in this area assume future queries do not react to
+the algorithm's earlier choices, which is called the oblivious model.
 
-Two independent searches for `"adversarially robust" AND "KV cache"` returned
-**zero hits**. The ML-side work is entirely in the oblivious model.
+The proposed output was an adversarial KV benchmark, a matching proof that some
+performance is impossible, and a safer method with the predicted polylogarithmic
+extra cost. A negative answer—"real generation does not behave adversarially
+enough"—would also be new and publishable.
 
-Deliverable: an adversarial KV benchmark with a matching impossibility proof,
-plus a robustification fix at the predicted polylog overhead. A negative result
-("real decoding isn't adversarial enough") is also publishable and currently
-unknown.
+### 5. Smaller theory ideas that stand on their own
 
-### 5. Smaller, self-contained theory targets
+- **A unique formula from rules for isotropy and effective rank.** Six simple
+  rules may uniquely force `(sum lambda_i)^2 / (d * sum lambda_i^2)`. IsoScore
+  follows five of the six. The check found that IsoScore
+  ([`2108.07344`](https://arxiv.org/abs/2108.07344)) has **zero theorem
+  environments**. [Godey et al.](https://arxiv.org/abs/2401.12143),
+  *Anisotropy Is Inherent to Self-Attention* (EACL 2024), also has **zero
+  theorems** despite making a universal claim in its title.
+  [Rudman](https://arxiv.org/abs/2305.19358) & Eickhoff (ICLR 2024) give
+  experiments against the common belief that anisotropy is harmful. This has
+  the best impact for the amount of background needed among representation
+  geometry ideas. It needs one GPU.
+- **GL(d)-equivariance of steering directions.** In
+  [Park et al.](https://arxiv.org/abs/2311.03658), the causal inner product is
+  **Definition 3.1, not a theorem**. The paper says D "is a free parameter with
+  d degrees of freedom... We do not have a principle for picking out a unique
+  choice." The proposed claim is that mean-difference steering changes under a
+  reparameterization that leaves outputs the same, while a whitened rule does
+  not. Testing this needs only inference.
+- **Every Bit Counts → choose precision for each task.**
+  [`2602.02707`](https://arxiv.org/abs/2602.02707) gives a function that can be
+  computed with `p` bits but not with `p-1`. The prediction is that exact-match
+  and comparison tasks fail suddenly below a bit-width threshold, while
+  meaning-based tasks get worse slowly. A one-week study could produce a useful
+  rule for choosing precision by task.
 
-- **Axiomatic uniqueness for isotropy / effective-rank measures.** Six axioms
-  should pin `(sum lambda_i)^2 / (d * sum lambda_i^2)` uniquely, with IsoScore
-  satisfying five of six. Verified: IsoScore ([`2108.07344`](https://arxiv.org/abs/2108.07344)) has **zero theorem
-  environments**; [Godey et al.](https://arxiv.org/abs/2401.12143)'s *"Anisotropy Is Inherent to Self-Attention"*
-  (EACL 2024) has **zero theorems** despite a universal title claim; [Rudman](https://arxiv.org/abs/2305.19358) &
-  Eickhoff (ICLR 2024) **empirically refute** the "anisotropy is harmful"
-  folklore. Best impact-per-prerequisite in representation geometry. One GPU.
-- **GL(d)-equivariance of steering directions.** [Park et al.](https://arxiv.org/abs/2311.03658)'s causal inner
-  product is **Definition 3.1, not a theorem**, and the paper states verbatim
-  that D "is a free parameter with d degrees of freedom... We do not have a
-  principle for picking out a unique choice." Conjecture: mean-difference
-  steering is not equivariant under output-preserving reparameterization, while
-  the whitened rule is. Validation is inference-only.
-- **Every Bit Counts → per-task quantization precision.** [`2602.02707`](https://arxiv.org/abs/2602.02707) gives a
-  function computable with `p` bits but not `p-1`. Prediction: exact-match and
-  comparison tasks have a sharp bit-width cliff; semantic tasks degrade
-  gracefully. One week, yields a deployable per-task precision rule.
+## Areas not to enter
 
-## Do not enter
+**Math used mostly as decoration:** category theory in ML, which has had zero
+experimental wins in seven years and no successor to its main position paper;
+topological data analysis (TDA) as a general feature extractor, because
+[`2507.07156`](https://arxiv.org/abs/2507.07156) gets the same performance from
+models trained on **unreduced** persistence diagrams, nearly disproving the
+reason for TDA; sheaf neural networks, because
+[`2603.05395`](https://arxiv.org/abs/2603.05395) from March 2026 finds that an
+identity-sheaf baseline with **no sheaf at all** matches every version; Kakeya,
+geometric Langlands, Ramsey bounds, sunflowers, and new sphere-packing bounds;
+and information geometry, because **no theorem from 2022–2026 changes what we
+would do**. Information geometry also lost to plain *norm* geometry: the search
+"Fisher-Rao" plus "language model" gives 6 papers, while Muon gives 292.
 
-**Decorative:** category theory in ML (zero empirical wins in seven years; the
-flagship position paper has no successor); TDA as a general feature extractor
-([`2507.07156`](https://arxiv.org/abs/2507.07156) finds models trained on **unreduced** persistence diagrams do as
-well — close to a falsification of the premise); sheaf neural networks
-([`2603.05395`](https://arxiv.org/abs/2603.05395), Mar 2026: an identity-sheaf baseline with **no sheaf at all**
-matches every variant); Kakeya, geometric Langlands, Ramsey bounds, sunflowers,
-new sphere-packing bounds; information geometry (**no 2022-2026 theorem changes
-what you would do**; note IG lost to *norm* geometry — "Fisher-Rao" plus
-"language model" returns 6 papers, Muon returns 292).
+**Already studied heavily:** neural collapse and unconstrained feature models
+(UFM), with 281 papers and a proof that deep neural collapse is not best when
+`K >= 6`; learning-augmented algorithms; Muon and spectral optimizers, with at
+least 18 papers and large labs; conformal methods applied to new domains, with
+846 papers; LLM-as-judge bias; reward-hacking fixes, with 88 titles; and
+nonlinear ICA/causal representation learning, where every named open problem
+was claimed within about 12 months.
 
-**Crowded:** neural collapse / UFM (281 publications, and deep neural collapse
-was **proved non-optimal** for K >= 6); learning-augmented algorithms; Muon and
-spectral optimizers (18+ papers, well-resourced labs); conformal-for-X (846);
-LLM-as-judge bias; reward-hacking mitigation (88 titles); nonlinear ICA / causal
-representation learning (every named open problem claimed within ~12 months).
+**Correction to remember:** three separate groups built the SAE-identifiability
+connection in 2025–26. Do not call
+it untouched. Only the phase-change geometry and computational-hardness parts
+remain.
 
-**Correction to carry forward:** the SAE-identifiability bridge was built in
-2025-26 by three independent groups. Do not pitch it as untouched; only the
-phase-transition geometry and computational-hardness legs remain.
+## New top idea: transformer succinctness
 
-## New top candidate: transformer succinctness
-
-> **GATED 2026-07-25 — headline claims did not survive; one branch did.**
-> Full detail in [[Direction-Gate-Results]], gate 3. Three findings:
-> **(i)** the anchor paper is less novel than reported here — the core
-> technique dates to Meyer & Stockmeyer 1972 ("economy of description," 1971),
-> and a full-text citation audit found zero occurrences of Horne & Hush
-> (NIPS 1993, matching RNN size bounds), Sanford/Hsu/Telgarsky (NeurIPS 2023,
-> a transformer-vs-RNN *size* separation) or Gelade & Neven (STACS 2008, tight
-> matched double-exponential bounds). What is genuinely its own: the UHAT
-> counter construction, the exponential UHAT-to-LTL translation, and
-> EXPSPACE-**completeness**.
-> **(ii)** The SSM/Mamba succinctness problem named below is **scooped and
-> killed** — it is a one-line corollary of the paper's own Prop 1, asserted in
-> the camera-ready abstract with no body proof, and Jelassi et al. (ICML 2024)
-> published a transformer-vs-SSM size separation with experiments.
-> **(iii)** The **empirical** branch survives, and is better motivated than
-> this page argued: the descriptional-complexity community's own flagged open
-> problem is intrinsic size measures (parameters × precision as a trade-off
-> surface), and measuring bits actually used sidesteps the unsettled
-> definition of "SSM size." Protocol shape and the 12–18 month window are on
-> the gate page. The "beyond fixed precision" branch is open but hard for a
-> principled reason and now crowded.
+> **CHECKED 2026-07-25 — the main claims did not survive, but one branch did.**
+> [[Direction-Gate-Results]], gate 3, gives full detail.
 >
-> *Attribution note:* a later summary of this outcome credited the headline
-> scoop to "Lan et al., ACL 2024." No such citation appears anywhere in this
-> wiki's gate record, and it is not repeated here — the scoop evidence on file
-> is the Meyer & Stockmeyer / Gelade & Neven / Jelassi chain above. Re-verify
-> before citing either version.
+> 1. The main paper is less new than described below. Its key method goes back
+>    to Meyer & Stockmeyer 1972 and the name "economy of description" from
+>    1971. A full-text citation check found no Horne & Hush (NIPS 1993, matching
+>    RNN size limits), Sanford/Hsu/Telgarsky (NeurIPS 2023, a transformer-vs-RNN
+>    size separation), or Gelade & Neven (STACS 2008, matching tight
+>    double-exponential limits). Its truly new results are the UHAT counter,
+>    the exponential UHAT-to-LTL translation, and EXPSPACE-**completeness**.
+> 2. The SSM/Mamba succinctness idea below was **already done and stopped**. It
+>    follows in one line from Prop 1 of the paper, appears in the camera-ready
+>    abstract without a proof in the body, and Jelassi et al. (ICML 2024)
+>    already published a transformer-versus-SSM size difference with tests.
+> 3. The **experimental** branch survives for a stronger reason than this page
+>    first gave. Descriptional-complexity researchers themselves call intrinsic
+>    size—parameters × precision—as an open trade-off. Measuring actual bits
+>    avoids the field's unsettled definition of "SSM size." The protocol and
+>    12–18 month window are in the gate page. Work beyond fixed precision is
+>    open, but hard for a clear reason and now crowded.
+>
+> *Credit correction:* a later summary said "Lan et al., ACL 2024" was the
+> main paper that had already done this. That citation does not appear anywhere
+> in this wiki's gate record, so this page does not repeat it. Before citing
+> either version, re-verify. The evidence currently recorded is the Meyer &
+> Stockmeyer / Gelade & Neven / Jelassi chain above.
 
-Found while closing the two acknowledged survey holes. **This displaces the
-GPTQ candidate.**
+This paper was found while closing two acknowledged gaps in the survey. **At
+the time, it replaced GPTQ as the top idea.**
 
-*Transformers are Inherently Succinct* (Bergsträßer, Cotterell, Lin,
-[`2510.19315`](https://arxiv.org/abs/2510.19315)) is **one of only two ICLR 2026 Outstanding Papers**. It introduces
-*succinctness* — how compactly a formalism describes a language — as a new axis
-of expressive power, orthogonal to the exhausted "what can it compute" axis.
-Fixed-precision transformers are **exponentially more succinct than LTL and
-RNNs** (hence SSMs) and **doubly exponentially more succinct than finite
-automata**, with a matching upper bound and the consequence that transformer
-verification is EXPSPACE-complete.
+*Transformers are Inherently Succinct* by Bergsträßer, Cotterell, and Lin
+([`2510.19315`](https://arxiv.org/abs/2510.19315)) was **one of only two ICLR
+2026 Outstanding Papers**. *Succinctness* asks how short a description can be
+while still defining the same language. The paper presents this as a new kind
+of expressive power, separate from the heavily studied question "what can the
+model compute?" At fixed number precision, transformers need exponentially
+less description than linear temporal logic (LTL) and RNNs, including SSMs,
+and doubly exponentially less than finite automata. The paper also gives a
+matching upper bound and proves that checking transformers is
+EXPSPACE-complete.
 
-**The follow-up field is empty, verified two ways.** Nine months after posting,
-Semantic Scholar shows **4 citations total**: one spurious, one tangential, and
-**both substantive ones co-authored by the paper's own group**
-(Lin/Bergsträßer/Zetzsche, MPI-SWS/Kaiserslautern). Cross-checked against a
-full-text arXiv sweep for `succinct` + `transformers` since Oct 2025: 8 hits,
-all unrelated. The award committee explicitly invited follow-up — *"may
-stimulate additional theoretical **and empirical** investigation into
-succinctness of concept representation by transformers and other
-architectures"* — while noting unspecified "critiques," which points at the
-fixed-precision assumption as the attackable soft spot.
+**We first judged the follow-up area empty, based on two checks.** Nine months
+after posting, Semantic Scholar listed **4 citations total**: one wrong, one
+only loosely related, and **both real follow-ups written with members of the
+paper's own group** at MPI-SWS/Kaiserslautern
+(Lin/Bergsträßer/Zetzsche). A full-text arXiv search for `succinct` plus
+`transformers` since October 2025 gave 8 results, all unrelated. The award
+committee invited follow-up, saying the work *"may stimulate additional
+theoretical **and empirical** investigation into succinctness of concept
+representation by transformers and other architectures."* The committee also
+mentioned unnamed "critiques," which suggested the fixed-precision assumption
+was the weakest point.
 
-**Why it fits better than anything else surveyed.** Near-zero compute, which
-matches the no-pretraining-budget constraint exactly. Single-person scale. And
-critically, the mathematics is **automata theory, temporal logic, and
-complexity** — combinatorial and constructive, building gadgets and proving
-blow-up lower bounds. No concentration inequalities, no NTK, no SDE limits.
-That is a materially lower barrier for a strong non-probabilist than the
-grokking lane.
+**Why it first looked like the best fit.** It needs almost no compute, exactly
+matching the lack of a pretraining budget, and one person can do it. The math is
+automata theory, temporal logic, and complexity: building explicit pieces and
+proving how much larger one description must be. It does not need concentration
+inequalities, NTK, or stochastic-differential-equation (SDE) limits. For a
+strong researcher who is not a probability specialist, this is much easier to
+enter than grokking theory.
 
-Named open problems: quantitative succinctness of SSMs/Mamba versus
-transformers (the paper reaches SSMs only as a corollary via RNNs); succinctness
-beyond fixed precision; and the **empirical** succinctness question the
-committee invited, which is the one that plays to this group's measured
-strengths rather than against them.
+The named open questions were: how succinct SSMs/Mamba are compared with
+transformers, since the paper mentions SSMs only through an RNN consequence;
+succinctness without fixed precision; and the **experimental** question invited
+by the committee. The last one best matches this group's proven skill in
+measurement.
 
-**Risk to weigh honestly.** An empty *external* field with an active *in-group*
-means the obvious extensions may already be in the authors' drafts. And this is
-a pivot to theory from a track record built on measurement — a genuinely
-different skill, which is why the empirical branch may be the right entry.
+**The risk was real.** Few outside papers but an active inside group can mean
+that the obvious follow-ups are already in the authors' drafts. It would also
+be a move from measurement into theory, a different skill. That is another
+reason the experimental branch may be the best entry.
 
-## Grokking: the earlier verdict was wrong in both directions
+## Grokking: the earlier decision was wrong in two ways
 
-- **Theory: ACTIVE and OPEN, not a hazard.** *To Grok Grokking: Provable
-  Grokking in Ridge Regression* ([`2601.19791`](https://arxiv.org/abs/2601.19791), Xu/Vardi/Safran) is a confirmed
-  **ICML 2026 Outstanding Paper Honorable Mention** — one of 7 award slots. It
-  proves three provable stages and the first quantitative grokking-time bounds,
-  but **only in linear ridge regression**. Roughly 12 theory papers exist (not
-  the 3 previously reported): a small, legible literature one person can read
-  in full. Its §6 leaves a rare gift — a named, attempted-and-failed,
-  obstruction-identified open problem: **provable lazy-to-rich grokking**, which
-  the authors state "none provided a rigorous theoretical analysis proving it."
-- **Empirics: a genuine hazard.** arXiv title counts go 24 (2022-23) → 26 (2024)
-  → 35 (2025) → **60 in the first seven months of 2026**. The flood is landing
-  precisely on this group's niche — small-scale, multi-seed, causal-measurement
-  grokking studies, 7+ in three months — with hallmarks of automated production
-  (an identical typo recurring across distinct submissions).
-- **Math difficulty: HIGH.** The open problem is agnostic random-features
-  analysis and lazy-to-rich transitions: non-asymptotic concentration,
-  NTK/feature-learning dynamics, implicit bias. Six to nine months of ramp, in
-  Vardi/Lee/Li territory, and they are actively on it.
+- **Theory is ACTIVE and OPEN, not something to avoid.** *To Grok Grokking:
+  Provable Grokking in Ridge Regression*
+  ([`2601.19791`](https://arxiv.org/abs/2601.19791), Xu/Vardi/Safran) received
+  an **ICML 2026 Outstanding Paper Honorable Mention**, one of seven award
+  spots. It proves three stages and the first numeric limits on how long
+  grokking takes, but **only for linear ridge regression**. About 12 theory
+  papers exist, not the 3 first reported. One person could read this small,
+  understandable literature. Section 6 gives an unusually helpful open
+  problem that the authors tried and could not solve: **prove lazy-to-rich
+  grokking**. They say "none provided a rigorous theoretical analysis proving
+  it."
+- **Experiments are risky because the area is flooding.** arXiv title counts
+  rose from 24 in 2022–23, to 26 in 2024, 35 in 2025, and **60 in the first
+  seven months of 2026**. At least seven papers in three months entered our
+  exact specialty: small-scale, multi-seed experiments that try to measure
+  causes. Repeated identical typos across different submissions suggest some
+  automated production.
+- **The math is HARD.** The open problem needs random-features analysis that
+  works across starting conditions and a proof of the change from lazy training
+  to rich feature learning. This uses non-asymptotic concentration, NTK and
+  feature-learning dynamics, and implicit bias. It would take 6–9 months to
+  prepare and would compete with Vardi/Lee/Li, who are already working on it.
 
-## In-context learning: the earlier dismissal was correct, now with evidence
+## In-context learning: the earlier "stay out" decision was correct
 
-`in-context learning` + `gradient descent` counts are **flat at ~26/year for
-three years** (16 in 2022-23, 26 in 2024, 26 in 2025, ~27 annualized in 2026)
-against foundational papers cited 300-800 times. That is the signature of a
-worked-out area. It is also now actively contested ([`2512.04268`](https://arxiv.org/abs/2512.04268) argues
-initialization determines whether ICL is gradient descent at all), so entering
-means defending an old claim. **Stay out.** The TC⁰ expressivity line is
-likewise annexed by Merrill and Sabharwal. **[C-RASP](https://arxiv.org/abs/2404.04393)** is the one adjacent live
-frontier (~10 papers, nearly all 2025-26), with the expressivity-to-learnability
-bridge explicitly named as open in a self-described "preliminary" 9-page paper.
+Annual paper counts for `in-context learning` plus `gradient descent` have
+stayed near 26 for three years: 16 in 2022–23, 26 in 2024, 26 in 2025, and
+about 27 per year based on 2026 so far. The main papers have 300–800 citations.
+That pattern suggests the area is mature. It is also disputed now:
+[`2512.04268`](https://arxiv.org/abs/2512.04268) says initialization decides
+whether in-context learning (ICL) acts like gradient descent at all. Entering
+would mean defending an old claim. **Stay out.** Merrill and Sabharwal also
+control the TC⁰ expressivity line.
 
-> **Gated 2026-07-25 — thin spot, not thin field.** The C-RASP learnability
-> candidate found a real seam and mislocated it. Two funded, prize-winning,
-> mutually collaborating groups placed roughly six ICML/ICLR 2026 papers
-> between them, and the framing claim ("little work investigates learnability")
-> is contradicted by five named papers. What is actually thin is *sample*
-> complexity specifically; the least-contested seam is joint length × sample
-> complexity, with the honest caveat that the accessible half is the upper
-> bound and the paper-making half is the lower bound. Tempo warning on the
-> page: an explicitly named open problem here was fully resolved inside one
-> conference cycle. [[Direction-Gate-Results]], gate 4.
+**[C-RASP](https://arxiv.org/abs/2404.04393)** was the nearby active edge: about
+10 papers, almost all from 2025–26. A self-described "preliminary" nine-page
+paper clearly named the link from what a model can express to what training can
+learn as open.
 
-## Caveats the surveys raised about themselves
+> **Checked 2026-07-25 — a narrow opening, not a small field.** Two funded,
+> prize-winning groups that work together produced about six ICML/ICLR 2026
+> papers. Five named papers disprove the line "little work investigates
+> learnability." Only *sample* complexity is still thin. The least-contested
+> question combines length and sample complexity. The easier half is an upper
+> bound; the lower bound needed for a paper is harder. One clearly named open
+> problem in this area was fully solved within one conference cycle, showing
+> how quickly it moves. See [[Direction-Gate-Results]], gate 4.
 
-1. **Search budgets were exhausted**, so all crowding counts are lower bounds
-   from arXiv/OpenReview/DBLP rather than exhaustive.
-2. One agent **retracted its own grokking dismissal**: never verified, and ICML
-   2026 gave an Honorable Mention to *To Grok Grokking: Provable Grokking in
-   Ridge Regression* while provable grokking has ~3 papers total. Possibly a
-   missed candidate.
-3. **In-context-learning mechanism and CoT expressivity were not scouted** —
-   three of four sub-sweeps never returned.
-4. Several venue attributions were flagged unverified and must be re-checked
-   before appearing in any writeup.
-5. One agent reported fabricated findings in an intermediate message and
-   retracted them. Only the verified content is recorded here.
+## Limits and errors in the surveys
+
+1. **Search budgets ran out.** All paper-count numbers are lower bounds from
+   arXiv, OpenReview, and DBLP, not complete counts.
+2. One agent **withdrew its own dismissal of grokking** because it had not been
+   checked. ICML 2026 gave *To Grok Grokking: Provable Grokking in Ridge
+   Regression* an Honorable Mention, while provable grokking had been reported
+   to have only about 3 papers. This may have been a missed idea.
+3. **The survey did not cover the mechanism of in-context learning or
+   chain-of-thought expressivity.** Three of four smaller searches never
+   returned.
+4. Several conference claims were marked as unverified. Check them again before
+   using them in a paper.
+5. One agent gave made-up findings in an intermediate message and then withdrew
+   them. This page includes only the checked content.
 
 ## Related
 
-[[Direction-Gate-Results]] — the four gates run on the candidates above; read
-this before acting on any of them.
-[[Direction-Reevaluation-2026-08]] — current direction ranking; re-scopes the
-KV-cache candidate.
-[[Temperature-Confound-Preregistration]] — the failed gate on the distillation
-capacity-gap follow-up.
-[[Field-Scouting-Survey]] — the empirical/measurement legs.
-Stage-E-Prior-Art-Audit (svib repo wiki) — the standing rule requiring a gate
-before any run; the general form of it is rule 1 on [[Home]].
+[[Direction-Gate-Results]] — results of the four gates on ideas above; read it
+before using any of them.
+[[Unified-Direction-Ranking-2026-08]] — current direction decisions.
+[[Direction-Reevaluation-2026-08]] — historical August 2 ranking and its
+then-current change to the KV-cache idea.
+[[Temperature-Confound-Preregistration]] — the failed follow-up gate for the
+distillation capacity gap.
+[[Field-Scouting-Survey]] — experiment and measurement parts.
+Stage-E-Prior-Art-Audit (svib repo wiki) — the rule requiring a gate before any
+run; [[Home]] gives the general version as rule 1.

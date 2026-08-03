@@ -2,174 +2,213 @@
 
 *Updated 2026-08-02 for the general research wiki.*
 
-Later development: the generating-process lesson below (scan for empty areas →
-the area is never empty) was revised by [[Direction-Reevaluation-2026-08]],
-which found crowd-count filtering predicted nothing and replaced it with
-"filter by remaining opportunity, and an empty lane must explain why it is
-empty." The gate verdicts on this page stand as recorded.
+Later update: [[Direction-Reevaluation-2026-08]] changed the lesson about how
+to find research ideas. This page had said to look for areas with few papers.
+The later review found that the number of papers predicted nothing. The new
+rule is: look at how much useful work is still left. If an area looks empty,
+we must also explain why other researchers have stayed away. The gate results
+below are still kept as the record of what happened.
 
-Status: **Four gates run 2026-07-25.** Three candidates killed, one downgraded.
-Two survivors, both of which put measurement rather than theory on the critical
-path. Gates ordered by how instructive the failure was.
+Status: **Four gates were run on 2026-07-25.** A gate is a check of whether
+recent or older work has already done the proposed research. Three ideas were
+stopped, and one was lowered in priority. Two ideas survived. For both
+survivors, the main challenge is careful measurement, not new theory. The
+gates below are ordered by how much their failures taught us.
 
-## The recurring failure mode — read this before generating more candidates
+## The failure that kept happening
 
-Four of the five gates run so far (including the earlier GPTQ one) killed the
-candidate for one of exactly two reasons:
+Read this before making more candidates. Four of the five gates so far,
+including the earlier GPTQ gate, stopped an idea for one of two reasons:
 
-1. **The gap is one line for an insider.** GPTQ/lattice was the anchor paper's
-   own stated future-work sentence. SSM succinctness is a one-line corollary of
-   the paper's Prop 1 — asserted in the camera-ready abstract with *no proof in
-   the body* because an expert writes it in an afternoon.
-2. **An older literature already solved it under different vocabulary.**
-   Benchmark unidimensionality is Horn's parallel analysis (Psychometrika 1965)
-   with the RMT version already published (Dobriban & Owen, JRSS-B 2019). The
-   distillation U-shape was proved in an ICML 2025 appendix.
+GPTQ is a method that compresses a trained model by rounding its weights to a
+small set of values. Those possible rounded values can be viewed as points on
+a mathematical grid called a lattice. An SSM, or state-space model, carries a
+fixed-size hidden state from one token to the next. These are the two technical
+examples used below.
 
-Both failure modes are invisible to method-name searches and only surface when
-searching by **task, benchmark, or the older field's vocabulary**. Any future
-candidate must be gated that way before it is taken seriously.
+1. **An expert could fill the gap in one line.** The GPTQ/lattice idea was
+   already a future-work sentence in its main paper. The SSM succinctness
+   claim follows directly from Prop 1 of its paper. The camera-ready abstract
+   states the claim, but the paper gives no proof in the body, because an
+   expert could write the proof in an afternoon.
+2. **An older field had already solved the problem, using different words.**
+   The benchmark unidimensionality idea is Horn's parallel analysis
+   (Psychometrika 1965). The random-matrix-theory, or RMT, version was already
+   published by Dobriban & Owen (JRSS-B 2019). The distillation U-shape was
+   already proved in an ICML 2025 appendix.
 
-## Gate 1: distillation capacity gap — SCOOPED, and my framing was factually wrong
+A search for method names will miss both problems. Search by the **task, the
+benchmark, and the older field's terms** before taking a new idea seriously.
 
-**The theorem exists and is named.** Busbridge et al., *Distillation Scaling
-Laws* ([`2502.08606`](https://arxiv.org/abs/2502.08606), Apple, **ICML 2025**), **Appendix C.1.3, titled "U-shape in
-the student error."** Lemma C.1, Lemma C.2, two cases (`m < n` decreasing,
-`m >= n` increasing), interior optimum at `m ~ n`, closed with a formal QED.
-That is the target theorem, proved, named, a year ago. An earlier survey
-described this paper as "fitted, not derived" — **that was wrong** and is
-corrected here.
+## Gate 1: distillation capacity gap — SCOOPED, and our framing was wrong
 
-**Worse, the motivating contradiction does not exist.** Menon et al.
-([`2005.10419`](https://arxiv.org/abs/2005.10419)) does **not** predict monotone improvement in teacher capacity. It
-contains a subsection literally titled *"Why can more accurate teachers distill
-worse?"*, a subsection *"Trading off bias for variance: model complexity"*, and
-a synthetic experiment reporting *"There is an optimal depth d = 8."* The pitch
-"this contradicts Menon" would not survive a reviewer who has read Menon.
+**The theorem already exists and has a name.** Busbridge et al.,
+*Distillation Scaling Laws* ([`2502.08606`](https://arxiv.org/abs/2502.08606),
+Apple, **ICML 2025**), has Appendix C.1.3, titled *"U-shape in the student
+error."* It gives Lemma C.1 and Lemma C.2. It proves two cases: error decreases
+when `m < n`, increases when `m >= n`, and reaches an inside optimum at
+`m ~ n`. The proof ends with a formal QED. The target theorem was proved and
+named a year ago. An earlier survey called this paper "fitted, not derived."
+**That statement was wrong**, and this page corrects it.
 
-Also: Harutyunyan et al. §3.1 is titled *"Trade-off between teacher accuracy,
-margin, and complexity"* and derives an interior optimum (in temperature), and
-[Ildiz et al.](https://arxiv.org/abs/2410.18837) Prop 3 already derives an interior optimum in teacher capacity in
-high-dimensional asymptotics.
+**The contradiction that motivated the idea also does not exist.** Menon et
+al. ([`2005.10419`](https://arxiv.org/abs/2005.10419)) does **not** say that a
+more capable teacher must always help. It has sections titled *"Why can more
+accurate teachers distill worse?"* and *"Trading off bias for variance: model
+complexity."* Its synthetic experiment finds an ideal depth of `d = 8`. A
+reviewer who had read Menon would reject the claim that our idea contradicts
+that paper.
 
-**The phenomenon may not even be robust.** CRD Table 10: same student, teachers
-4.7 points apart in accuracy, student differs by `-0.02` against `sigma = 0.32`.
-DKD states verbatim that the real cause is *"the suppression of NCKD"* — a
-property of the coupled KL objective — and swapping KL for DKD moves
-teacher/student rank correlation from `rho ~ 0.26` to `rho ~ 0.94`.
+There was already more related work. Harutyunyan et al. §3.1 is titled
+*"Trade-off between teacher accuracy, margin, and complexity"* and finds an
+inside optimum for temperature. [Ildiz et al.](https://arxiv.org/abs/2410.18837)
+Prop 3 already finds an inside optimum for teacher capacity in a high-dimensional
+asymptotic model, meaning a model of behavior as the number of dimensions grows.
 
-**Survivor:** the *deflationary* paper — show the U-shape is a property of the
-coupled objective rather than of capacity, and that it dissolves under a
-decoupled loss. Contrarian, evidence already on its side, and it needs controls
-rather than CGMT.
+**The effect may not even be reliable.** In CRD Table 10, the same student is
+trained from teachers whose accuracy differs by 4.7 points. The student's
+score differs by only `-0.02`, while the run-to-run spread is `sigma = 0.32`.
+DKD says the real cause is *"the suppression of NCKD"*: a feature of the
+coupled KL training objective. Replacing KL with DKD changes the relationship
+between teacher and student ranking from `rho ~ 0.26` to `rho ~ 0.94`.
 
-## Gate 2: benchmark unidimensionality — SCOOPED TWICE
+**Surviving idea:** write the *deflationary* paper. In other words, test whether
+the U-shape comes from the coupled objective, not from model capacity, and
+whether it disappears with a decoupled loss. The evidence already supports
+this skeptical view. The study needs strong control experiments, not
+convex-Gaussian min-max theorem (CGMT) theory.
 
-**Statistically**, this is Horn's parallel analysis (1965, 6,518 citations), with
-the modern RMT replacement already published: Dobriban & Owen, *Deterministic
-Parallel Analysis* (**JRSS-B 2019**) and Dobriban, *Permutation methods for
-factor analysis and PCA* (**Annals of Statistics 2020**). Factor-number
-determination via BBP is settled in econometrics (Onatski 2009/2010, Bai & Ng,
-Ahn & Horenstein), with a new entry three weeks ago ([`2607.06908`](https://arxiv.org/abs/2607.06908)).
+## Gate 2: one-dimensional benchmark ability — SCOOPED TWICE
 
-**Empirically**, the question is already answered on the exact data. *AI
-Cartography* ([`2605.25272`](https://arxiv.org/abs/2605.25272), May 2026) runs item-level CFA/SEM on Open LLM
-Leaderboard responses — 4,000+ models, six benchmarks — compares six competing
-latent structures including unidimensional, uses permutation controls, and
-concludes *"unidimensional and independent-benchmark assumptions are
-untenable."* Its Prop 4.1 already delivers the changed decision: benchmark
-totals are not sufficient statistics for latent capability profiles.
+Here, *unidimensional* means that one hidden ability explains benchmark
+performance.
 
-Two technical landmines confirm it was ill-posed anyway: after stripping main
-effects from a **binary** matrix the residual variance is `p(1-p)`, so the null
-is a generalized MP law with a variance profile, not standard MP; and item
-nesting within benchmarks guarantees a second spike, making detection a
-foregone conclusion rather than a finding.
+**The statistical method already exists.** This is Horn's parallel analysis
+(1965, 6,518 citations). Its modern RMT replacement is already published:
+Dobriban & Owen, *Deterministic Parallel Analysis* (**JRSS-B 2019**), and
+Dobriban, *Permutation methods for factor analysis and PCA* (**Annals of
+Statistics 2020**). Finding the number of hidden factors with the BBP
+transition is settled in econometrics through Onatski 2009/2010, Bai & Ng, and
+Ahn & Horenstein. A new paper entered this area three weeks ago
+([`2607.06908`](https://arxiv.org/abs/2607.06908)).
 
-## Gate 3: transformer succinctness — (a) killed, (b) hard and crowded, (c) survives
+**The exact data question was also already answered.** *AI Cartography*
+([`2605.25272`](https://arxiv.org/abs/2605.25272), May 2026) studies item-level
+responses from the Open LLM Leaderboard: more than 4,000 models on six
+benchmarks. It uses confirmatory factor analysis and structural equation
+modeling (CFA/SEM), compares six possible hidden structures including the
+one-factor model, and includes permutation controls. It concludes that both
+the one-factor view and the view that each benchmark is independent are not
+supported. Prop 4.1 already gives the important decision: benchmark totals are
+not enough to describe a model's hidden capability profile.
 
-**The anchor paper is less novel than reported.** The core technique — a small
-description forcing an astronomically long shortest accepted word — originates
-in **Meyer & Stockmeyer 1972**; the field has been called "economy of
-description" since 1971. A full-text citation audit found **zero** occurrences
-of Horne, Hush, Sanford, Telgarsky, Hsu, Holzer, Kutrib, Gelade, Neven, Alon,
-Indyk, or Meyer. Three omissions are damaging:
+The planned test also had two technical traps. First, after removing the main
+effects from a **binary** matrix, each item's leftover variance is `p(1-p)`.
+The correct null is therefore a generalized Marchenko-Pastur, or MP, law with
+different variances, not the standard MP law. Second, items are grouped inside
+benchmarks. That grouping guarantees a second spike, so finding it would be an
+expected result rather than a discovery.
 
-- **Horne & Hush (NIPS 1993 / Neural Networks 1996)** gave size bounds for RNNs
-  implementing finite state machines — `O(sqrt(m))` unrestricted,
-  `O(sqrt(m) log m)` with weights in `{-1,1}`, `O(m)` with fan-in 2 — **with
-  matching lower bounds**, 32 years earlier, measuring RNN size *intrinsically*.
-- **[Sanford, Hsu & Telgarsky](https://arxiv.org/abs/2306.02896) (NeurIPS 2023)** already prove a transformer-vs-RNN
-  **size** separation using communication complexity, the sharper technique.
-- **[Gelade & Neven](https://arxiv.org/abs/0802.2869) (STACS 2008)** prove tight matched double-exponential bounds,
-  a stronger result form than the transformer paper's Thm 17.
+## Gate 3: transformer succinctness — (a) stopped, (b) open but hard, (c) survives
 
-What is genuinely the paper's own: the UHAT counter construction, the
-exponential UHAT-to-LTL translation (improving a doubly-exponential one), and
-EXPSPACE-**completeness**.
+*Succinctness* means how compactly a model can describe a language or behavior.
 
-**(a) SSM/[Mamba](https://arxiv.org/abs/2312.00752) succinctness — SCOOPED. Kill.** Asserted in the camera-ready
-abstract with no body proof, because every fixed-precision SSM is a bounded
-state vector, hence a DFA with `2^{kD}` states, hence Thm 17 applies. Jelassi et
-al. (ICML 2024) independently published a transformer-vs-SSM size separation
-with experiments. A structure-aware version would first require inventing a cost
-model for "SSM size," which does not exist because every paper treats the
-inter-layer MLP as free.
+**The main paper is less new than we first reported.** Its key idea—a short
+description whose shortest accepted word is extremely long—comes from
+**Meyer & Stockmeyer 1972**. The field has called this "economy of description"
+since 1971. A full-text check of the paper found **zero** mentions of Horne,
+Hush, Sanford, Telgarsky, Hsu, Holzer, Kutrib, Gelade, Neven, Alon, Indyk, or
+Meyer. Three missing references matter:
 
-**(b) Beyond fixed precision — OPEN, hard for a principled reason, crowded.**
-The shortest-accepted-word trick *fails* outside fixed precision; you must
-import fooling sets or communication complexity. That is real research, not
-routine — but Chakrabarti, Pitassi & Alman are now in this lane. Solo ramp
-9-18 months, and second place.
+- **Horne & Hush (NIPS 1993 / Neural Networks 1996)** gave size limits for RNNs
+  that implement finite-state machines. Their bounds were `O(sqrt(m))` with no
+  restrictions, `O(sqrt(m) log m)` with weights in `{-1,1}`, and `O(m)` with
+  fan-in 2. They also gave matching lower bounds. This was 32 years earlier,
+  and it measured RNN size directly.
+- **[Sanford, Hsu & Telgarsky](https://arxiv.org/abs/2306.02896) (NeurIPS
+  2023)** already proved a transformer-versus-RNN **size** separation using
+  communication complexity, which is the sharper method.
+- **[Gelade & Neven](https://arxiv.org/abs/0802.2869) (STACS 2008)** proved
+  tight, matching double-exponential bounds. That result is stronger in form
+  than Thm 17 of the transformer paper.
 
-**(c) Empirical succinctness — SURVIVES, and is better motivated than I thought.**
-The descriptional-complexity community's own flagged open problem is **intrinsic
-size measures — parameters and precision as a trade-off surface** — which is the
-theoretical counterpart of a bit-budget protocol. And because "SSM size" has no
-agreed cost model, measuring bits actually used **sidesteps a definitional fight
-the theory community has not settled.** The authors conceded exactly this gap to
-a reviewer (*"unclear if a training algorithm will always converge to such a
-succinct transformer"*), and the award committee invited it in writing.
+The paper does have original results: the UHAT counter construction, the
+exponential UHAT-to-LTL translation that improves an older doubly exponential
+translation, and EXPSPACE-**completeness**.
 
-Protocol shape: define `s_exist(n)` and `s_learn(n)` as the minimal bit budget
-(parameters x precision) at which an architecture *can* versus *does* recognize
-a graded language family to tolerance; bound `s_exist` above by construction plus
-distillation/pruning/quantization; estimate `s_learn` by best-of-K-seed
-training; **report the gap as the object of study.** Scoop risk is real
-(Cotterell's group publishes empirical formal-language learnability; Lin's group
-ships C-RASP synthesis with program-size optimization). Window 12-18 months.
+**(a) SSM/[Mamba](https://arxiv.org/abs/2312.00752) succinctness — SCOOPED.
+Kill this idea.** An SSM is a state-space model. At fixed numeric precision, it has
+a bounded state vector, so it is a deterministic finite automaton (DFA) with
+`2^{kD}` states. Thm 17 then applies directly. The camera-ready abstract already
+states this result even though the body has no proof. Jelassi et al. (ICML 2024)
+also published a transformer-versus-SSM size separation with experiments. A
+structure-aware version would first need a definition of "SSM size." No agreed
+cost model exists because papers treat the MLP between layers as free.
 
-## Gate 4: C-RASP learnability — ACTIVE, small but crowded and accelerating
+**(b) Beyond fixed precision — OPEN, hard for a clear reason, and crowded.**
+The shortest-accepted-word method stops working when precision is not fixed.
+The proof would need fooling sets or communication complexity. This is real,
+non-routine research, but Chakrabarti, Pitassi & Alman are now working in this
+area. A solo researcher would need 9–18 months to prepare, and would likely
+finish second.
 
-The candidate correctly found a thin spot and mislocated it as a thin field.
-Two funded, prize-winning, mutually collaborating groups (Lin/Zetzsche/Chiang/
-Yang on the formal-methods axis; Hahn/Bhattamishra on the learning axis) placed
-roughly **six ICML/ICLR 2026 papers** between them. Hahn holds an Emmy Noether
-grant and the 2026 Heinz Maier-Leibnitz Prize and is hiring onto this agenda.
+**(c) Empirical succinctness — SURVIVES, with stronger reasons than we first
+thought.** Researchers in descriptional complexity have named **intrinsic size
+measures—parameters and numeric precision as a trade-off surface** as an open
+problem. This is the theory version of measuring a fixed bit budget. Because
+there is no agreed meaning of "SSM size," measuring the bits actually used
+also avoids a definition fight that the theory community has not settled. The
+authors admitted this gap to a reviewer: *"unclear if a training algorithm will
+always converge to such a succinct transformer."* The award committee also
+asked for this work in writing.
 
-The framing claim is stale: "little work investigates learnability" is
-contradicted by Chen/Ma/Li (ICML'25), Yang et al. (ICML'26), Izzo et al., Huang
-et al. (NeurIPS'25), and two Bhattamishra papers. What is actually thin is
-*sample* complexity specifically. And the target paper ([`2607.11760`](https://arxiv.org/abs/2607.11760)) is 12 days
-old, by four insiders including the two best placed to finish it.
+The protocol would define `s_exist(n)` and `s_learn(n)`. They are the smallest
+bit budgets, measured as parameters × precision, at which a model architecture
+*can* recognize a graded family of languages and at which training *does*
+learn to recognize it, up to a chosen error limit. Bound `s_exist` from above
+with a hand-built construction plus distillation, pruning, and quantization.
+Estimate `s_learn` with best-of-K-seed training. **The difference between the
+two is the main object to study.** Another group could still publish first:
+Cotterell's group studies empirical formal-language learning, and Lin's group
+builds C-RASP synthesis with program-size optimization. The likely window is
+12–18 months.
 
-Tempo warning: the computability of C-RASP length-generalization bounds was an
-explicitly named open problem in early 2026 and was **fully resolved by ICML
-2026**.
+## Gate 4: C-RASP learnability — ACTIVE, small, but busy and speeding up
 
-**Least-contested seam:** joint length x sample complexity — Chen/Ma/Li own
-length complexity, Rizvi-Martel own sample complexity, nobody owns the joint
-object. Statistics-side ramp is genuinely short (4-8 weeks) and compute is one
-GPU. **Honest caveat:** the accessible half is the *upper* bound via parameter
-counting; the paper-making half is the *lower* bound, which needs shattering
-constructions and drifts back to the formal side.
+The candidate found a narrow opening, but wrongly described the whole field as
+small. Two funded, prize-winning groups work together here. One is
+Lin/Zetzsche/Chiang/Yang on formal methods; the other is Hahn/Bhattamishra on
+learning. Together they published about **six ICML/ICLR 2026 papers**. Hahn has
+an Emmy Noether grant, won the 2026 Heinz Maier-Leibnitz Prize, and is hiring
+people to work on this topic.
 
-The empirical branch is *more* crowded, not less — Huang et al. (ICLR 2025)
-already tested whether C-RASP predicts trained-transformer behaviour, and an
-ICML 2026 paper (104 pages) decompiles transformers to RASP.
+The claim that "little work investigates learnability" is now outdated.
+Chen/Ma/Li (ICML'25), Yang et al. (ICML'26), Izzo et al., Huang et al.
+(NeurIPS'25), and two Bhattamishra papers all study it. The part that is still
+thin is *sample complexity*: how many examples learning needs. The target paper
+([`2607.11760`](https://arxiv.org/abs/2607.11760)) was only 12 days old when
+this gate ran. Its four authors include the two people best placed to finish
+the work.
+
+The area also moves very fast. In early 2026, researchers clearly named the
+problem of computing C-RASP length-generalization bounds. By ICML 2026, the
+problem was **fully solved**.
+
+**Least-contested opening:** study length complexity and sample complexity
+together. Chen/Ma/Li cover length. Rizvi-Martel cover samples. Nobody covers
+the combined question. A researcher with a statistics background could prepare
+in 4–8 weeks, and the work needs one GPU. **Important limit:** the easier half
+is an *upper* bound from counting parameters. The result that makes a paper is
+the *lower* bound. That needs constructions showing what the model can shatter,
+and it moves back toward the harder formal-theory side.
+
+The experimental branch is even more crowded. Huang et al. (ICLR 2025)
+already tested whether C-RASP predicts the behavior of trained transformers.
+An ICML 2026 paper, 104 pages long, already turns transformers back into RASP
+programs.
 
 ## Related
 
-[[Math-Grounded-Direction-Survey]] — where these candidates came from.
-[[Home]] — the standing prior-art-gate rule that produced these gates (rule 1);
-originally recorded as Stage-E-Prior-Art-Audit (svib repo wiki).
+[[Math-Grounded-Direction-Survey]] — the source of these candidates.
+[[Home]] — the standing rule to check whether prior work already did an idea;
+this was originally recorded as Stage-E-Prior-Art-Audit in the svib repo wiki.

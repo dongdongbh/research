@@ -1,155 +1,177 @@
 # Pre-registration: Is One-Step Generative Diversity Collapse Intrinsic, or an Averaging Artifact?
 
-Status: **DRAFT v1, 2026-08-03 — for professor sign-off.** Locks after the
-week-1 substrate gate (§8). Target venue: **CVPR 2027** (deadline ~Nov 13,
-2026 per our deadlines table — confirm exact date at lock).
+Status: **DRAFT v1, 2026-08-03 — for professor sign-off.** This plan locks
+after the week-1 check in §8. Target venue: **CVPR 2027**. The deadline is
+around Nov 13, 2026 in our deadlines table; confirm the exact date before lock.
 
-Paper type: **diagnostic arbitration with a named method-unlock** (standing
-rules 5–6). Sibling pages: [[Prereg-RoboJudge-Audit]] ·
-[[Prereg-Crop-Consistency-Distillation]] · [[Prereg-Epistemic-Contextualization]].
+Paper type: **a study that decides between two explanations, with a named
+method it could make possible** (standing rules 5–6). Related plans:
+[[Prereg-RoboJudge-Audit]] · [[Prereg-Crop-Consistency-Distillation]] ·
+[[Prereg-Epistemic-Contextualization]].
 
 ---
 
-## 1. The problem, in plain language
+## 1. The problem
 
-One-step ("1-NFE") image generators — [MeanFlow](https://arxiv.org/abs/2505.13447), [Shortcut models](https://arxiv.org/abs/2410.12557), and now
-Drifting — produce a full image in a single network call instead of dozens,
-making generation ~50× cheaper. Their headline quality (FID) now rivals
-multi-step diffusion. But several groups report they are **less diverse**:
-they cover fewer of the modes the data contains.
+One-step, or "1-NFE," image generators create a full image with one network
+call instead of dozens. Examples include [MeanFlow](https://arxiv.org/abs/2505.13447), [Shortcut models](https://arxiv.org/abs/2410.12557), and now
+Drifting. They make generation about 50× cheaper. Their main quality score,
+Fréchet Inception Distance (FID), is now close to that of multi-step diffusion
+models. However, several groups report that these one-step models are **less
+diverse**: they represent fewer of the different patterns in the data.
 
-Two explanations are on the table and they demand different fixes:
-- **Intrinsic:** any single network call must commit at once; diversity loss
-  is the price of 1-NFE, and no objective change removes it.
-- **Averaging artifact:** the dominant 1-NFE training objectives are
-  MSE-on-average-velocity; MSE makes the model learn a *frequency-weighted
-  mean over sub-modes* ("averaging distortion"), so the collapse is specific
-  to that objective family and a non-averaging objective escapes it.
+There are two possible explanations, and each needs a different fix:
 
-Nobody has run the experiment that separates them.
+- **Intrinsic to one step:** a single network call must make every choice at
+  once. Losing diversity is the price of 1-NFE, and no change to the training
+  goal can remove it.
+- **Caused by averaging:** most 1-NFE methods train with mean squared error
+  (MSE) on average velocity. MSE can make the model learn a
+  *frequency-weighted average over sub-modes*, which is called averaging
+  distortion. Under this explanation, the training goal causes the collapse,
+  and a goal that does not average can avoid it.
 
-## 2. Current research state
+Nobody has run the experiment that tells these explanations apart.
 
-- **SubFlow** ([arXiv 2604.12273](https://arxiv.org/abs/2604.12273), Apr 2026) named the mechanism — "when
-  trained with MSE objectives, class-conditional flows learn a
-  frequency-weighted mean over intra-class sub-modes" — and fixed it with
-  sub-mode conditioning. **But it only tested the averaging family**
-  (MeanFlow, Shortcut). Its code is announced, not released.
-- **Drifting** (He group, [arXiv 2602.04770](https://arxiv.org/abs/2602.04770)) reaches 1-NFE **without an
-  averaging objective** (it "evolves the pushforward distribution during
-  training"). It is the natural falsifier — and it has never been measured
-  for diversity. Decisive substrate fact (verified Aug 2026): the released
-  `inference.py` in [`lambertae/drifting`](https://github.com/lambertae/drifting) (485★) **already computes FID, IS,
-  precision, and recall — the paper reports only FID/IS. Recall is
-  computable today and unreported.**
-- Matched averaging-family substrate: [`kvfrans/shortcut-models`](https://github.com/kvfrans/shortcut-models) (762★)
-  releases ImageNet-256 weights with **native 1/4/128-step sampling from the
-  same checkpoint**; MeanFlow/iMF/pMF weights on HF.
-- The crowded periphery is orthogonal: distillation-side diversity fixes
-  ([1.x-Distill](https://arxiv.org/abs/2604.04018), [Diversity-Preserved DMD](https://arxiv.org/abs/2602.03139), [Data-Forcing](https://arxiv.org/abs/2606.18478), [Don't-Settle-at-the-
-  Mode](https://arxiv.org/abs/2606.27371)) all live *inside* the averaging/distillation family. The
-  **cross-family arbitration is unrun** (lane sweep, Aug 2026).
+## 2. What recent work has shown
 
-## 3. Our method and novelty
+- **SubFlow** ([arXiv 2604.12273](https://arxiv.org/abs/2604.12273), Apr 2026) named the mechanism. It says
+  that "when trained with MSE objectives, class-conditional flows learn a
+  frequency-weighted mean over intra-class sub-modes." It uses sub-mode
+  conditioning as a fix. **However, it tests only the averaging family:**
+  MeanFlow and Shortcut. Its code is announced but not released.
+- **Drifting** from the He group ([arXiv 2602.04770](https://arxiv.org/abs/2602.04770)) reaches 1-NFE
+  **without an averaging objective**. It "evolves the pushforward distribution
+  during training." This makes it the natural model that could disprove the
+  averaging explanation, but nobody has measured its diversity. We verified an
+  important practical fact in Aug 2026: the released `inference.py` in
+  [`lambertae/drifting`](https://github.com/lambertae/drifting) (485★) **already calculates FID, Inception Score
+  (IS), precision, and recall. The paper reports only FID and IS. We can
+  calculate its unreported recall now.**
+- For a matched model from the averaging family,
+  [`kvfrans/shortcut-models`](https://github.com/kvfrans/shortcut-models) (762★) releases ImageNet-256 weights that can
+  sample in **1, 4, or 128 steps from the same checkpoint**. MeanFlow, iMF, and
+  pMF weights are also on Hugging Face (HF).
+- Nearby work studies a different question. Diversity fixes for distillation,
+  including [1.x-Distill](https://arxiv.org/abs/2604.04018), [Diversity-Preserved DMD](https://arxiv.org/abs/2602.03139),
+  [Data-Forcing](https://arxiv.org/abs/2606.18478), and [Don't-Settle-at-the-Mode](https://arxiv.org/abs/2606.27371), stay inside the
+  averaging/distillation family. The **comparison across objective families has
+  not been run**, based on our Aug 2026 search.
 
-**The within-model NFE ladder.** A naive cross-family recall comparison is
-meaningless (Drifting FID 1.53 vs Shortcut 1-step FID 10.6 — quality
-confound). Instead, each family is its own control:
+## 3. What is new in our study
 
-- For families with a native NFE ladder (Shortcut 1/4/128 from one
-  checkpoint; MeanFlow-family variants), the primary endpoint is the
-  **slope of recall vs NFE at matched precision**.
-- Drifting (natively 1-NFE) is scored against a precision-matched multi-step
-  reference; its recall *deficit* is compared to the averaging family's
-  1-vs-128-step deficit.
-- A **matched-budget from-scratch pair** (averaging vs drifting objective,
-  B/4 scale, ImageNet-64/CIFAR) controls capacity, data and compute — the
-  released checkpoints differ in all three.
+**Compare different step counts inside the same model family.** A simple
+Drifting-versus-Shortcut recall comparison would be unfair because their
+quality is different: Drifting FID is 1.53, while Shortcut 1-step FID is 10.6.
+This difference would be a hidden factor. Instead, each family acts as its own
+control:
 
-Predictions separate cleanly: if collapse is **intrinsic to 1-NFE**, recall
-falls toward 1-NFE in *every* family including Drifting; if it is
-**averaging-specific**, the drop is family-specific and Drifting retains
-recall at 1-NFE. Neither outcome is a null.
+- For a family that supports several numbers of function evaluations (NFE),
+  such as Shortcut at 1/4/128 steps from one checkpoint and the MeanFlow-family
+  variants, the main measurement is the **slope of recall versus NFE at matched
+  precision**.
+- Drifting is built for 1-NFE. Compare it with a multi-step reference matched
+  for precision. Then compare its recall *shortfall* with the averaging
+  family's shortfall from 128 steps to 1 step.
+- Train a **matched-budget pair from scratch** at B/4 size on ImageNet-64/CIFAR:
+  one uses an averaging goal and one uses the Drifting goal. This keeps model
+  capacity, data, and compute the same. The released checkpoints differ in all
+  three, so they cannot provide this control.
 
-Novelty (verified): first cross-family 1-NFE diversity measurement; first
-diversity numbers for Drifting at all; first test of SubFlow's mechanism
-outside the family it was derived on.
+The predictions are clear. If collapse is **intrinsic to 1-NFE**, recall will
+fall toward 1-NFE in every family, including Drifting. If collapse is
+**specific to averaging**, only that family will show the drop, while Drifting
+keeps recall at 1-NFE. Either answer is useful.
 
-## 4. Pre-registered design
+Checked novelty: this is the first cross-family measurement of 1-NFE diversity,
+the first diversity result of any kind for Drifting, and the first test of
+SubFlow's explanation outside the family on which it was built.
 
-**Substrates:** released checkpoints — Drifting latent/pixel B & L
-([`Goodeat/drifting`](https://huggingface.co/Goodeat/drifting)), Shortcut DiT-B/XL, MeanFlow/iMF/pMF (HF weights) — plus
-a many-step reference (standard flow/diffusion at matched arch) for the
-precision-matched recall ceiling; plus the from-scratch B/4 pair.
+## 4. Exact experiment plan
 
-**Metrics:** precision/recall ([Kynkäänniemi k-NN](https://arxiv.org/abs/1904.06991), k pre-fixed), coverage &
-density, per-class recall on ImageNet-256 (class-conditional sub-mode
-coverage is where averaging distortion bites), and a memorization check
-(nearest-train-neighbor distance) so "diverse" is not "copying." All at
-matched precision via guidance/temperature sweeps, matched sample count
-(50k), fixed seeds.
+**Models:** released Drifting latent/pixel B & L checkpoints from
+[`Goodeat/drifting`](https://huggingface.co/Goodeat/drifting); Shortcut DiT-B/XL; MeanFlow/iMF/pMF HF weights; a
+many-step standard flow or diffusion model with matched architecture as the
+precision-matched recall ceiling; and the pair we train from scratch at B/4.
 
-**Hypotheses (directional, locked):**
-- **H1:** recall decreases monotonically as NFE→1 within the averaging
-  family (confirms SubFlow's premise on its own turf).
-- **H2 (decisive):** Drifting's 1-NFE recall deficit vs its precision-matched
-  multi-step reference is **less than half** the averaging family's
-  1-vs-128 deficit (predict TRUE = averaging-specific).
-- **H3:** the from-scratch matched pair reproduces the H2 ordering (predict
-  TRUE; if FALSE, checkpoint confounds drove H2 — the honest downgrade).
-- **H4:** SubFlow-style sub-mode conditioning (reimplemented if their code
-  stays unreleased — scoped to the *published* recipe only) narrows the
-  averaging family's deficit but does not change Drifting's (predict TRUE).
+**Measurements:** precision/recall using [Kynkäänniemi k-NN](https://arxiv.org/abs/1904.06991), with k fixed
+before the run; coverage and density; recall for each ImageNet-256 class,
+because class-conditional coverage of sub-modes is where averaging distortion
+should appear; and distance to the nearest training image, so a model does not
+look "diverse" merely by copying. Match precision through guidance/temperature
+sweeps. Use the same sample count, 50k, and fixed random seeds.
 
-**Decision rules:** bootstrap CIs over sample splits; Holm across H1–H4;
-precision-matching tolerance pre-fixed (±0.02). H4 is dropped without
-penalty if reimplementation cannot reproduce SubFlow's published headline
-within tolerance (substrate-liveness rule — we do not publish nulls on our
-own reimplementation; H4 is confirmatory-only).
+**Predictions, fixed before the run:**
 
-**What we will NOT claim:** anything about text-to-image or video; anything
-about distillation-based one-step methods (different mechanism family);
-that any specific released model is "bad" — the object is the objective
-class, not the checkpoint.
+- **H1:** recall decreases steadily as NFE→1 inside the averaging family. This
+  confirms SubFlow's starting claim in the family it studied.
+- **H2, the deciding test:** Drifting's 1-NFE recall shortfall from its
+  precision-matched multi-step reference is **less than half** of the averaging
+  family's shortfall from 128 steps to 1 step. We predict TRUE, which supports
+  the averaging-specific explanation.
+- **H3:** the matched pair trained from scratch has the same ordering as H2. We
+  predict TRUE. If FALSE, differences between the released checkpoints caused
+  H2, and we must honestly weaken the claim.
+- **H4:** SubFlow-style sub-mode conditioning narrows the averaging family's
+  shortfall but does not change Drifting's. We predict TRUE. If SubFlow's code
+  remains unavailable, reimplement only its published recipe.
 
-## 5. Expected outcomes
+**Decision rules:** use bootstrap confidence intervals over sample splits and
+Holm correction across H1–H4. Fix the precision-matching tolerance at ±0.02.
+Drop H4 without penalty if our implementation cannot reproduce SubFlow's main
+published result within tolerance. This is the rule for checking that a test
+model is usable: we do not publish a negative result caused by our own failed
+reimplementation. H4 is only a confirmation test.
 
-- **Averaging-specific (H2 TRUE):** headline — "1-NFE does not force
-  diversity collapse; the objective does." Validates the non-averaging
-  route; method-unlock = objective-level guidance for one-step training,
-  and SubFlow's fix is scoped to where it is needed.
-- **Intrinsic (H2 FALSE):** headline — "one call, fewer modes: the
-  diversity cost of 1-NFE is objective-independent." Method-unlock = an
-  NFE-aware diversity budget (how many steps buy how much recall) and the
-  recommendation that coverage-critical applications not default to 1-NFE.
-- Artifact either way: the cross-family diversity harness (matched-precision
-  P/R/coverage/memorization protocol) — the measuring stick this lane lacks.
+**Claims we will not make:** claims about text-to-image or video; claims about
+one-step distillation methods, which use a different mechanism; or claims that
+any released model is "bad." We study the class of training goals, not one
+checkpoint.
 
-## 6. Resources and timeline
+## 5. What each possible result means
 
-**Cost:** 150–350 GPU-h. Inference sweeps on OrangeGrid A100; the
-from-scratch pair (~200 GPU-h) on Anvil A100 or Delta H200. **JAX-on-H200
-must be verified before relying on Delta** (recorded hardware lesson).
-Timeline to CVPR (~14 wks): Wk1 gate → Wk2–4 checkpoint sweeps → Wk5–8
-from-scratch pair → Wk9–10 H4 → Wk11–13 analysis/writing.
+- **Averaging-specific, H2 TRUE:** the main message is "1-NFE does not force
+  diversity collapse; the objective does." This supports training methods that
+  do not average. It also shows exactly where SubFlow's fix is needed. The
+  method opened by the result is better guidance for choosing one-step training
+  objectives.
+- **Intrinsic, H2 FALSE:** the main message is "one call, fewer modes: the
+  diversity cost of 1-NFE does not depend on the objective." The result opens a
+  way to budget diversity by NFE: measure how many steps buy how much recall,
+  and recommend that uses needing broad coverage should not default to 1-NFE.
+- In either case, release the cross-family diversity test harness: matched
+  precision, precision/recall, coverage, and memorization checks. This is the
+  common measuring tool the area currently lacks.
 
-## 7. Risks and scoop watch
+## 6. Resources and schedule
 
-- SubFlow releasing code + cross-family results is the main scoop path —
-  watch [`2604.12273`](https://arxiv.org/abs/2604.12273) versions; 6-week re-gate clock.
-- The He group could self-measure Drifting's recall (it is their
-  `inference.py`) — mitigated by speed: the first sweep is days of work.
-- Precision-matching may be impossible for some checkpoint pairs → report
-  the reachable precision range honestly; the from-scratch pair is the
-  clean fallback.
+**Cost:** 150–350 GPU-h. Run inference sweeps on OrangeGrid A100. Run the
+from-scratch pair, about 200 GPU-h, on Anvil A100 or Delta H200. **We must check
+that JAX works on H200 before depending on Delta**, based on an earlier hardware
+lesson.
 
-## 8. Week-1 gate (locks the prereg)
+Schedule for about 14 weeks before CVPR: week 1 check → weeks 2–4 checkpoint
+sweeps → weeks 5–8 from-scratch pair → weeks 9–10 H4 → weeks 11–13 analysis and
+writing.
 
-1. Run Drifting + Shortcut recall once end-to-end (the "recall is
-   computable today" claim, verified in our hands).
-2. JAX stack check on H200 and A100.
-3. Confirmatory literature pass, most recent 8 weeks explicit.
-4. Confirm CVPR 2027 exact deadline. Professor sign-off → LOCKED + git hash.
+## 7. Risks and competing work to watch
+
+- The main way this could be claimed first is for SubFlow to release code and
+  cross-family results. Watch versions of [`2604.12273`](https://arxiv.org/abs/2604.12273) and search again every 6
+  weeks.
+- The He group could measure recall for its own Drifting model because the code
+  is already in its `inference.py`. Move quickly: the first sweep takes days.
+- Some checkpoint pairs may have no shared precision range. If so, report the
+  reachable range honestly and rely on the matched from-scratch pair.
+
+## 8. Week-1 check before locking the plan
+
+1. Run Drifting and Shortcut recall once from beginning to end. This verifies
+   ourselves that recall can be calculated now.
+2. Check the JAX software on H200 and A100.
+3. Repeat the literature search with the most recent 8 weeks named directly.
+4. Confirm the exact CVPR 2027 deadline.
+5. Get professor approval, then mark the page LOCKED and record the git hash.
 
 ## Related
 

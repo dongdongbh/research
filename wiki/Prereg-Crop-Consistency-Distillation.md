@@ -1,196 +1,253 @@
 # Pre-registration: Crop-Consistency Distillation — Region Information at Single-Pass Cost
 
-Status: **LOCK HOLD, 2026-08-02.** The confirmatory literature pass found
-**[arXiv 2604.11496](https://arxiv.org/abs/2604.11496)** (Apr 2026, 3.5/4-axis match): its TF_Local publishes
-the headline insight (fine-grained alignment over FROZEN patch/token
-features → large compositional gains, retrieval preserved; [SugarCrepe](https://arxiv.org/abs/2306.14610)
-73.0→86.3) and its §3 diagnostic is our crop teacher. Surviving delta:
-**distillation into ROI-pooled patch features that preserves ~1.1×
-DUAL-ENCODER inference with cacheable embeddings** — TF_Local is a per-pair
-cross-encoder. Also: **[FineCLIP](https://openreview.net/forum?id=nExI4FuKWD) (NeurIPS 2024)** shows region
-self-distillation helps compositionality when the backbone trains → the A4
-conclusion must be scoped to "[CLIPSelf](https://arxiv.org/abs/2310.01403)'s released checkpoint, frozen ITM."
-**Re-gate verdict (2026-08-02): SURVIVES-NARROWED, level 2/5, ★★.** The
-exact cell (crop/cross-encoder teacher → ROI-pooled frozen-backbone student,
-compositional benchmarks, efficiency frontier) is empty, but every
-ingredient is owned: DCLIP ([2505.21549](https://arxiv.org/abs/2505.21549)) publishes the efficiency thesis
-verbatim in the retrieval-only cell ("without requiring region processing
-at inference"); [CPRD](https://arxiv.org/abs/2407.07479) (CVPR 2024) owns cross→bi VLM distillation; CLIPSelf/
-[DeCLIP](https://arxiv.org/abs/2505.04410) own the crop-teacher→ROI mechanism; [CLIC](https://arxiv.org/abs/2505.24424) owns retrieval
-preservation. Reviewer shape: "DCLIP + [SugarCrepe](https://arxiv.org/abs/2306.14610)." TF_Local code and
-BiSCoR-Ctrl are UNRELEASED (repo is a "Coming soon" stub, 0 citations) →
-the upper anchor must be re-implemented. 2604.11496 never discusses cost/
-cacheability — the whitespace is real but reads as an obvious follow-up,
-and concurrent NeurIPS'26/ICLR'27 submissions in this cell are invisible
-by construction. ★★½ only if: ≥10× cost advantage at ≥70% gain retention,
-paired CIs on ≥2 benchmarks, end-to-end latency (not FLOPs). ★½ if the
-TF_Local re-implementation fails to reproduce.
-**Decision at sign-off: proceed-reframed (★★ shape) vs bench the method**
-(A4/A5 results then fold into the SVIB write-up narrative). Prior status: DRAFT v1 for
-professor sign-off; week-1 decisive checks complete (§8). Target venue:
-**ICLR 2027** (abstracts Sep 18) — deadline unchanged, reframe cost is
-wording + one added baseline, not new experiments for the abstract.
+**Plain-language summary:** detailed image-text models compare many image
+patches with many words. They can understand relationships well, but they are
+slow because they repeat that work for every image-caption pair. This project
+asks whether a small training adapter can teach a cheap model to keep most of
+that detailed information. The cheap model would still save one reusable
+vector for each image and run at about 1.1× normal cost.
 
-Paper type: **METHOD** (owner definition: a new approach — here, a training
-procedure that breaks the assumption that patch tokens already carry region
-information). Gate record: [[Method-Gates-2026-08]]. Companion diagnostic:
+Terms used below:
+
+- A **frozen backbone** is a base model whose weights do not change.
+- **ROI pooling** combines features from one region of interest in an image.
+- A **dual encoder**, also called a **bi-encoder**, encodes image and text
+  separately, so their vectors can be saved and reused.
+- A **cross encoder** lets image and text interact during every comparison. It
+  is usually stronger but slower.
+- **Image-text matching (ITM)** asks whether an image and a caption belong
+  together.
+- **Distillation** trains a smaller or cheaper student to copy a stronger
+  teacher.
+
+Status: **LOCK HOLD, 2026-08-02.** The final literature check found
+**[arXiv 2604.11496](https://arxiv.org/abs/2604.11496)** from Apr 2026, with a 3.5/4-part match. Its TF_Local
+method already publishes the main insight: fine-grained alignment of FROZEN
+patch/token features gives large gains in compositional understanding while
+keeping retrieval quality. [SugarCrepe](https://arxiv.org/abs/2306.14610) rises from 73.0→86.3. Its §3 test is
+also our crop teacher.
+
+Our remaining difference is **distillation into ROI-pooled patch features that
+keeps about 1.1× DUAL-ENCODER inference and allows embeddings to be cached**.
+TF_Local is a per-pair cross-encoder. Also, **[FineCLIP](https://openreview.net/forum?id=nExI4FuKWD) (NeurIPS 2024)**
+shows that region self-distillation improves compositional skill when the
+backbone is trained. We must therefore limit the A4 conclusion to
+"[CLIPSelf](https://arxiv.org/abs/2310.01403)'s released checkpoint, frozen ITM."
+
+**New check on 2026-08-02: SURVIVES-NARROWED, level 2/5, ★★.** Nobody has run
+the exact combination of a crop/cross-encoder teacher, an ROI-pooled student on
+a frozen backbone, compositional benchmarks, and an efficiency comparison.
+However, others own every piece. DCLIP ([2505.21549](https://arxiv.org/abs/2505.21549)) makes the efficiency claim
+word for word in a retrieval-only setting: "without requiring region processing
+at inference." [CPRD](https://arxiv.org/abs/2407.07479) (CVPR 2024) already distills a cross-encoder VLM
+into a bi-encoder. CLIPSelf and [DeCLIP](https://arxiv.org/abs/2505.04410) own the crop-teacher→ROI mechanism.
+[CLIC](https://arxiv.org/abs/2505.24424) owns retrieval preservation. A reviewer may therefore describe this as
+"DCLIP + [SugarCrepe](https://arxiv.org/abs/2306.14610)."
+
+TF_Local's code and BiSCoR-Ctrl are UNRELEASED. The repository is only a
+"Coming soon" page and the paper has 0 citations, so we must reimplement the
+best-case reference. Paper 2604.11496 never discusses cost or cacheability. The
+gap is real, but it looks like an obvious next step, and competing NeurIPS'26 or
+ICLR'27 submissions are hidden from us by design. Raise the rating to ★★½ only
+if we show a ≥10× cost advantage while keeping ≥70% of the gain, paired CIs on
+≥2 benchmarks, and end-to-end latency rather than FLOPs. Lower it to ★½ if our
+TF_Local reimplementation does not reproduce the result.
+
+**Decision needed at sign-off:** continue with the narrower ★★ paper or move
+the method to the idea bench. If benched, A4/A5 results become part of the SVIB
+paper's story. The older status was DRAFT v1 for professor sign-off. The week-1
+deciding checks in §8 are complete. Target venue remains **ICLR 2027**, with
+abstracts due Sep 18. Changing the framing needs new wording and one extra
+baseline, but no new experiment for the abstract.
+
+Paper type: **METHOD**. Under the owner's definition, this is a new training
+procedure that challenges the belief that patch tokens already contain region
+information. Check record: [[Method-Gates-2026-08]]. Related diagnostic:
 [[Prereg-RoboJudge-Audit]].
 
 ---
 
-## 1. The problem, in plain language
+## 1. The problem
 
-Contrastive VLMs are compositionally brittle. Our SVIB post-mortem measured
-exactly where the fix lives and what it costs: re-encoding image **regions at
-full resolution** (a 20-crop grid + one self-attention layer) buys the gains
-(+2.66 [SugarCrepe++](https://arxiv.org/abs/2406.11171) on corrected CLIP) but at **~8× inference cost**; reusing
-the ViT's own ROI-pooled patch tokens is nearly free (1.06×) but **loses 1.32
-points** (paired 95% CI [−2.51, −0.12]). The region information is simply not
-in the patch tokens — and putting it there at training time, so inference
-needs one pass, is the method.
+Contrastive vision-language models (VLMs) often fail when meaning depends on
+how parts are combined. Our SVIB post-mortem found where the fix works and how
+much it costs. Re-encoding **image regions at full resolution** with a 20-crop
+grid and one self-attention layer gives +2.66 on [SugarCrepe++](https://arxiv.org/abs/2406.11171) with corrected
+CLIP, but costs about **8× more at inference**. Reusing the Vision Transformer's
+(ViT's) own ROI-pooled patch tokens costs only 1.06×, but **loses 1.32 points**,
+with paired 95% CI [−2.51, −0.12]. The patch tokens do not contain the needed
+region information. Our method tries to put that information there during
+training so inference needs only one pass.
 
-## 2. Current research state (gated 2026-08-03)
+## 2. What recent work has shown (checked 2026-08-03)
 
-- **[CLIPSelf](https://arxiv.org/abs/2310.01403) (ICLR 2024)** owns the ancestor mechanism — aligning dense-map
-  region representations with the image-level embedding of the corresponding
-  crop — but for **open-vocabulary dense prediction only**, with full ViT
-  fine-tuning and **no compositional/ITM evaluation**; none of its 100
-  citing papers applies it there. Repo public (207★, frozen Feb 2024, **no
-  license** — evaluate the checkpoint, reimplement the mechanism).
-- **DeGLA ([2504.16801](https://arxiv.org/abs/2504.16801))** improves compositionality at ~1× via a *different*
-  mechanism (global EMA-teacher preservation + LLM-generated hard negatives;
-  +3.5% avg [VALSE](https://arxiv.org/abs/2112.07566)/SugarCrepe/[ARO](https://arxiv.org/abs/2210.01936)) → **mandatory baseline**, not prior art on
-  our mechanism.
-- **The aggregation line** (LABCLIP, [DCSM ICCV 2025](https://arxiv.org/abs/2503.08723), ["Similarity Is Not
-  Logic"](https://arxiv.org/abs/2607.23052) ICML 2026) argues binding failure is *execution not representation*.
-  Our −1.32 evidence concerns region information for grid+attention gains,
-  not only binding — but reviewers will conflate them, so the aggregation
-  fix is a pre-registered **arm and kill criterion**, not a citation.
-- **Wave-2 gate addendum (2026-08-02, [[Method-Gates-Wave-2-2026-08]]):**
-  "LABCLIP" identified as **[arXiv 2502.03566](https://arxiv.org/abs/2502.03566) (ICLR 2026)** — a D×D
-  text-side matrix on *frozen* encoders (~590K params, shuffled-negative
-  training, ARO+[SugarCrepe](https://arxiv.org/abs/2306.14610)). It and DCSM are the published **concrete
-  instantiations of A5** (use them, not a home-built aggregation fix) and
-  both become named baseline rows. The gate's neighborhood read supports
-  §2's positioning: every 1× competitor (DCSM, LABCLIP, [ABE-CLIP](https://arxiv.org/abs/2512.17178), TF-Local)
-  reads out existing frozen features; none injects a stronger teacher
-  signal into the patch path.
-- [SILC](https://arxiv.org/abs/2310.13355) / [SigLIP-2](https://arxiv.org/abs/2502.14786) self-distillation is pretraining-time local-to-global on
-  the training pipeline's own crops — different direction, setting, and
-  objective from post-hoc crop→patch distillation on a frozen model.
+- **[CLIPSelf](https://arxiv.org/abs/2310.01403) (ICLR 2024)** is the earlier mechanism. It aligns region
+  representations from a dense feature map with the image-level embedding of
+  the matching crop. It uses this only for **open-vocabulary dense prediction**,
+  fully fine-tunes the ViT, and has **no compositional or image-text-matching
+  (ITM) evaluation**. None of its 100 citing papers applies the method there.
+  The repository is public with 207★ and has been unchanged since Feb 2024, but
+  it has **no license**. We may evaluate its checkpoint, but must reimplement
+  the mechanism.
+- **DeGLA ([2504.16801](https://arxiv.org/abs/2504.16801))** improves compositional skill at about 1× cost with a
+  *different* mechanism: a global exponential-moving-average (EMA) teacher
+  preserves knowledge while LLM-written hard negatives improve training. It
+  gains +3.5% on average across [VALSE](https://arxiv.org/abs/2112.07566), SugarCrepe, and [ARO](https://arxiv.org/abs/2210.01936). It is a
+  **required baseline**, not earlier work on our mechanism.
+- **Work on aggregation**, including LABCLIP, [DCSM (ICCV 2025)](https://arxiv.org/abs/2503.08723), and
+  ["Similarity Is Not Logic"](https://arxiv.org/abs/2607.23052) (ICML 2026), says binding fails because of how
+  features are used, not because information is absent from them. Our −1.32
+  result concerns region information behind the grid+attention gain, not only
+  binding. Reviewers may still mix these issues. We therefore include an
+  aggregation fix as a pre-registered **experimental arm and rule that can end
+  the project**, not merely as a citation.
+- **Added after the wave-2 check on 2026-08-02
+  ([[Method-Gates-Wave-2-2026-08]]):** "LABCLIP" is **[arXiv 2502.03566](https://arxiv.org/abs/2502.03566)
+  (ICLR 2026)**. It uses a D×D text-side matrix with *frozen* encoders, about
+  590K parameters, shuffled-negative training, ARO, and [SugarCrepe](https://arxiv.org/abs/2306.14610). LABCLIP
+  and DCSM are published versions of A5. Use them instead of making our own
+  aggregation fix, and list both as named baseline rows. This search also
+  supports our framing: every 1× competitor—DCSM, LABCLIP, [ABE-CLIP](https://arxiv.org/abs/2512.17178), and
+  TF-Local—reads features already present in the frozen model. None teaches the
+  patch path with a stronger signal.
+- [SILC](https://arxiv.org/abs/2310.13355) and [SigLIP-2](https://arxiv.org/abs/2502.14786) use local-to-global self-distillation during
+  pretraining on the pipeline's own crops. Our work instead adds post-hoc
+  crop→patch distillation to a frozen model. The direction, setting, and goal
+  all differ.
 
 ## 3. The method
 
-**Teacher (frozen, training-time only):** the full-resolution crop pathway —
-frozen backbone applied to the 20-view grid, plus our *trained
-grid+self-attention head* — i.e., a structured multi-region teacher, not
-single-crop embeddings (this is the delta from [CLIPSelf](https://arxiv.org/abs/2310.01403)'s teacher).
-**Student:** ROI-pooled patch tokens of the same frozen backbone, passed
-through a **light adapter** (primary: adapter after the frozen ViT;
-secondary: LoRA on the last N blocks).
-**Losses:** per-region feature matching (cosine) + a relational term
-matching the teacher head's inter-region attention pattern (transfers the
-dense-routing structure our interventions showed is load-bearing).
-**Data:** images only (COCO/VG; our cached crops) — the distillation is
-self-supervised; no captions, no annotations.
-**At inference:** one backbone pass + adapter ≈ **1.1×** cost; evaluation
-under our corrected, validation-locked ITM protocol.
+**Teacher, frozen and used only during training:** send the 20-view grid of
+full-resolution crops through the frozen backbone and our *trained
+grid+self-attention head*. This teacher understands several regions together;
+it is not a set of independent crop embeddings. That is the difference from
+[CLIPSelf](https://arxiv.org/abs/2310.01403)'s teacher.
 
-## 4. Pre-registered design
+**Student:** ROI-pool the patch tokens from the same frozen backbone, then send
+them through a **small adapter**. The main design puts the adapter after the
+frozen ViT. A second design uses LoRA on the last N blocks.
 
-**Arms** (CLIP ViT-B/32 primary; SigLIP2 B/16 secondary):
-- A0 raw frozen backbone (corrected baselines).
-- A1 patch-ROI, no distillation (lower anchor, −1.32).
-- A2 grid+self-attention @8× (upper anchor, +2.66).
-- A3 **ours**: distilled adapter @~1.1×.
-- A4 [CLIPSelf](https://arxiv.org/abs/2310.01403) released checkpoint, ROI-pooled, same protocol (**week-1
-  decisive check**).
-- A5 aggregation-fix over raw patch tokens @1× (kill-arm).
-- A6 DeGLA (published numbers; checkpoint if released).
-- Retrieval-preservation eval (COCO both directions) for A3.
+**Training losses:** match each region's teacher feature with cosine
+similarity. Also match the teacher head's pattern of attention between regions.
+This second, relational loss transfers the dense routing pattern that our
+earlier tests found was essential.
 
-**Hypotheses (directional, locked):**
-- **H1:** A3 recovers ≥⅔ of the (A2−A1) gap on [SugarCrepe++](https://arxiv.org/abs/2406.11171) under
-  validation-locked selection (predict TRUE).
-- **H2:** A3 − A0 ≥ +1.0 SCPP++ with paired CI excluding 0 (predict TRUE).
-- **H3:** A4 does NOT close the gap (predict TRUE — CLIPSelf's objective is
-  dense-prediction alignment, not ITM).
-- **H4:** A5 alone does NOT close the gap (predict TRUE; FALSE = the
-  representation was sufficient and the method is unnecessary → §kill).
-- **H5:** A3 preserves COCO retrieval within 0.5 R@1 both directions.
-- **H6:** A3 inference overhead ≤1.2× measured (same L40S protocol as SVIB).
+**Data:** images only from COCO/VG and our cached crops. This is self-supervised
+distillation, with no captions or labels.
 
-**Decision rules:** 3 seeds; paired bootstrap CIs (existing machinery);
-validation-locked α/config selection only; Holm across H1–H6.
-**Hyperparameter honesty:** an attempt budget of **6 training configs
-total** (loss weights × adapter size), fixed now; no post-hoc mining; all
-attempts reported.
+**At inference:** one backbone pass plus the adapter, about **1.1×** cost. Test
+it with our corrected ITM procedure, with every choice fixed on validation data.
 
-**Kill criteria:** (i) week-1: A4 already closes ≥⅔ of the gap → the paper
-collapses into a calibration of CLIPSelf (drop to bench; salvage = transfer
-study). (ii) A5 closes ≥⅔ of the gap → the fix is execution, not
-representation; fold our evidence into the readout-ladder paper instead.
-(iii) A3 fails to beat A1 beyond seed noise within the attempt budget →
-publish inside the honest-negative section of the SVIB write-up, not alone.
+## 4. Exact experiment plan
 
-**What we will NOT claim:** SOTA compositionality versus hard-negative
-fine-tuned models (different regime — we claim the frozen-backbone,
-annotation-free-at-inference lane); anything about generative/decoder VLMs;
-backbones beyond the two tested.
+**Experimental arms** with CLIP ViT-B/32 as the main model and SigLIP2 B/16 as
+the second model:
 
-## 5. Expected outcomes
+- A0: raw frozen backbone with corrected baselines.
+- A1: patch-ROI without distillation, the lower reference at −1.32.
+- A2: grid+self-attention at 8×, the upper reference at +2.66.
+- A3: **our** distilled adapter at about 1.1×.
+- A4: the released [CLIPSelf](https://arxiv.org/abs/2310.01403) checkpoint with ROI pooling and the same
+  procedure. This is the deciding week-1 check.
+- A5: an aggregation fix over raw patch tokens at 1×. This arm can end the idea.
+- A6: DeGLA using published numbers, or its checkpoint if released.
+- Also test whether A3 keeps COCO retrieval in both directions.
 
-- **Central (H1–H4 as predicted):** compositional gains at single-pass cost
-  — a deployable method converting SVIB's honest negative into its fix, with
-  the relational-distillation term as the mechanism novelty.
-- **A5-wins branch:** the field learns the representation was sufficient
-  after all — merged into the readout-arbitration line, still publishable.
-- Artifacts regardless: adapter weights, distillation recipe, and the
-  harness — on top of the already-released SVIB evaluation stack.
+**Predictions, fixed before the run:**
 
-## 6. Resources and timeline
+- **H1:** on [SugarCrepe++](https://arxiv.org/abs/2406.11171), A3 recovers ≥⅔ of the A2−A1 gap under
+  choices fixed on validation data. Predict TRUE.
+- **H2:** A3 − A0 ≥ +1.0 SCPP++, with paired CI excluding 0. Predict TRUE.
+- **H3:** A4 does NOT close the gap. Predict TRUE because CLIPSelf trains for
+  dense prediction, not ITM.
+- **H4:** A5 alone does NOT close the gap. Predict TRUE. If FALSE, the features
+  already had enough information and our method is unnecessary; follow the rule
+  below that ends the idea.
+- **H5:** A3 keeps COCO retrieval within 0.5 R@1 in both directions.
+- **H6:** A3's measured inference overhead is ≤1.2× under the same L40S setup
+  used for SVIB.
 
-**Cost:** 200–400 GPU-h (adapter training is small; teacher features are
-already cached for CLIP). OrangeGrid A100 primary; Anvil for the SigLIP2
-arm. Wk1: A4 + A5 decisive checks, lock. Wk2–3: A3 training sweep (attempt
-budget). Wk4: secondary backbone + retrieval. Wk5: seeds/CIs. Wk6:
-analysis. Wk7: write-up. Abstract needs A3-vs-A1 on the primary backbone.
+**Decision rules:** use 3 seeds and our existing paired-bootstrap CIs. Choose
+α and configurations only on validation data. Use Holm correction across
+H1–H6.
 
-## 7. Risks and scoop watch
+**Honest limit on tuning:** try **6 training configurations total**, covering
+loss weights × adapter size. This limit is fixed now. Do not search for a good
+setting after seeing test results, and report every attempt.
 
-- Aggregation-line groups moving training-side is the live scoop path —
-  watch LABCLIP/DCSM/SNL citations; standard 6-week re-gate; 48h re-gate on
-  any "crop distillation compositional" hit.
-- [CLIPSelf](https://arxiv.org/abs/2310.01403) has no license → its checkpoint is evaluated, never forked; our
-  implementation is from the paper.
-- Teacher ceiling: A2 is only +2.66 — effect sizes are small, hence the
-  paired-CI machinery and the ≥⅔-gap framing rather than absolute SOTA.
+**Rules that end the standalone project:** (i) if A4 closes ≥⅔ of the gap in
+week 1, this becomes only a study of how CLIPSelf transfers; move it to the idea
+bench. (ii) If A5 closes ≥⅔, the problem is how information is read out, not
+whether it exists. Move our evidence into the readout-ladder paper. (iii) If A3
+cannot beat A1 beyond random-seed variation within the six attempts, publish it
+inside SVIB's honest-negative section, not as its own paper.
 
-## 8. Lock checklist
+**Claims we will not make:** state of the art compositional skill against models
+fine-tuned with hard negatives, because that is a different setting; claims
+about generative or decoder VLMs; or claims about models beyond the two tested.
+Our claim is limited to a frozen backbone with no annotation needed at
+inference.
 
-1. Professor sign-off on §4 (esp. attempt budget and kill criteria).
-2. ~~Week-1 A4/A5 results in hand.~~ **DONE 2026-08-02, both as predicted,
-   neither kill criterion fires** (cropdistill repo, results/a4 + results/a5,
-   manifested + same-day wiki records):
-   - **A4/H3 TRUE, kill (i) cleared decisively:** [CLIPSelf](https://arxiv.org/abs/2310.01403) ROI-pooled lands
-     8–10 pts BELOW the base patch arm on every seed (locked A4−A1 = −12.8,
-     CI [−14.1, −11.5]); its global endpoint collapses to 42.7 vs 68.6 —
-     the dense-prediction objective destroys compositional ITM rather than
-     injecting region information.
-   - **A5/H4 TRUE, kill (ii) cleared:** LABCLIP closure vs the (A2−A1) gap
-     is negative on all three seeds (−0.97/−0.32/−0.18) while the same
-     matrices replicate the paper's +5.2 [SugarCrepe](https://arxiv.org/abs/2306.14610) gain (reimplementation
-     validated; null localized to the strict SCPP++ protocol). α=1 arm
-     reproduction check: 5.1e-7.
-3. **PIN BEFORE LOCK (from the A4/A5 runs):**
-   (a) A5 closure-anchor choice — A0- vs A1-anchored ratio (both computed;
-   pin one). (b) A4 conclusion worded as "A4 ≪ A1", not a closure ratio —
-   [EVA02](https://arxiv.org/abs/2303.11331)'s native crop-vs-patch gap is small/noisy (one seed exactly 0).
-   (c) A5 leakage deviation from the published recipe recorded: 19,006
-   Karpathy-train rows excluded.
-4. Confirmatory literature pass, most recent 8 weeks explicit (incl.
-   OpenReview — tooling installed 2026-08-02).
-5. → LOCKED + git hash; deviations logged below this line.
+## 5. What each possible result means
+
+- **Main result, with H1–H4 as predicted:** preserve compositional gains at the
+  cost of one pass. This turns SVIB's honest negative into a usable fix. The new
+  part of the mechanism is the loss that transfers relations between regions.
+- **If A5 wins:** the field learns that the original representation had enough
+  information. Combine the result with the readout study. It can still be
+  published there.
+- Release the adapter weights, training recipe, and test harness either way, on
+  top of the already released SVIB evaluation tools.
+
+## 6. Resources and schedule
+
+**Cost:** 200–400 GPU-h. Adapter training is small, and teacher features for
+CLIP are already cached. Use OrangeGrid A100 first and Anvil for SigLIP2.
+
+Week 1: A4 and A5 checks, then lock. Weeks 2–3: A3 training within the fixed
+attempt limit. Week 4: second backbone and retrieval. Week 5: random seeds and
+CIs. Week 6: analysis. Week 7: writing. The abstract needs the A3-versus-A1
+result on the main backbone.
+
+## 7. Risks and competing work to watch
+
+- The main risk is that an aggregation group moves from readout to training.
+  Watch citations of LABCLIP, DCSM, and SNL. Run the standard search every 6
+  weeks, and search within 48h after any hit for "crop distillation
+  compositional."
+- [CLIPSelf](https://arxiv.org/abs/2310.01403) has no license. Evaluate its checkpoint, but never fork it. Build
+  our implementation from the paper.
+- The teacher's gain is only +2.66. Effects are small, so use paired CIs and the
+  ≥⅔-gap target instead of claiming absolute state of the art.
+
+## 8. Checklist before locking
+
+1. Professor approval of §4, especially the six-attempt limit and rules that
+   end the project.
+2. ~~Finish the week-1 A4/A5 checks.~~ **DONE 2026-08-02. Both matched our
+   predictions, and neither rule ended the project.** Results are in the
+   cropdistill repository under `results/a4` and `results/a5`, with manifests
+   and same-day wiki records:
+   - **A4/H3 TRUE; rule (i) cleared clearly:** ROI-pooled [CLIPSelf](https://arxiv.org/abs/2310.01403) scores 8–10
+     points BELOW the base patch arm for every seed. Locked A4−A1 = −12.8,
+     CI [−14.1, −11.5]. Its global endpoint, meaning main measurement, falls to
+     42.7 versus 68.6. The dense-prediction goal harms compositional ITM instead
+     of adding region information.
+   - **A5/H4 TRUE; rule (ii) cleared:** LABCLIP closes a negative share of the
+     A2−A1 gap on all three seeds: −0.97/−0.32/−0.18. The same matrices repeat
+     the paper's +5.2 [SugarCrepe](https://arxiv.org/abs/2306.14610) gain, so the reimplementation is valid and the
+     negative result is specific to strict SCPP++. The α=1 reproduction check
+     is 5.1e-7.
+3. **DECIDE BEFORE LOCK, based on A4/A5:** (a) choose whether the A5 ratio uses
+   A0 or A1 as its reference. Both are calculated; select one. (b) Describe A4
+   as "A4 ≪ A1," not with a closure ratio. [EVA02](https://arxiv.org/abs/2303.11331)'s native crop-versus-patch
+   difference is small and noisy, and one seed is exactly 0. (c) Record one
+   change from the published A5 recipe: 19,006 Karpathy-train rows were removed
+   to prevent data leakage.
+4. Repeat the literature search with the most recent 8 weeks named directly,
+   including OpenReview. The tool was installed on 2026-08-02.
+5. Mark the page LOCKED and record the git hash. Log any later changes below
+   this line.
 
 ## Related
 

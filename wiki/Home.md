@@ -1,109 +1,128 @@
 # Research Wiki — Home
 
-General research knowledge shared across projects. Project-specific detail
-stays in each project's own repo/wiki (`svib` for the NeurIPS paper and its
-evidence base, `svib2` for the distillation line). Pages here were seeded
-from those wikis on 2026-08-02; this repo is now the canonical home for the
-general pages, and the copies left behind in `svib`/`svib2` are frozen.
+This wiki stores research knowledge that is useful across our projects.
+Details that belong to only one project stay in that project's own wiki:
+`svib` for the NeurIPS paper and its evidence, and `svib2` for the
+distillation work.
 
-The `wiki/` directory syncs to the GitHub Wiki automatically on push
-(`.github/workflows/wiki-sync.yml`). Results and analysis code live in the
-repo proper (see `results/`), not in the wiki.
+These pages were copied from those two wikis on 2026-08-02. This wiki is now
+the main source for the shared pages. The old copies in `svib` and `svib2`
+will not be updated.
 
-## Current strategy (read these first)
+The `wiki/` folder is copied to the GitHub Wiki after each push by
+`.github/workflows/wiki-sync.yml`. Results and analysis code belong in the
+main repository. See `results/`.
+
+## What to read first
+
+The stars show how strongly we recommend a research direction. Five stars is
+the highest rating.
 
 - **[[Unified-Direction-Ranking-2026-08]] — CURRENT RANKING, 2026-08-03.**
-  Full 8-lane gating sweep of every scan candidate: three flagships
-  (autoresearch FDR ★★★★★, judge-audit program ★★★★½, parallel-RL
-  factorial ★★★★½), a deep ★★★★ bench, T1 demoted to ★★★ (three cells
-  published at top venues), ten candidates killed with evidence, and the
-  week-one zero-cost gates.
-- **[[Method-Gates-2026-08]] — NEW.** Gates for the two real-method
-  candidates (owner definition: new approach, not ablation/statistics).
-  Both survive: crop-consistency distillation ★★★★ (CLIPSelf mechanism
-  exists for dense prediction only; compositional-ITM/frozen-adapter/
-  structured-teacher form unclaimed; week-1 CLIPSelf-checkpoint check is
-  the condition) and epistemic contextualization ★★★★ (no implementation
-  exists; tag-conditioning neighbors are distinct; tag-only arm is the
-  decisive control).
-- **Pre-registrations (DRAFT, awaiting sign-off):**
-  ICLR 2027 — [[Prereg-RoboJudge-Audit]] (diagnostic) ·
-  [[Prereg-Crop-Consistency-Distillation]] (method).
-  CVPR 2027 — [[Prereg-1NFE-Diversity]] (diagnostic).
+  We checked every idea across eight research areas. Three ideas first reached
+  the top group: controlling false discoveries in automated research
+  (autoresearch FDR) ★★★★★, checking whether AI judges are trustworthy
+  ★★★★½, and testing combinations of parallel reinforcement-learning choices
+  ★★★★½. We also found many strong ★★★★ ideas. T1 fell to ★★★ because three
+  parts of it had already been published at top venues. Ten ideas were ruled
+  out with evidence. The page also lists cheap checks to run in week one.
+- **[[Method-Gates-2026-08]] — NEW.** This page checks the two candidates that
+  meet the owner's definition of a new method. A new method must add a new
+  approach, rather than only remove one part or report statistics. Both ideas
+  survive. Crop-consistency distillation rates ★★★★. CLIPSelf already uses a
+  related idea for dense prediction, but nobody has claimed our
+  compositional image-text matching form with a frozen adapter and structured
+  teacher. It must pass a week-one check using the CLIPSelf checkpoint.
+  Epistemic contextualization also rates ★★★★. Here, “epistemic” means showing
+  how certain or well-supported a statement is. No one has built this method
+  yet. The key control is a version that adds only tags.
+- **Draft pre-registrations waiting for approval:**
+  ICLR 2027 — [[Prereg-RoboJudge-Audit]] (a study that diagnoses a problem)
+  and [[Prereg-Crop-Consistency-Distillation]] (a new method).
+  CVPR 2027 — [[Prereg-1NFE-Diversity]] (diagnosis).
   ICML 2027 — [[Prereg-Epistemic-Contextualization]] (method).
-  Stale drafts for superseded picks (autoresearch accept rule, parallel-RL
-  factorial, SigLIP-2 ladder) were removed 2026-08-04; recoverable from git
-  history; decisions and evidence remain in [[Unified-Direction-Ranking-2026-08]]
-  and [[Method-Gates-2026-08]].
-- [[Top-Researcher-Scan-2026-08]] — 26 leading researchers profiled:
-  convergence map (verification bottleneck, diversity collapse, unarbitrated
-  mechanism claims), ranked opportunities, method directions, operating
-  lessons.
-- [[Direction-Reevaluation-2026-08]] — all eight candidate directions
-  re-gated by remaining opportunity (not crowding); current star ranking.
-- [[Status-And-Survivors]] — plain-language orientation: every surviving
-  direction with cost, pros/cons, and star priorities (star table superseded
-  by the re-evaluation above; SVIB part now lives in the svib repo).
+  Old drafts for ideas we no longer chose—an autoresearch accept rule, a
+  parallel-RL combination study, and a SigLIP-2 ladder—were removed on
+  2026-08-04. Git history can recover them. Their decisions and evidence
+  remain in [[Unified-Direction-Ranking-2026-08]] and
+  [[Method-Gates-2026-08]].
+- [[Top-Researcher-Scan-2026-08]] — profiles of 26 leading researchers. It
+  shows where several researchers point to the same problems: weak checking,
+  loss of diversity, and competing explanations that no study has tested
+  against each other. It also lists research ideas and work habits.
+- [[Direction-Reevaluation-2026-08]] — a fresh check of all eight candidate
+  directions. It ranks them by how much useful work remains, not by how many
+  people are working nearby.
+- [[Status-And-Survivors]] — an easy starting point. It explains every idea
+  that was still alive, its cost, and its good and bad points. Its star table
+  is older than the re-evaluation above. The SVIB section now lives in the
+  `svib` repository.
 
-## Direction surveys and gates (history of what we checked)
+## Earlier surveys and checks
 
-- [[Method-Opportunities]] — method directions with baselines and numbers to
-  beat (T1–T4 and clusters).
-- [[Live-Research-Opportunities]] — evaluation-side directions.
-- [[Self-Improving-AI-Survey]] — 772-paper sweep; verdict superseded by the
-  re-evaluation, taxonomy still valid.
-- [[Field-Scouting-Survey]] · [[Math-Grounded-Direction-Survey]] ·
-  [[Next-Direction-Literature-Survey]] · [[Calibration-Opportunity-Survey]] ·
-  [[Compression-Audit-Direction]]
-- Gates and pre-registrations (closed): [[Direction-Gate-Results]] ·
+- [[Method-Opportunities]] — possible new methods, including the baselines
+  and numbers each method must beat.
+- [[Live-Research-Opportunities]] — ideas about testing and evaluation.
+- [[Self-Improving-AI-Survey]] — a review of 772 papers. Its old final choice
+  was replaced by the re-evaluation, but its map of the field is still useful.
+- Other surveys: [[Field-Scouting-Survey]] ·
+  [[Math-Grounded-Direction-Survey]] ·
+  [[Next-Direction-Literature-Survey]] ·
+  [[Calibration-Opportunity-Survey]] · [[Compression-Audit-Direction]]
+- Closed checks and pre-registrations: [[Direction-Gate-Results]] ·
   [[LLM-KD-Direction-Gates]] · [[KD-Noise-Floor-Stage1]] ·
   [[KD-Evidence-Audit-Gate]] · [[Calibration-Draw-Preregistration]] ·
   [[Calibration-Prior-Art-Gate]] · [[Temperature-Confound-Preregistration]]
 
-## Cluster setup and best practice (from svib2)
+## Cluster setup and resource guides
 
-- [[GPU-Resources-Across-Clusters]] — what GPUs we have where (OrangeGrid
-  L40S/A100 no-credit no-time-limit; Anvil A100 + H100 "Anvil AI"; Delta),
-  and what to run on which.
-- [[Anvil-Interactive-GPU-Workflow]] — the default workflow for interactive
-  GPU work on Anvil.
-- [[Delta-Setup-and-Parallel-Workflow]] — NCSA Delta setup and running
-  Anvil+Delta in parallel.
-- [[Anvil-vs-Delta]] — cluster comparison across Anvil, Delta, DeltaAI, and
-  Bridges-2 (hardware, partitions, quotas, queueing, accounting).
-- [[CUDA-Compatibility-and-vLLM]] — CUDA/driver/vLLM compatibility notes.
-- [[Data-Transfer-Between-Clusters]] — how to move large files between Anvil,
-  Delta, and OrangeGrid (Globus / rsync / staging recipes; croc as fallback).
-- [[Data-and-Caches]] — where datasets, feature caches, and artifacts live
-  under `/anvil/projects/x-cis261253/`, and provenance rules.
-- [[Research-Automation-Tools]] — installed automation/skills tooling.
-- [[Anvil-H100-Qwen36-vLLM-Benchmark]] — H100 vLLM throughput reference.
+- [[GPU-Resources-Across-Clusters]] — which GPUs are available and which
+  cluster should run each kind of job.
+- [[Anvil-Interactive-GPU-Workflow]] — the normal way to run interactive GPU
+  work on Anvil.
+- [[Delta-Setup-and-Parallel-Workflow]] — how to set up Delta and use Anvil
+  and Delta at the same time.
+- [[Anvil-vs-Delta]] — hardware, queues, limits, storage, and costs for Anvil,
+  Delta, DeltaAI, and Bridges-2.
+- [[CUDA-Compatibility-and-vLLM]] — CUDA, driver, and vLLM compatibility.
+- [[Data-Transfer-Between-Clusters]] — how to move large files among Anvil,
+  Delta, and OrangeGrid.
+- [[Data-and-Caches]] — where datasets, feature caches, and other saved files
+  live under `/anvil/projects/x-cis261253/`, plus rules for tracking their
+  source.
+- [[Research-Automation-Tools]] — installed tools and skills.
+- [[Anvil-H100-Qwen36-vLLM-Benchmark]] — measured H100 vLLM speed.
 
-Additional cluster facts recorded in [[Top-Researcher-Scan-2026-08]]
-(operational notes): Isaac Sim needs RT cores — L40S only, not A100/H100/H200;
-MuJoCo/SAPIEN stacks run everywhere.
+One extra hardware fact appears in [[Top-Researcher-Scan-2026-08]]: Isaac Sim
+needs ray-tracing (RT) cores. It runs on L40S GPUs, but not on A100, H100, or
+H200 GPUs. MuJoCo and SAPIEN run on all of them.
 
-## Standing process rules
+## Rules for choosing research
 
-1. **Prior-art gate before any experiment** — read method sections of the
-   nearest papers and quote the sentence establishing the gap; never trust a
-   paper's own novelty claim; re-run any gate older than ~6 weeks; **every
-   search must explicitly cover the most recent 8 weeks** (a July gate missed
-   two June papers that had already killed its direction).
-2. **Re-gates must re-identify the competitor, not just re-check the claim** —
-   T1's cells went to three top venues while we watched the wrong group.
-3. **Lane-wide sweeps beat person-scoped checks** — four researcher-scan
-   premises died on lane search that person-scoped checks had passed.
-4. **Filter directions by remaining opportunity (saturation), never by
-   crowding** — and an empty lane must explain why it is empty.
-5. **Every diagnostic project names, at pre-registration time, the method
-   paper it unlocks** — diagnosis first, then own the fix.
-6. **Pair every arbitration with a released reusable artifact** (harness,
-   benchmark, metric) — diagnostics buy credibility, artifacts buy citations.
-7. **Substrate liveness gates outcomes, not just cost** — a null on your own
-   reimplementation of unreleased code is not defensible; verify cited
-   benchmarks/datasets actually exist and hydrate before rating a direction.
-8. **Verify quoted numbers against primary artifacts** before they enter a
-   design brief.
-9. Ask "who changes their behavior if this result is true?" before committing
-   compute.
+1. **Check recent work before running an experiment.** Read the method
+   sections of the closest papers. Save the exact sentence that proves the
+   question is still open. Do not trust a paper's own claim that it is new.
+   Repeat any check older than about six weeks. Every search must include the
+   newest eight weeks. A July check missed two June papers that had already
+   answered its question.
+2. **When checking again, find the current competitors.** Do not only repeat
+   the old search. Three parts of T1 appeared at top venues while we watched
+   the wrong group.
+3. **Search the whole research area, not only one person's work.** Wider
+   searches disproved four ideas that researcher-by-researcher searches had
+   allowed through.
+4. **Choose ideas by how much useful work remains.** Do not reject an area
+   only because many people work there. If an area looks empty, explain why.
+5. **Every study that diagnoses a problem must name the method it could lead
+   to before registration.** First prove the problem. Then build the fix.
+6. **Release a useful tool with every study that settles a dispute.** This
+   may be a test harness, benchmark, or metric. A diagnostic result builds
+   trust; a reusable tool helps others and earns citations.
+7. **Check that the needed code, data, and checkpoints really work.** A null
+   result from our own copy of unreleased code is not strong evidence. Confirm
+   that each named benchmark and dataset exists and can be downloaded before
+   rating an idea.
+8. **Check every quoted number in the original paper or artifact** before
+   putting it in a research plan.
+9. Before spending compute, ask: **“Who would do something differently if
+   this result were true?”**

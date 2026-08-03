@@ -1,220 +1,301 @@
 # Direction Re-evaluation — 2026-08-02
 
-> **SUPERSEDED 2026-08-03.** The star ranking below was replaced by
-> [[Unified-Direction-Ranking-2026-08]] after a full 8-lane gating sweep of
-> the researcher-scan candidates. Biggest changes: T1 demoted ★★★★½ → ★★★
-> (three of its four cells published at CVPR/ICLR/ICML 2026 — the flagged
-> scoop risk was the wrong group); safety-aware KV allocation dead (scooped
-> in June, before this page's gate ran); three new flagships identified
-> (autoresearch FDR ★★★★★, judge-audit program ★★★★½, parallel-RL factorial
-> ★★★★½). This page is kept as the record of the Aug 2 re-gate.
+> **SUPERSEDED 2026-08-03.** The star ranking on this page was replaced by
+> [[Unified-Direction-Ranking-2026-08]] after a full check of all eight
+> research areas from the researcher scan. The largest changes were:
+>
+> - T1, which asks when to freeze or train the vision encoder under different
+>   training goals and stages, fell from ★★★★½ to ★★★. Three of its four
+>   experiment combinations appeared at CVPR/ICLR/ICML 2026, and we had worried
+>   about the wrong group publishing first.
+> - The idea of giving KV-cache space to layers based on safety, not only text
+>   prediction quality, was stopped. June work had already done it before this
+>   gate ran.
+> - Three new top ideas appeared: control the false discovery rate (FDR) when
+>   automated research systems test many ideas, ★★★★★; audit whether AI judges
+>   measure what they claim, ★★★★½; and compare combinations of design choices
+>   in parallel reinforcement learning (parallel RL), ★★★★½.
+>
+> This page remains as the record of the August 2 re-check.
 
+Updated 2026-08-02 for the general research wiki. At that time, **this page was
+the current source for the direction star ranking**. Older star tables were
+replaced by it. The banner above explains the newer 2026-08-03 replacement.
 
-Updated 2026-08-02 for the general research wiki. **This page is the current
-authority on the direction star ranking**; older star tables elsewhere in this
-wiki are superseded by it.
+Status: **Complete.** Eight Opus agents searched deeply in parallel, one for
+each direction. They judged ideas by how much useful work remained, not by how
+many people were working nearby. This followed the PI's corrected rule:
+*"a topic can not be filtered out only by its hot/crowd; a topic is only
+filtered out if there are fewer opportunities — the direction is saturated."*
+Here, *saturated* means already studied so heavily that little useful work is
+left. The reverse rule also applied: before we give credit to an empty research
+area, we must explain why it is empty.
 
-Status: **Complete.** Eight parallel deep-search agents (Opus), one per
-direction, each instructed to judge by **remaining opportunity** rather than
-crowd count, per the PI's corrected criterion: *"a topic can not be filtered
-out only by its hot/crowd; a topic is only filtered out if there are fewer
-opportunities — the direction is saturated."* The inverse was also enforced:
-an empty lane must explain why it is empty before being credited for emptiness.
+Tooling note: the WebSearch budget ran out. The paper-search script also hit
+Semantic Scholar 429 rate-limit errors for most agents. Evidence therefore
+came from arXiv abstract and HTML pages, the Hugging Face (HF) papers API, the
+Semantic Scholar graph API, and OpenAlex. The search covered arXiv well, but it
+did not fully check conference-only proceedings such as GECCO and PPSN.
 
-Tooling note: WebSearch was budget-exhausted and the paper-search script died
-on Semantic Scholar 429s for most agents; evidence came from arXiv abs/HTML,
-the HF papers API, the Semantic Scholar graph API, and OpenAlex. Coverage is
-arXiv-heavy; GECCO/PPSN and other venue-native proceedings were not swept.
+## Results
 
-## Outcome table
-
-| Direction | Old | New | Movement |
+| Direction | Old | New | Change |
 |---|---|---|---|
-| T1 freeze × objective × stage | ★★★★★ | **★★★★½** | Confirmed; design revised |
-| T3 multimodal mixture crossover | ★★★ | **★★★★½** | Up — saturation was text-only |
-| T2 perception audit + estimator | ★★★★ | **★★★★** | Held; reframed to cross-method audit |
-| Self-training collapse arbitration | do not enter | **★★★★** | Reversed |
-| AHD cost-crossover + novelty audit | ★★ | **★★★★** | Up — expansion outpaces controls ~10:1 |
-| KV-cache allocation | ★★★ | **★★★★ narrowed** (safety-aware) / ★★★ as-scoped | Up if narrowed |
-| B1 diversity attribution | ★★★★ | **★★★** | Down — scooped 2026-04 |
-| T4 anneal-window data | ★★★★★ | **★★** | Down — scooped 3×, moat citable |
+| T1 freeze × objective × stage | ★★★★★ | **★★★★½** | Confirmed; experiment design changed |
+| T3 multimodal mixture crossover | ★★★ | **★★★★½** | Raised; only the text-only area was heavily studied |
+| T2 perception audit + estimator | ★★★★ | **★★★★** | Stayed; changed to an audit across methods |
+| Self-training collapse careful comparison | do not enter | **★★★★** | Reversed |
+| AHD cost crossover + novelty audit | ★★ | **★★★★** | Raised; new claims grow about 10 times faster than controls |
+| KV-cache allocation | ★★★ | **★★★★ narrowed** (safety-aware) / ★★★ as first planned | Raised only for the narrower version |
+| B1 diversity attribution | ★★★★ | **★★★** | Lowered; already done in 2026-04 |
+| T4 anneal-window data | ★★★★★ | **★★** | Lowered; done three times, with a clear reason small-scale work is weak |
 
-SVIB write-up (★★★★☆) was not re-evaluated; unchanged.
+The SVIB write-up (★★★★☆) was not checked again. Its score stayed the same.
 
-## Per-direction key evidence
+## Evidence for each direction
 
-### T1 — confirmed ★★★★½, HIGH density
+### T1 — confirmed ★★★★½, HIGH evidence density
 
-- CoVFT ([2603.21077](https://arxiv.org/abs/2603.21077), Mar 2026) abstract: freeze-vs-finetune "remains
-  unresolved"; its own benchmark is SFT-only, VFT beats frozen on only 6/12
-  benchmarks. Zero citations.
-- Frankenstein ([2602.12395](https://arxiv.org/abs/2602.12395)) analyzes what RL improves but never intervenes on
-  the vision encoder. New 2026 contradiction: [PIVOT](https://arxiv.org/abs/2510.16333) (RL strengthens the
-  encoder) vs Frankenstein (gains concentrate mid-late LLM layers).
-- [2605.20177](https://arxiv.org/abs/2605.20177) confounds freeze with stage in its headline staged-training claim.
-- No consolidating survey on VLM training recipes exists. 7B band uncontested.
-- **Design revision:** objective axis becomes 3-level — SFT / RL / SFT +
-  perceptual auxiliary (VIRAL-style) — because PIVOT occupies {unfrozen} ×
-  {SFT, DPO}. Best question: does the freeze effect flip sign under a
-  non-language-generation objective?
-- Scoop path: CoVFT group adds an RL arm. Use their public harness.
+- CoVFT ([2603.21077](https://arxiv.org/abs/2603.21077), March 2026) says the
+  freeze-versus-fine-tune question "remains unresolved." Its benchmark uses
+  only supervised fine-tuning (SFT-only). Vision fine-tuning (VFT) beats freezing
+  on only 6 of 12 benchmarks. The paper had zero citations.
+- Frankenstein ([2602.12395](https://arxiv.org/abs/2602.12395)) studies what
+  reinforcement learning (RL) improves, but never changes whether the vision
+  encoder is frozen. Two 2026 results disagree: [PIVOT](https://arxiv.org/abs/2510.16333)
+  says RL strengthens the encoder, while Frankenstein says most gains happen
+  in the middle-to-late LLM layers.
+- [2605.20177](https://arxiv.org/abs/2605.20177) mixes up two choices—freezing
+  and training stage—in its main staged-training claim. This hidden mixing of
+  causes is a *confound*.
+- There is no survey that combines VLM training recipes. The 7B model-size
+  range is still open.
+- **Design change:** use three objective choices: SFT / RL / SFT plus a
+  perception-focused extra loss, in a VIRAL-style design. This is needed because PIVOT
+  already covers the combinations {unfrozen} × {SFT, DPO}. The best question
+  is whether freezing changes from helpful to harmful, or vice versa, under
+  an objective that is not language generation.
+- Main risk: the CoVFT group could add an RL experiment. Use its public test
+  harness.
 
-### T3 — up to ★★★★½, HIGH density
+### T3 — raised to ★★★★½, HIGH evidence density
 
-- Of 8 mixture methods [DataComp-VLM](https://arxiv.org/abs/2606.28551) cites, 7 are text-only; the 8th
-  ([2602.04937](https://arxiv.org/abs/2602.04937)) is SFT-stage. DataComp-VLM verbatim: "there exists no
+- DataComp-VLM cites eight mixture methods. Seven are text-only. The eighth
+  ([2602.04937](https://arxiv.org/abs/2602.04937)) studies the SFT-stage.
+  [DataComp-VLM](https://arxiv.org/abs/2606.28551) says: "there exists no
   systematic study on filtering and mixing strategies in the VLM setting."
-  Zero surveys in its 347 refs.
-- Live contradiction: Shukor [2507.09404](https://arxiv.org/abs/2507.09404) (mixture scaling laws extrapolate,
-  validated on native multimodal) vs DataComp-VLM's measured rank inversion
-  (caption-heavy wins at 1B×6.25B, instruction-heavy at 2B/4B×25B+). Neither
-  cites the other on this.
-- DataComp-VLM v1 has 13 unresolved LaTeX labels including the promised
-  multi-axis mixture appendix — the analysis is unwritten.
-- Public checkpoints at 4 scales convert a ~25,000 H100-h study into ~500.
-- Best question: can the small→large mixture-ranking crossover be predicted
-  (Shukor-style loss laws, Berasi-style merging proxies) without paying for
-  the large runs? Negative result invalidates small-proxy mixture search.
-- Watch: Farina co-authors both 2602.04937 and 20/20-adjacent work; the
-  consortium runs this as a competition.
+  Its 347 references contain no survey of this question.
+- Two live results disagree. Shukor
+  [2507.09404](https://arxiv.org/abs/2507.09404) says mixture scaling laws can
+  predict larger runs and tests this on native multimodal data. DataComp-VLM
+  sees the ranking reverse: caption-heavy data wins at `1B×6.25B`, but
+  instruction-heavy data wins at `2B/4B×25B+`. Neither paper cites the other
+  on this conflict.
+- DataComp-VLM v1 has 13 broken LaTeX references, including the promised
+  appendix about mixtures across several choices. That analysis has not been
+  written.
+- Public checkpoints at four model scales reduce a study that originally cost
+  about 25,000 H100-h to about 500 H100-h.
+- Best question: can we predict when the best mixture changes from small to
+  large models without paying for the large runs? Possible tools are
+  Shukor-style loss laws and Berasi-style model-merging shortcuts. A negative
+  result would show that small proxy runs cannot guide mixture search.
+- Watch Farina's group. Farina co-authored both 2602.04937 and work near the
+  20/20 setting, and the consortium treats this as a competition.
 
-### T2 — held ★★★★, reframed
+### T2 — stayed ★★★★, with a new framing
 
-- Original framing partially scooped: [2602.12395](https://arxiv.org/abs/2602.12395) corroborated Perception-R1's
-  null mechanistically; [2603.01301](https://arxiv.org/abs/2603.01301) ran the sharpening decomposition (medical).
-- Open, unclaimed: ~50 perception-targeted RL methods ([PAPO](https://arxiv.org/abs/2507.06448) 89 citations) vs
-  three 2026 diagnostics showing gains survive image masking/corruption
-  ([2605.09266](https://arxiv.org/abs/2605.09266), [2604.03179](https://arxiv.org/abs/2604.03179)) — **nobody has run those controls on the methods
-  claiming the fix**. PSR estimator flagged as broken on Jul 30 ([2607.28336](https://arxiv.org/abs/2607.28336):
-  conflates "perceptual insufficiency with reasoning difficulty").
-- Diagnostic sub-lane unowned: diagnosis papers have 3 / 0 / ~0 citations.
-- Cross-method audit is inference-only on open weights; control arms are small
-  3B–7B GRPO runs. ~256 GPU-h. ICLR-2027-feasible.
+- Part of the first idea was already done. [2602.12395](https://arxiv.org/abs/2602.12395)
+  supported Perception-R1's null result with a mechanism study.
+  [2603.01301](https://arxiv.org/abs/2603.01301) separated the possible
+  sharpening effects in medical models.
+- The open question compares many methods. About 50 RL methods claim to improve
+  perception; [PAPO](https://arxiv.org/abs/2507.06448) alone has 89 citations.
+  Yet three 2026 diagnosis papers report that gains remain when images are
+  masked or damaged ([2605.09266](https://arxiv.org/abs/2605.09266),
+  [2604.03179](https://arxiv.org/abs/2604.03179)). **Nobody has run those
+  controls on the methods that claim to fix perception.** On July 30, paper
+  [2607.28336](https://arxiv.org/abs/2607.28336) also reported that the PSR
+  estimator is broken because it mixes up "perceptual insufficiency with
+  reasoning difficulty."
+- The diagnosis part is still unclaimed. The diagnosis papers have 3 / 0 / ~0
+  citations.
+- An audit across methods needs only inference on open model weights. Small
+  3B–7B GRPO training runs provide the control groups. Estimated cost is about
+  256 GPU-h, which is ICLR-2027-feasible.
 
 ### Self-training collapse — reversed to ★★★★
 
-- [2606.21090](https://arxiv.org/abs/2606.21090) (cliff under binary code grader) has 0 citations; never measured
-  entropy; conjectures its mechanism and says "we have not tested this";
-  hands over leading-indicator prediction with pre-quantified headroom
-  (deployed ES 22.2%, hindsight 38–48%).
-- Intersection empty on 3 axes: no entropy paper tests sequential campaigns,
-  code graders, or ~20-step cliffs (17 papers' settings verified).
-- Two collapse regimes have mutually exclusive explanations (reward hacking
-  under pseudo-reward, [2505.21444](https://arxiv.org/abs/2505.21444), vs impossible under ground truth) —
-  unreconciled. Timescale mismatch: entropy decay is slow (100s–1000s steps);
-  the cliff is a phase transition (78% of the drop in one step).
-- Field expanding: ~16 named failure modes at monthly cadence, zero
-  cross-mechanism arbitration; 1,250-paper RSI survey still finds an
-  "underpopulated niche"; Weng (2026-07-04) lists 7 open bottlenecks; Google
-  Science One opens verifiability rather than closing anything.
-- Design: pre-register 4 mechanisms (entropy exhaustion / winner-take-all /
-  recursive space contraction / **format degeneration** — unexamined);
-  week 1 validates the testbed (source paper thin: placeholder citations,
-  n=3–5, pass@1=1.00 suggests tiny eval set). Both outcomes publish. Must stay
-  arbitration-framed; as a method paper the 11 nearby groups win.
-- Secondary unoccupied track (near-zero GPU): hypothesis-abandonment /
-  honest-negative production in agent loops — adjacent 2026 papers are
-  diagnostic-only ([2604.18805](https://arxiv.org/abs/2604.18805): evidence ignored in 68% of traces, proposes
-  nothing; [2607.13083](https://arxiv.org/abs/2607.13083): "propose[s] no corrective intervention"). Statistical
-  stopping rule vs LLM judge is open, and attacks Science One's own named
-  LLM-judge dependency.
+- [2606.21090](https://arxiv.org/abs/2606.21090) finds a sudden collapse under
+  a binary code grader. It has zero citations, never measures entropy, guesses
+  at the cause, and says "we have not tested this." It leaves an important
+  prediction to test. The already-deployed early-warning system (ES) catches 22.2%
+  of cases; a hindsight system could catch 38–48%.
+- A check of 17 papers found an empty intersection across three choices: no
+  entropy paper studies repeated campaigns, code graders, or sudden cliffs
+  around 20 steps.
+- Two kinds of collapse have explanations that cannot both apply. Under a
+  guessed reward, collapse can be reward hacking
+  ([2505.21444](https://arxiv.org/abs/2505.21444)). Under correct ground truth,
+  that explanation is impossible. Nobody has settled the conflict. The timing
+  also differs: entropy usually falls slowly over 100s–1000s of steps, but the
+  cliff is a phase change in which 78% of the drop happens in
+  one step.
+- The field is growing, not closing. It names about 16 failure modes, adding
+  more almost every month, but has no study that decides between causes. A
+  1,250-paper recursive-self-improvement (RSI) survey still calls this an
+  "underpopulated niche." Weng's 2026-07-04 article lists seven open problems.
+  Google Science One adds a new verifiability problem instead of solving the
+  old ones.
+- Design: register four possible causes before running anything—entropy running
+  out, winner-take-all behavior, repeated shrinking of the search space, and
+  **format degeneration**, which no one has checked. Week 1 must first show
+  that the test setup is trustworthy. The source paper is weak: placeholder
+  citations, `n=3–5`, and `pass@1=1.00`, which suggests a tiny test set. Either
+  result can publish. The work must be framed as a careful test that decides
+  between explanations. If it becomes a new-method paper, the 11 nearby groups
+  are better placed to win.
+- A second open track needs almost no GPU time: teach research-agent loops when
+  to give up on a hypothesis and produce an honest negative result. Nearby
+  2026 papers only diagnose the problem. [2604.18805](https://arxiv.org/abs/2604.18805)
+  finds that agents ignore evidence in 68% of traces and offers no fix.
+  [2607.13083](https://arxiv.org/abs/2607.13083) "propose[s] no corrective
+  intervention." A statistical stopping rule versus an LLM judge remains
+  open, and directly questions Science One's own stated reliance on LLM judges.
 
-### AHD — up to ★★★★
+### AHD — raised to ★★★★
 
-- ~13 control papers in 24 months each closed one sliver ([2605.15221](https://arxiv.org/abs/2605.15221) is circle
-  packing n=26 only, "lacks comparison to domain-specific classical
-  optimization methods"); ~20 new application domains opened in the same
-  window. "Automated heuristic design" abstracts: 1/1/5/**17** (2023/24/25/Jan–
-  Jul 26). Claims:controls ≈ 10–15:1.
-- The cost-normalized LLM-vs-classical frontier does not exist; three targeted
-  searches returned 0 results; only LLaMEA (the proposer) ever ran against
-  CMA-ES/DE. DeepMind's own [2602.16928](https://arxiv.org/abs/2602.16928): after distillation "the true driver of
-  generalization lies in a minimal algorithmic core."
-- Paper shape: (a) cost-crossover frontier (tokens+CPU in one currency; test
-  whether landscape ruggedness predicts the crossover; CostAda [2607.26828](https://arxiv.org/abs/2607.26828)
-  supplies the cost formalism, BLADE the harness); (b) novelty audit —
-  rediscovery/recombination/new grading vs the 19× OOD degradation RAISE
-  measured. Zero papers on (b).
-- Caveats: van Stein/Bäck and DeepMind adjacent; arXiv-only coverage — check
-  GECCO/PPSN before committing.
+Automated heuristic design (AHD) uses systems, often LLMs, to invent algorithms
+or rules for solving problems.
 
-### KV-cache — ★★★★ only if narrowed to safety-aware allocation
+- About 13 control papers in 24 months each cover one small case. For example,
+  [2605.15221](https://arxiv.org/abs/2605.15221) studies only circle packing at
+  `n=26` and says it "lacks comparison to domain-specific classical
+  optimization methods." In the same period, about 20 new use areas opened.
+  Abstracts containing "automated heuristic design" number 1/1/5/**17** in
+  2023/2024/2025/January–July 2026. There are about 10–15 claims for every
+  control study.
+- No one has drawn the LLM-versus-classical performance line after accounting
+  for cost. Three focused searches found zero papers. Only LLaMEA, the system
+  proposing the method, compared with CMA-ES/DE. DeepMind's own
+  [2602.16928](https://arxiv.org/abs/2602.16928) says that after distillation,
+  "the true driver of generalization lies in a minimal algorithmic core."
+- The paper has two parts. (a) Build a cost-crossover curve that puts tokens and
+  CPU time in one money unit, and test whether the roughness of the problem
+  landscape predicts where the best tool changes. CostAda
+  [2607.26828](https://arxiv.org/abs/2607.26828) provides the cost method, and
+  BLADE provides the test harness. (b) Audit novelty: grade results as old
+  ideas rediscovered, old parts recombined, or truly new. Compare with RAISE's
+  19× worse out-of-distribution (OOD) performance. No paper studies
+  part (b).
+- Limits: van Stein/Bäck and DeepMind work close to this topic. The search used
+  arXiv only, so check GECCO and PPSN before starting.
 
-- Kernel objection refuted: [KVTuner (ICML 25)](https://arxiv.org/abs/2502.04420), [EvolKV (EMNLP)](https://arxiv.org/abs/2509.08315), [SCBench
-  (ICLR 25)](https://arxiv.org/abs/2412.10319) published with zero kernel work; the actual bar is
-  serving-compatible granularity + throughput atop existing kernels.
-- Long-horizon slot claimed (CONF-KV [2605.24786](https://arxiv.org/abs/2605.24786)); compounding error remedied
-  three ways ([SQuat](https://arxiv.org/abs/2503.24358)/KVarN/[VeriCache](https://arxiv.org/abs/2605.17613)). As-scoped T is gone.
-- Unclaimed: no safety-objective allocator exists (6 searches, 0 hits);
-  KVFundaBench v2 dropped safety from its abstract (thread abandoned);
-  [2510.00231](https://arxiv.org/abs/2510.00231) documents instructions "completely ignored" under compression;
-  CAQ ([2511.07842](https://arxiv.org/abs/2511.07842)) proves the objective-mismatch template publishable in
-  weight PTQ.
-- One falsifiable sweep: safety-optimal vs perplexity-optimal per-layer
-  allocation — coincide (cheap death) or diverge (novel map + allocator).
-  Pre-register [2605.18053](https://arxiv.org/abs/2605.18053) (protection > scoring) as the control.
+### KV cache — ★★★★ only for safety-aware allocation
 
-### B1 — down to ★★★
+A KV cache stores earlier attention keys and values so an LLM can produce the
+next token faster. Allocation decides how much cache space each layer gets.
 
-- Scooped: [2604.16027](https://arxiv.org/abs/2604.16027) (Karouzos, Tan, Aletras; 2026-04-17) traces [Olmo 3](https://arxiv.org/abs/2512.13961)'s
-  three lineages, headline "collapse is embedded in the model weights by
-  training data, not imposed by the generation format."
-- Remaining: it is observational (lineages differ in data AND algorithm); the
-  causal crossover is unrun — but the authors named it as their next step, and
-  Apple/CMU ([2605.09995](https://arxiv.org/abs/2605.09995)) added an untested scale axis ("worsens with scale").
-- Our compute estimate was low: full SFT/DPO/RLVR crossover + scale arm
-  exceeds 400 GPU-h.
-- Field-level the area is opportunity-rich (~10 papers/month, no survey), but
-  the specific question closed. Would now be adjudication-framed, contested.
+- The worry that this work would require new low-level kernels was wrong.
+  [KVTuner (ICML 25)](https://arxiv.org/abs/2502.04420),
+  [EvolKV (EMNLP)](https://arxiv.org/abs/2509.08315), and
+  [SCBench (ICLR 25)](https://arxiv.org/abs/2412.10319) all published without
+  kernel work. The real bar is a level of detail that fits serving systems and
+  gives higher throughput on existing kernels.
+- The long-horizon opening is taken by CONF-KV
+  [2605.24786](https://arxiv.org/abs/2605.24786). Three methods address errors
+  that build up over time: [SQuat](https://arxiv.org/abs/2503.24358), KVarN,
+  and [VeriCache](https://arxiv.org/abs/2605.17613). The original T idea is gone.
+- The open part is safety. Six searches found no allocator whose goal is safety.
+  KVFundaBench v2 removed safety from its abstract, suggesting that work was
+  dropped. [2510.00231](https://arxiv.org/abs/2510.00231) reports that
+  instructions can be "completely ignored" after compression. CAQ
+  ([2511.07842](https://arxiv.org/abs/2511.07842)) shows that a paper about this
+  kind of goal mismatch can publish for weight post-training quantization (PTQ).
+- Run one clear sweep: compare the best per-layer allocation for safety with the
+  best one for perplexity. If they match, stop cheaply. If they differ, the
+  result is a new map plus a new allocator. Register
+  [2605.18053](https://arxiv.org/abs/2605.18053), whose protection method beats
+  scoring, as the control.
 
-### T4 — down to ★★
+### B1 — lowered to ★★★
 
-- Scooped 3×: DiReCT ([2605.31175](https://arxiv.org/abs/2605.31175), May 29) — "effectively selecting training
-  data during this phase remains a key challenge... lack a principled
-  grounding" is our motivation paragraph, at Llama-3-8B/300B with
-  theory + code; QAFSL ([2605.25698](https://arxiv.org/abs/2605.25698)) owns "decay reduces update intensity
-  exactly when high-quality data becomes available" with +1.70 over WSD at
-  15B-MoE; MIRA ([2605.30288](https://arxiv.org/abs/2605.30288)) owns mid-training-selection-is-distinct.
-- **Honest error:** our July sweep declared the lane empty while DiReCT had
-  been public for ~8 weeks. The empty-lane claim was false when made.
-- Why it looked empty: labs publish recipes not methods (Olmo 3's Dolmino:
-  pool sizes, no selector); the small-scale moat is now citable ([2606.07597](https://arxiv.org/abs/2606.07597):
-  forked-decay extrapolation "frequently fails" when high-quality data
-  repeats — our exact protocol); and the object may dissolve — three
-  independent groups ([WSM](https://arxiv.org/abs/2507.17634), WSO, [2604.13627](https://arxiv.org/abs/2604.13627)) converge on less/no decay.
-- Venue evidence: 1B-scale *selection* papers publish at ICML/ICLR routinely,
-  but the schedule-coupled subgenre has zero top-venue acceptances, and
-  [2511.18903](https://arxiv.org/abs/2511.18903) (our baseline) is unpublished across 3 versions in 9 months.
-- Rush check (PI-supplied): Compute-Constrained Data Selection (ICLR 25) is
-  phase-agnostic fine-tuning-only — leaves the slot formally open but shows
-  gradient-class selectors (T4's lever) are almost never compute-optimal. Any
-  survivor must include its cost-aware baseline curve.
-- Residual question (cheap, unclaimed, mechanism-shaped): does the
-  per-document value ranking reorder between stable-phase and decay-phase
-  learning rates? Rank-correlation on a shared trunk; discriminates the
-  "wasted data" story from the "sharpness" story; null undercuts the papers
-  that scooped the lane.
+- Already done: [2604.16027](https://arxiv.org/abs/2604.16027) by Karouzos,
+  Tan, and Aletras, posted 2026-04-17, follows the three
+  [Olmo 3](https://arxiv.org/abs/2512.13961) training paths. Its main result is
+  that training data writes diversity collapse into model weights; the output
+  format does not cause it.
+- A smaller opening remains because the study only observes existing models.
+  Its training paths differ in both data and algorithm, so they do not show
+  which one causes the result. The direct crossover experiment has not run.
+  But the authors already named it as their next step, and Apple/CMU
+  ([2605.09995](https://arxiv.org/abs/2605.09995)) added an untested model-size
+  claim: the problem "worsens with scale."
+- Our cost estimate was too low. A full SFT/DPO/RLVR crossover plus several
+  model sizes costs more than 400 GPU-hours.
+- The broad area has useful openings—about 10 papers per month and no survey—
+  but this exact question is mostly closed. New work would need to be a
+  contested, careful test between claims.
 
-## The meta-lesson, recorded
+### T4 — lowered to ★★
 
-1. **Crowding predicted nothing.** All four crowd-count downgrades reversed
-   (T3, AHD, self-improvement, KV). Both emptiness-credited directions fell
-   (T4 scooped, B1 scooped). The criterion that worked: is the question
-   surface expanding faster than papers close it, and is the specific question
-   claimed?
-2. **Method spaces saturate in months; arbitration/diagnostic spaces stay
-   empty.** Recurs in five of eight lanes (T1, T2, T3, collapse, AHD, T4's
-   residual). Cause: method groups cannot afford nulls on their own
-   mechanisms. Our toolkit is exactly the null-tolerant kind.
-3. **Recency decays fast.** T4 and B1 were scooped between April and June;
-   the July survey was already stale in one lane when written. Any gate older
-   than ~6 weeks needs a re-run before compute is committed.
-4. Related process rules: filter-by-saturation-not-crowding (memory),
-   prior-art gate before experiments, never trust a paper's own novelty claim.
+- Three papers already did the main work. DiReCT
+  ([2605.31175](https://arxiv.org/abs/2605.31175), May 29) uses our motivation
+  almost exactly—selecting training data during this phase is important but
+  lacks a sound method—and tests Llama-3-8B on 300B tokens with theory and code.
+  QAFSL ([2605.25698](https://arxiv.org/abs/2605.25698)) makes the claim that
+  decay weakens learning exactly when high-quality data arrives, and gains
+  +1.70 over WSD on a 15B-MoE model. MIRA
+  ([2605.30288](https://arxiv.org/abs/2605.30288)) shows that selecting data
+  during mid-training is its own problem.
+- **Our July search made a real mistake.** It called the area empty even though
+  DiReCT had been public for about eight weeks.
+- The area looked empty because labs publish recipes, not general methods. For
+  example, Olmo 3's Dolmino gives pool sizes but no selector. Small-scale work
+  now has a clear weakness: [2606.07597](https://arxiv.org/abs/2606.07597)
+  finds that forked-decay prediction "frequently fails" when high-quality data
+  repeats, which is exactly our protocol. The question may also disappear if
+  decay itself is unnecessary. Three separate groups—
+  [WSM](https://arxiv.org/abs/2507.17634), WSO, and
+  [2604.13627](https://arxiv.org/abs/2604.13627)—all move toward less or no decay.
+- Small, 1B-scale *data-selection* papers often publish at ICML/ICLR. But no
+  paper that connects selection to the learning-rate schedule has a top-venue
+  acceptance. [2511.18903](https://arxiv.org/abs/2511.18903), our planned
+  baseline, remains unpublished after three versions in 9 months.
+- PI-supplied rush check: Compute-Constrained Data Selection (ICLR 25)
+  ignores training phase and studies fine-tuning only. It leaves the exact
+  opening technically free, but it also shows that gradient-based selectors,
+  T4's main tool, are almost never the best use of compute. Any remaining study
+  must include its cost-aware baseline curve.
+- One cheap, unclaimed question remains: does the value ranking of individual
+  documents change between the stable-learning-rate phase and the decay phase?
+  Measure rank correlation on one shared model trunk. This separates the
+  "wasted data" explanation from the "sharpness" explanation. A null result
+  would weaken the papers that took the main opening.
+
+## Lessons from the re-check
+
+1. **The number of nearby papers predicted nothing.** All four directions that
+   we lowered for being crowded came back up: T3, AHD, self-improvement, and KV.
+   Both directions that we liked for being empty fell: T4 and B1 were already
+   done. A better test is whether new questions appear faster than papers answer
+   them, and whether someone has already claimed this exact question.
+2. **New-method areas fill in months; careful tests between explanations and
+   diagnosis often stay empty.** This happened in five of eight areas: T1, T2,
+   T3, collapse, AHD, and T4's remaining question. A likely reason is that a
+   method group cannot easily publish a null result about its own explanation.
+   Our tools are built for studies where a null is still useful.
+3. **A search becomes stale quickly.** T4 and B1 were taken between April and
+   June. The July survey was already wrong in one area when written. Re-run any
+   gate older than about six weeks before spending compute.
+4. Related working rules remain: judge by remaining opportunity, check prior
+   work before experiments, and never trust a paper's own novelty claim without
+   checking it.
 
 ## Related
 
-[[Self-Improving-AI-Survey]] (July verdict superseded for the collapse lane) ·
-[[Top-Researcher-Scan-2026-08]] (people-level openings, same date) ·
+[[Self-Improving-AI-Survey]] (its July collapse decision is superseded) ·
+[[Top-Researcher-Scan-2026-08]] (researcher-level openings from the same date) ·
 [[Method-Opportunities]] · [[Live-Research-Opportunities]] ·
-[[Status-And-Survivors]] (star table superseded by this page)
+[[Status-And-Survivors]] (its star table was superseded by this page, which was
+then superseded on 2026-08-03 as explained at the top)

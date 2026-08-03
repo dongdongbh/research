@@ -1,207 +1,224 @@
 # Pre-registration: Do Robot Policy Evaluators Recover the Human Ranking?
 
-Status: **DRAFT v1, 2026-08-03 — for professor sign-off.** Locks after the
-week-1 go/no-go (§8). Once locked, hypotheses, arms, metrics and decision
-rules do not change; any deviation is reported as a deviation.
+Status: **DRAFT v1, 2026-08-03 — for professor sign-off.** Lock after the
+week-1 go/no-go check in §8. After lock, do not change the predictions,
+experimental arms, measurements, or decision rules. Report any later change as
+a deviation from the plan.
 
-Paper type: **diagnostic** (with a constructive method half per standing
-rule 5). Target venue: ICLR 2027 (abstracts Sep 18, full Sep 25). Companion
-method paper: [[Prereg-Crop-Consistency-Distillation]].
+Paper type: **diagnostic**, meaning a study that checks whether current tools
+work, plus a constructive method part required by standing rule 5. Target venue:
+ICLR 2027, with abstracts Sep 18 and full papers Sep 25. Related method paper:
+[[Prereg-Crop-Consistency-Distillation]].
 
 ---
 
-## 1. The problem, in plain language
+## 1. The problem
 
-Evaluating a robot policy properly requires running it on a real robot many
-times — slow, expensive, and impossible for most labs. So the field is
-racing to replace real evaluation with **automated evaluators**: reward
-models that score episodes from video, VLM "judges" that grade rollouts, and
-world models that simulate rollouts so no robot is needed at all.
+A proper test of a robot policy needs many runs on a real robot. This is slow,
+expensive, and out of reach for many labs. Researchers are therefore trying to
+replace real tests with **automatic evaluators**. These include reward models
+that score episode videos, vision-language models (VLMs) that act as judges,
+and world models that simulate an episode without any robot.
 
-Every important decision downstream — which policy to deploy, which training
-recipe won, which paper's method is better — is starting to flow through
-these evaluators. **If the evaluators are wrong, the field's rankings are
-wrong**, and nobody would know, because the evaluators are graded by the
-same groups that build them.
+These evaluators now affect every later decision: which policy to deploy, which
+training recipe won, and which paper's method is better. **If an evaluator is
+wrong, the field's ranking is wrong.** We may not notice because the same groups
+often build and test the evaluators.
 
-## 2. Current research state
+## 2. What recent work has shown
 
-Eleven evaluator systems appeared in roughly ten months ([WorldEval](https://arxiv.org/abs/2505.19017),
-[WorldGym](https://arxiv.org/abs/2506.00613), [Ctrl-World](https://arxiv.org/abs/2510.10125), [RobotArena∞](https://arxiv.org/abs/2510.23571), [PolaRiS](https://arxiv.org/abs/2512.16881), [SC3-Eval](https://arxiv.org/abs/2606.18610), [RoboWorld](https://arxiv.org/abs/2607.01060), [dWorldEval](https://arxiv.org/abs/2604.22152),
-[PiL-World](https://arxiv.org/abs/2606.05773), [GigaWorld-1](https://arxiv.org/abs/2607.02642), [RoboReward](https://arxiv.org/abs/2601.00675)). Each validates itself, on tiny policy
-sets: SC3-Eval reports "Pearson correlation of 0.929" on **seven** policies;
-RoboWorld reports "Pearson's r = 0.989" similarly. **No independent audit of
-any of them exists** (lane-wide sweep, Aug 2026).
+Eleven evaluator systems appeared in about ten months: [WorldEval](https://arxiv.org/abs/2505.19017),
+[WorldGym](https://arxiv.org/abs/2506.00613), [Ctrl-World](https://arxiv.org/abs/2510.10125), [RobotArena∞](https://arxiv.org/abs/2510.23571), [PolaRiS](https://arxiv.org/abs/2512.16881),
+[SC3-Eval](https://arxiv.org/abs/2606.18610), [RoboWorld](https://arxiv.org/abs/2607.01060), [dWorldEval](https://arxiv.org/abs/2604.22152), [PiL-World](https://arxiv.org/abs/2606.05773),
+[GigaWorld-1](https://arxiv.org/abs/2607.02642), and [RoboReward](https://arxiv.org/abs/2601.00675). Each group tests its own system on a
+small set of policies. SC3-Eval reports "Pearson correlation of 0.929" on
+**seven** policies. RoboWorld similarly reports "Pearson's r = 0.989." Our
+area-wide search in Aug 2026 found **no independent audit of any of them**.
 
-Three facts define the opening:
+Three facts show exactly what is missing:
 
-1. A position paper ([arXiv 2606.15032](https://arxiv.org/abs/2606.15032)) names exactly the missing checks —
-   "policy-ranking agreement," "model exploitability," "uncertainty
-   calibration" — and runs none of them ("zero experiments").
-2. The audit *genre* is proven publishable in the text/code domain: a
-   tool-calling-benchmark validity audit ([2607.02577](https://arxiv.org/abs/2607.02577)) found an 18.5%
-   evaluator–human misalignment rate. Ours is the embodied instance.
-3. **The ground truth already exists in public.** [RoboArena](https://arxiv.org/abs/2506.18123) released its raw
-   evaluation dumps ([`RoboArena/DataDump_02-03-2026`](https://huggingface.co/datasets/RoboArena/DataDump_02-03-2026), MIT): 3,284 double-blind
-   pairwise human comparisons, 9,589 real-robot episodes across 15 policies,
-   with per-episode `binary_success`, `partial_success`, videos, and
-   free-text rationales. **Corrected against the parsed dump (2026-08-02,
-   pre-lock): exactly 7 policies have ≥600 episodes (1,068–1,431); the 8th,
-   `pi05_droid`, has 564. The earlier "8 policies with 600–1,650" was wrong.
-   The ≥600 RULE stands; the count is corrected — we do not bend thresholds
-   to recover expected counts.** Builders cannot
-   credibly audit themselves; we can, without a single robot.
+1. A position paper ([arXiv 2606.15032](https://arxiv.org/abs/2606.15032)) names the needed checks:
+   "policy-ranking agreement," "model exploitability," and "uncertainty
+   calibration." It runs none of them and has "zero experiments."
+2. This kind of audit can be published in nearby areas. A check of a tool-use
+   benchmark ([2607.02577](https://arxiv.org/abs/2607.02577)) found that evaluators and humans disagreed 18.5% of
+   the time. Our study asks the same kind of question for embodied AI.
+3. **Public human ground truth already exists.** [RoboArena](https://arxiv.org/abs/2506.18123) released raw test
+   data in [`RoboArena/DataDump_02-03-2026`](https://huggingface.co/datasets/RoboArena/DataDump_02-03-2026) under the MIT license. It
+   contains 3,284 double-blind human pair comparisons and 9,589 real-robot
+   episodes from 15 policies. Each episode includes `binary_success`,
+   `partial_success`, video, and a written reason.
 
-## 3. Our method and novelty
+   We corrected the counts from the parsed data on 2026-08-02, before lock.
+   Exactly 7 policies have ≥600 episodes, with 1,068–1,431 each. The eighth,
+   `pi05_droid`, has 564. The earlier statement "8 policies with 600–1,650"
+   was wrong. The ≥600 RULE does not change. We correct the count rather than
+   lowering a threshold to get the number we expected. The system builders
+   cannot give a fully independent audit of themselves. We can run one without
+   using a robot.
 
-**One pre-registered protocol, applied to multiple evaluators, against human
-ground truth.** Novelty claims — **repositioned 2026-08-02 pre-lock**: the
-confirmatory pass found **[2606.01036](https://arxiv.org/abs/2606.01036) (ICML 2026, Tian/Wu/Bajcsy)** already
-uses RoboArena human pairwise labels as ground truth for three reward models
-(rollout-pair agreement 0.72–0.77 on easy tasks → 0.52–0.62 on Tool Use)
-— so "first to use the dump as evaluator ground truth" is CEDED; it becomes
-motivating prior evidence, cited as such. Everything below remains verified
-unclaimed (their study has no policy leaderboard, no RoboReward/VLM-judge
-family, no blind floor, no CIs, no injection, no judge-swap; RoboArena's 68
-and RoboReward's 37 citing papers contain zero independent audits):
+## 3. What is new in our study
 
-- **First policy-level rank-validity audit** of robot policy evaluators:
-  does the evaluator's induced policy RANKING (leaderboard, not per-pair
-  agreement) match the human preference ranking, with honest uncertainty at
-  realistic n?
-- **The blind floor:** how much of the reported agreement is recoverable by
-  an evaluator that never sees the pixels (language/duration priors only)?
-  Nobody has measured this for any embodied evaluator.
-- **The n-sensitivity result:** bootstrap subsampling to n=7 policies from
-  our n=8-with-600-episodes to compute the CI that the field's r≈0.93-style
-  claims actually carry. This single figure recalibrates every evaluator
-  paper in §2 at once.
-- **Method half:** a rank-calibrated evaluator — recalibrate RoboReward's
-  episode scores against the ranking objective on held-out policies — plus
-  the "evaluator report card" (rank-flip rate, blind floor, minimum-n)
-  as a releasable standard.
+Apply **one plan fixed in advance to several evaluators, then compare them with
+human ground truth.** We changed one novelty claim on 2026-08-02, before lock.
+The final search found **[2606.01036](https://arxiv.org/abs/2606.01036) (ICML 2026, Tian/Wu/Bajcsy)**. That paper
+already uses RoboArena's human pair labels as ground truth for three reward
+models. Agreement on rollout pairs falls from 0.72–0.77 on easy tasks to
+0.52–0.62 on Tool Use. We therefore **give up** the claim that we are the first
+to use this data as evaluator ground truth. Instead, cite it as evidence that
+motivates our study.
 
-## 4. Pre-registered design
+The following parts remain unanswered. Their paper has no policy leaderboard,
+no RoboReward or VLM-judge family, no blind floor, no confidence intervals
+(CIs), no bad-episode injection, and no judge swap. RoboArena's 68 citing papers
+and RoboReward's 37 citing papers contain no independent audits.
 
-**Fixed corpus:** RoboArena dump; primary set = the policies with ≥600
-episodes (measured 2026-08-02: exactly **7** — see §2 correction); the human
-ranking is computed once from pairwise preferences via Bradley–Terry
-(ties = half-win each side; session-level bootstrap, 10,000 draws), before
-any evaluator is run, and frozen. **Frozen 2026-08-02** (regenerated post-review with corrected flip
-semantics; θ bitwise identical): robojudge `runs/ranking_freeze/2026-08-02/`
-— top-1 `pi0_fast_droid` stable in **94.0%** of draws, bottom-1 in 100%;
-adjacent-pair flip probabilities 2↔3 = 0.38, 3↔4 = 0.44, 4↔5 = 0.22 —
-the middle of the human ranking is statistically indistinguishable.
+- **First audit of whether robot evaluators recover the policy-level ranking.**
+  Test whether the evaluator's leaderboard—not just agreement on one
+  pair—matches the human preference ranking. Show honest uncertainty for the
+  number of policies normally used.
+- **The blind floor:** measure how much agreement is possible for an evaluator
+  that never sees the image pixels and uses only language or episode duration.
+  Nobody has measured this for an embodied evaluator.
+- **Sensitivity to the number of policies:** repeatedly sample n=7 policies
+  from our n=8-with-600-episodes set to calculate the CI behind claims like
+  r≈0.93. One figure updates how every evaluator paper in §2 should be read.
+- **Method part:** change RoboReward's episode scores so they match the ranking
+  goal on held-out policies. Also release an "evaluator report card" with
+  rank-flip rate, blind floor, and minimum n as a common standard.
+
+## 4. Exact experiment plan
+
+**Fixed data:** the RoboArena dump. The main set contains policies with ≥600
+episodes: exactly **7** on 2026-08-02, as corrected in §2. Before running any
+evaluator, compute the human ranking once from pairwise preferences using a
+Bradley–Terry model. Count a tie as half a win for each side. Use a session-level
+bootstrap with 10,000 draws, then freeze the ranking.
+
+The ranking was **frozen on 2026-08-02**, then rebuilt after review with correct
+flip meanings. The θ values are bit-for-bit identical. Files are in robojudge
+`runs/ranking_freeze/2026-08-02/`. Top-1 `pi0_fast_droid` stays top in **94.0%**
+of draws. The bottom policy stays bottom in 100%. Neighbor flip probabilities
+are 2↔3 = 0.38, 3↔4 = 0.44, and 4↔5 = 0.22. This means the middle of the human
+ranking cannot be statistically separated.
 
 **Evaluator arms:**
-- A1: RoboReward-4B and -8B (released weights, `teetone/*`).
-- A2: off-the-shelf VLM judges — Qwen2.5-VL-7B/72B, InternVL3-8B, plus a
-  SigLIP2-similarity scorer from our cached-feature stack. Fixed prompt
-  template, temperature 0, 3 sampled frames/view unless the model ingests
-  video natively.
-- A3 (confound battery): language-only (no pixels), first-frame-only,
-  shuffled-frames, instruction-swapped, duration-only regression.
-- A4 (degenerate-episode injection, constructed offline from the dump):
-  instruction–video mismatch pairs; no-progress segments extracted from
-  failed episodes presented as complete episodes. An evaluator should score
-  these at the bottom.
-- A5 ([DreamGen](https://arxiv.org/abs/2505.12705) component): regenerate DreamGen Bench videos for the 4
-  published video models; score under 5 judges (A2 set + Cosmos-Reason);
-  hold the published downstream policy-success vector fixed; test whether
-  the "strong correlation" claim survives judge swap.
 
-**Primary metrics:** Kendall τ and Spearman ρ vs the human ranking with
-bootstrap CIs; MMRV (introduced by
-[SIMPLER (2405.05941)](https://arxiv.org/abs/2405.05941), used by SC3-Eval
-— for comparability; attribution corrected 2026-08-02); top-1 flip
-rate under evaluator swap; blind floor = τ(A3-language-only)/τ(A1).
+- A1: RoboReward-4B and RoboReward-8B released as `teetone/*`.
+- A2: ready-made VLM judges Qwen2.5-VL-7B/72B and InternVL3-8B, plus a
+  SigLIP2 similarity score from our cached-feature tools. Use a fixed prompt,
+  temperature 0, and 3 sampled frames per view unless the model reads video
+  directly.
+- A3, controls for hidden factors: language only with no pixels, first frame
+  only, shuffled frames, swapped instruction, and a duration-only regression.
+- A4, obviously bad episodes built offline from the dump: pairs where the
+  instruction does not match the video, and no-progress pieces cut from failed
+  episodes but shown as complete episodes. A good evaluator should put these at
+  the bottom.
+- A5, a [DreamGen](https://arxiv.org/abs/2505.12705) component: recreate DreamGen Bench videos for the 4
+  published video models and score them with 5 judges, the A2 set plus
+  Cosmos-Reason. Keep the published vector of later policy success fixed. Test
+  whether the paper's "strong correlation" remains when the judge changes.
 
-**Hypotheses (directional, locked):**
-- **H1:** the top-1 policy is NOT invariant across evaluator arms (predict:
-  at least one flip among A1–A2).
-- **H2:** blind floor ≥ 0.5 (predict TRUE — priors carry most agreement).
-- **H3:** the n=7 bootstrap CI on Pearson r contains 0.5 (predict TRUE).
-- **H4:** ≥1 evaluator scores ≥1 degenerate episode class above the median
-  real episode (predict TRUE).
-- **H5:** [RoboRewardBench](https://crfm.stanford.edu/helm/robo-reward-bench) benchmark accuracy does not rank the arms by
-  rank-fidelity τ (predict TRUE — benchmark accuracy ≠ ranking validity).
-- **H6 (DreamGen):** the video-model ranking is not judge-invariant, and the
-  downstream correlation across judges spans ≥0.4 width.
+**Main measurements:** Kendall τ and Spearman ρ compared with the human ranking,
+with bootstrap CIs. Also report MMRV for comparison with earlier work. MMRV was
+introduced by [SIMPLER (2405.05941)](https://arxiv.org/abs/2405.05941) and used by SC3-Eval; this credit was
+corrected on 2026-08-02. Measure top-1 flip rate when the evaluator changes.
+Define the blind floor as τ(A3-language-only)/τ(A1).
 
-**Decision rules:** each H is scored by its pre-stated statistic with 95%
-bootstrap CIs; Holm correction across H1–H6. **A full null (evaluators are
-rank-valid, floors low, no degenerate failures) is the publishable positive
-result** — the first independent confirmation the field would have.
+**Predictions, fixed before the run:**
 
-**What we will NOT claim:** anything about evaluators/policies not tested;
-anything about closed-loop deployment; causal claims about *why* an
-evaluator fails beyond the confound battery's factors.
+- **H1:** at least one evaluator in A1–A2 changes which policy is top. In other
+  words, top-1 is NOT fixed across evaluators.
+- **H2:** blind floor ≥ 0.5. Predict TRUE because prior clues in language carry
+  most of the agreement.
+- **H3:** the n=7 bootstrap CI for Pearson r contains 0.5. Predict TRUE.
+- **H4:** at least one evaluator scores at least one obviously bad episode type
+  above the middle real episode. Predict TRUE.
+- **H5:** accuracy on [RoboRewardBench](https://crfm.stanford.edu/helm/robo-reward-bench) does not order the evaluators by
+  ranking faithfulness τ. Predict TRUE because benchmark accuracy and ranking
+  validity are different.
+- **H6, DreamGen:** the ordering of video models changes with the judge, and the
+  later-policy correlations across judges cover a range at least 0.4 wide.
 
-## 5. Expected outcomes
+**Decision rules:** judge each H with its named statistic and a 95% bootstrap
+CI. Use Holm correction across H1–H6. **If every predicted failure is absent,
+that full null is still the positive publishable result:** it would be the first
+independent evidence that these evaluators recover the ranking.
 
-- **Likely (per H1–H4):** rankings partially evaluator-dependent; a sizable
-  blind floor; wide n=7 CIs; at least one degenerate failure → headline:
-  "current robot-evaluator agreement numbers are substantially prior-driven
-  and statistically under-powered," plus the report card + calibrated
-  evaluator that fixes the measurable part.
-- **Null branch:** evaluators robustly recover the human ranking → headline:
-  first independent validation; report card still ships; the n-sensitivity
-  figure still corrects the field's reporting practice.
-- Either way the artifact (`RoboJudgeAudit` harness + report card + the
-  Bradley–Terry human-ranking reference) is reusable by every future
-  evaluator paper.
+**Claims we will not make:** claims about evaluators or policies not tested;
+claims about running policies in a closed control loop; or claims that one
+tested factor *causes* a failure beyond what the A3 comparisons show.
 
-## 6. Resources and timeline
+## 5. What each possible result means
 
-Cost: **250–500 GPU-h, inference-only** (A5 adds 60–120 GPU-h of video
-generation). Cluster: OrangeGrid (2×A100/L40S, free, no time limits); Anvil
-A100 for the 72B judge if needed. Storage: RoboArena dump size **unverified**
-— this is the week-1 go/no-go; stage on `$SCRATCH`, manifests per
-[[Data-Transfer-Between-Clusters]].
+- **Expected from H1–H4:** rankings partly depend on the evaluator, the blind
+  floor is large, n=7 CIs are wide, and at least one obviously bad episode fools
+  an evaluator. Main message: "current robot-evaluator agreement numbers are
+  largely driven by prior clues and have too little statistical power." Release
+  the report card and the adjusted evaluator that fixes the measurable part.
+- **No predicted failures:** evaluators reliably recover the human ranking.
+  This becomes the first independent validation. The report card still ships,
+  and the sample-size figure still improves reporting practice.
+- In either case, release the `RoboJudgeAudit` tools, report card, and
+  Bradley–Terry human-ranking reference for future evaluator papers.
 
-Wk1 gate + ranking freeze → Wk2–3 A1/A2 → Wk4 A3/A4 → Wk5 A5 → Wk6 analysis
-+ packaging → Wk7 write-up. Abstract (Sep 18) needs only the frozen protocol
-+ the H3 n-sensitivity figure, computable in week 1 from the dump alone.
+## 6. Resources and schedule
 
-## 7. Risks and scoop watch
+Cost: **250–500 GPU-h, inference only.** A5 adds 60–120 GPU-h for generating
+video. Use OrangeGrid's 2×A100/L40S, which is free and has no time limits. Use
+Anvil A100 for the 72B judge if needed. The RoboArena download size is
+**unverified**. Checking it is part of week 1. Store it on `$SCRATCH` and keep
+manifests as described in [[Data-Transfer-Between-Clusters]].
 
-- RoboArena dump too large / labels insufficient for Bradley–Terry → fall
-  back to the 2025-08 dump (7,513 files) or per-episode binary success.
-- The evaluator authors' orbit (Levine/Finn/Pertsch/Liang students) could
-  self-audit — 6-week re-gate clock; watch citations of [2606.15032](https://arxiv.org/abs/2606.15032) and the
-  tool-calling audit.
-- Coverage caveat from the gate: venue-native proceedings under-swept; run
-  one clean confirmatory search before locking (§8).
+Schedule: week 1 check and ranking freeze → weeks 2–3 A1/A2 → week 4 A3/A4 →
+week 5 A5 → week 6 analysis and packaging → week 7 writing. The Sep 18 abstract
+needs only the frozen plan and the H3 sample-size figure, which can be made from
+the dump in week 1.
 
-## 8. Week-1 go/no-go checklist (locks the prereg)
+## 7. Risks and competing work to watch
 
-1. ~~Verify dump size + hydration; parse one session end-to-end.~~ DONE
-   2026-08-02: 18.5 GB verified via API pre-download; 3,284/3,284 sessions
-   parse cleanly (0 failures); preferences exactly {A:1404, B:1401, TIE:479}.
-2. ~~Compute the frozen human ranking + bootstrap CIs; produce the H3
-   figure.~~ DONE 2026-08-02 (robojudge `runs/ranking_freeze/2026-08-02/`,
-   `runs/h3_figure/2026-08-02/`; regenerated post-review with
-   unit-variance normal scores). H3 n=7 bands: raw-strength scale
-   **[0.51, 0.96]** for r*=0.929 (does NOT contain 0.5 — the earlier
-   [0.40, 0.95] used under-dispersed scores); copula scale [0.86, 0.99].
-   Abstract phrasing: "a true r*=0.929 yields measured r anywhere in
-   [0.51, 0.96] at n=7."
-3. **PIN BEFORE LOCK: the H3/H3-test Pearson scale** — raw-strength
-   (attenuated by the binning-droid outlier; prereg prediction holds) vs
-   copula/normal-scores (unbiased; prediction flips). Both computed and
-   stored in `h3_draws.npz`. Decide with the professor; record the choice
-   and rationale here.
-4. **PIN BEFORE LOCK:** keep `paligemma_binning_droid` in the primary set
-   (it clears ≥600 but is a near-degenerate outlier, 17W/511L, θ=−2.47,
-   which dominates the strength marginal) — default: keep, per the rule.
-5. ~~Confirmatory literature pass (recent 8 weeks explicitly).~~ DONE
-   2026-08-02: partial threat [2606.01036](https://arxiv.org/abs/2606.01036) → repositioned (§3); RoboWorld v4
-   now claims r=0.989 (n-sensitivity figure sharpened); ArmnetBench
-   ([2607.24481](https://arxiv.org/abs/2607.24481), 3,118 human-scored episodes) is a scoop-enabler — window
-   argument strengthened. **Caveat: OpenReview rate-limited during the
-   sweep — run one manual OpenReview pass (ICLR'27/NeurIPS'26 submissions)
-   before lock.**
-6. Professor sign-off → mark this page LOCKED with date + git hash.
+- If the RoboArena dump is too large or has too few labels for Bradley–Terry,
+  use the 2025-08 dump with 7,513 files, or use binary success per episode.
+- Students near the evaluator authors Levine, Finn, Pertsch, and Liang could run
+  their own audit. Search again every 6 weeks. Watch citations of [2606.15032](https://arxiv.org/abs/2606.15032)
+  and the tool-use audit.
+- The original search did not cover enough work published only in venue
+  proceedings. Run one clean confirmation search before lock, as required in
+  §8.
+
+## 8. Week-1 go/no-go checklist
+
+1. ~~Check download size and hydration, and parse one full session.~~ **DONE
+   2026-08-02.** Size is 18.5 GB, checked through the API before download. All
+   3,284/3,284 sessions parse, with 0 failures. Preferences are exactly
+   {A:1404, B:1401, TIE:479}.
+2. ~~Freeze the human ranking with bootstrap CIs and make the H3 figure.~~
+   **DONE 2026-08-02.** Files are in robojudge
+   `runs/ranking_freeze/2026-08-02/` and `runs/h3_figure/2026-08-02/`. The H3
+   figure was rebuilt after review using unit-variance normal scores. At n=7,
+   the raw-strength band is **[0.51, 0.96]** for r*=0.929. It does NOT contain
+   0.5. The earlier [0.40, 0.95] used scores with too little spread. The copula
+   band is [0.86, 0.99]. Use this abstract wording: "a true r*=0.929 yields
+   measured r anywhere in [0.51, 0.96] at n=7."
+3. **DECIDE BEFORE LOCK which Pearson scale H3 uses:** raw strength, which is
+   reduced by the binning-droid outlier and keeps the pre-registered prediction,
+   or copula/normal scores, which is unbiased and reverses the prediction. Both
+   are saved in `h3_draws.npz`. Decide with the professor and record the choice
+   and reason here.
+4. **DECIDE BEFORE LOCK whether to keep `paligemma_binning_droid` in the main
+   set.** It passes ≥600 but is a nearly useless outlier: 17W/511L and θ=−2.47.
+   It controls most of the strength range. Default: keep it because that follows
+   the fixed rule.
+5. ~~Repeat the literature search and name the most recent 8 weeks.~~ **DONE
+   2026-08-02.** The partial conflict [2606.01036](https://arxiv.org/abs/2606.01036) changed our framing in §3.
+   RoboWorld v4 now claims r=0.989, which makes the sample-size figure more
+   useful. [ArmnetBench](https://arxiv.org/abs/2607.24481), with 3,118 human-scored episodes, could help a
+   competitor move quickly, which makes our timing argument stronger.
+   **Warning: OpenReview limited requests during the search. Run one manual
+   OpenReview search of ICLR'27 and NeurIPS'26 submissions before lock.**
+6. Get professor approval, mark the page LOCKED with the date, and record the
+   git hash.
 
 ## Related
 

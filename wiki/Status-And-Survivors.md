@@ -1,226 +1,232 @@
-# Where SVIB Stands, and Everything Still Alive
+# What Happened to SVIB and Which Ideas Were Still Alive
 
-Status: **Orientation document, 2026-07-27.** Written in plain language.
-Updated 2026-08-02 for the general research wiki: Part 1 condensed to its
-transferable lessons, and the star table in Part 3 marked superseded.
+**Purpose:** easy starting point, written on 2026-07-27. On 2026-08-02, Part
+1 was shortened to keep only lessons that transfer to other projects.
 
-> **Star table superseded 2026-08-02.** The Part 3 ranking below reflects the
-> July gate. A dedicated re-evaluation moved six of its rows — T4 down to ★★,
-> B1 down to ★★★, T3 up to ★★★★½, T1 to ★★★★½, AHD up to ★★★★, KV-cache up if
-> narrowed — and reversed the separate "do not enter self-improving AI"
-> verdict. Current authority: [[Direction-Reevaluation-2026-08]], with the
-> people-and-openings layer in [[Top-Researcher-Scan-2026-08]]. The table is
-> kept as the record of what was believed in July, not as guidance.
+> **The star ranking in Part 3 is old.** It records what we believed in July,
+> not what to do now. An August 2 check changed six ideas. T4, about data used
+> while the learning rate falls, dropped to ★★. B1, about why model answers
+> lose variety, dropped to ★★★. T3, about multimodal data mixtures, rose to
+> ★★★★½. T1, about which model parts to train and with what goal, moved to
+> ★★★★½. Automatic heuristic design (AHD) rose to ★★★★. The KV-cache idea
+> rose only after becoming more specific. That check also reversed the “do not
+> enter self-improving AI” decision. It is recorded in
+> [[Direction-Reevaluation-2026-08]]. Use
+> [[Unified-Direction-Ranking-2026-08]] for the current ranking and
+> [[Top-Researcher-Scan-2026-08]] for newer researcher-level ideas.
 
----
+## Part 1: What happened to SVIB
 
-# Part 1 — SVIB: what happened (condensed)
+The `svib` repository wiki holds the exact numbers, tests, and records of where
+the data came from. This page keeps only the lessons we can reuse.
 
-Project-specific numbers, probes and provenance live in the svib repo wiki.
-This is the short version, kept only because the lessons underneath it get
-reused on every project.
+The submitted paper's main result came from a code error. The frozen baseline
+applied the text projection twice. Fixing that bug reduced the claimed gain to
+about one point. We found the error ourselves because the corrected baseline
+matched published results, while the submitted one never did.
 
-The submitted paper's headline was an artifact: the frozen-baseline code path
-applied the text projection twice, and correcting it shrank the claimed
-improvement to roughly a point. We caught it ourselves, because the corrected
-baseline matched published values and the submitted one never had. Under equal
-training, none of the paper's distinctive components — object proposals, sparse
-directed routing, the variational bottleneck — was doing the work; a
-deterministic grid of crops plus one plain self-attention layer matched or beat
-the whole apparatus at a small fraction of the overhead. The hand-designed
-semantic gate fired mostly on cases the global scorer already got right, and
-even perfect routing had a small ceiling. Six further probes were all rejected
-in favour of the raw global score under validation-locked selection.
+With equal training, none of the special parts—object proposals, sparse
+one-way routing, or the variational bottleneck—caused the gain. A fixed grid of
+image crops plus one normal self-attention layer matched or beat the full
+system with far less extra work. The hand-written rule that chose when to use
+the detailed system mostly turned on when the global scorer was already right.
+Even a perfect choice rule had little room to help. Six more tests also lost
+to the raw global score when all settings were chosen on validation data.
 
-**The transferable lessons, which are the part worth keeping:**
+### Lessons to reuse
 
-1. **Cheap beats clever often enough that the deterministic baseline has to be
-   run before the clever one is believed.** But note the flip side we also
-   measured: the expensive step was not the proposals, it was re-encoding
-   regions at full resolution — free one-pass alternatives lost.
-2. **A fused system at `alpha = 1` must exactly reproduce its standalone
-   backbone.** That invariant is a cheap, reusable evaluator-bug detector.
-   Watch also for QuickGELU-versus-standard-GELU reference mismatches, which
-   silently corrupt source-matched comparisons.
-3. **Hand-designed semantic gates can be anti-aligned** with where the expert
-   actually helps. Measure the oracle ceiling before building the gate.
-4. **Benchmark conclusions flip** under a second, equally valid positive
-   caption. Check the ranking's stability before trusting it.
-5. **Test-selected operating points inflate reported gains.** Under
-   validation-locked selection, methods collapse to the trivial setting. The
-   selection protocol is the transferable contribution, not the method.
+1. **Test the simple baseline before trusting the clever method.** Simple often
+   wins. There is also an important opposite lesson: object proposals were not
+   the costly part. Encoding every region again at full resolution was. Cheap
+   one-pass replacements lost.
+2. **At `alpha = 1`, a fused system must exactly match its backbone alone.**
+   This easy check catches evaluator bugs. Also match QuickGELU with the right
+   reference model. Using standard GELU can silently make a comparison wrong.
+3. **A hand-written choice rule may turn on at the wrong times.** First measure
+   the **oracle ceiling**, which is the best possible gain if the system always
+   chose the right expert.
+4. **A second valid caption can reverse benchmark conclusions.** Check whether
+   the model ranking stays stable before trusting it.
+5. **Choosing settings on the test set makes gains look too large.** When we
+   chose only with validation data, the complex methods fell back to the
+   simplest setting. The careful selection rule may be more useful than the
+   failed method.
 
-**Disposition:** not a method paper. Write it as a controls-first study of what
-actually drives compositional gains in frozen dual-encoder VLMs, at TMLR or
-ICBINB, with the evaluator suite as the released artifact. It examines our own
-work, so there is no reviewer-conflict problem, and the experiments already
-exist — this is a writing task, not a compute task.
+**Decision:** do not present SVIB as a new method. Write a controls-first study
+of what actually causes compositional gains in frozen two-encoder VLMs. Target
+TMLR or ICBINB and release the evaluator tools. The study checks our own work,
+so it does not create a reviewer conflict. The experiments already exist; only
+writing remains.
 
-Full detail: svib repo wiki, pages Post-Rebuttal-Measurement-Sprint and
-Cluster-1-Compositional-Scoring.
+Full details are in `Post-Rebuttal-Measurement-Sprint` and
+`Cluster-1-Compositional-Scoring` in the `svib` repository wiki.
 
----
+## Part 2: Ideas that were still alive in July
 
-# Part 2 — everything still alive, in plain language
+### Strong ideas
 
-## The strong ones
+**T1: Should the vision encoder stay frozen, and does the training goal change
+the answer?**
 
-**T1 — Should you freeze the vision encoder, and does the training objective
-change the answer?**
-Three respected papers disagree about the most basic recipe question in VLM
-training. One says unfreezing the vision tower badly hurts fine-grained tasks;
-two others say unfreezing clearly helps. The first paper even guesses why —
-maybe language-generation training is the wrong objective for learning visual
-detail — and nobody has tested that guess. Run the full grid: frozen versus
-unfrozen, language loss versus RL, one training stage versus two. The reference
-run takes nine hours.
+Three respected papers disagree about a basic VLM training choice. One says
+that updating the vision tower badly hurts detailed tasks. Two say updating it
+helps. The first paper suggests a cause: perhaps next-word training is the
+wrong goal for learning visual detail. Nobody had tested that guess. The plan
+was to compare every combination of frozen versus trainable vision, language
+loss versus reinforcement learning, and one training stage versus two. The
+reference run takes nine hours.
 
-**T4 — What data should you feed a model while the learning rate decays?**
-Every big lab saves its best data for the final "cooldown" phase of pretraining.
-It is pure folklore — there is no method paper on it. Meanwhile the data used in
-this window is worth **+17 to +28 points** on hard reasoning benchmarks, while
-changing the reinforcement-learning recipe afterwards is worth **under 2**. The
-trick that makes it affordable: train the shared trunk once, then fork many
-short decay phases from it, so every comparison is paired.
+**T4: Which data should a model see while its learning rate falls?**
 
-> **Superseded 2026-08-02.** The "no method paper on it" claim was already false
-> when written — DiReCT had been public for about eight weeks. T4 was scooped
-> three times, the small-scale forked-decay moat is now citable against us, and
-> the direction drops to ★★. Only a narrow residual question survives. See
+Large labs often save their best data for the final “cooldown” part of
+pretraining. At the time, we thought this was only tradition. Data used in this
+window changed hard-reasoning scores by **17–28 points**, while changing the
+later reinforcement-learning recipe changed them by **under 2 points**. A
+cheap design could train one shared main run, then branch into several short
+cooldown runs. This makes each comparison use the same starting point.
+
+> **Outdated on 2026-08-02:** DiReCT had already been public for about eight
+> weeks, so “no method paper” was false. Three papers covered T4, and one gave
+> a small-scale version of our branch design that reviewers could cite against
+> us. T4 fell to ★★. Only a small leftover question remains. See
 > [[Direction-Reevaluation-2026-08]].
 
-**SVIB writeup** — described in Part 1.
+**SVIB write-up:** described in Part 1.
 
-**T2 — Does reinforcement learning actually teach a model to *see* better?**
-Apparently not. One paper ran a proper statistical test and found RL gives **no
-significant improvement in visual perception** despite raising headline scores —
-it just makes the model more likely to output answers it already half-knew.
-Another found **67% of remaining errors are perception failures**. The null is
-already published; extending it is cheap.
+**T2: Does reinforcement learning truly improve what a model sees?**
 
-**B1 — Does post-training make models boring because of the method or the
-data?**
-Fine-tuned models produce less varied outputs. Nobody has separated whether that
-comes from the training algorithm or from the narrow data. The authors say so
-themselves. Olmo 3 releases both open weights and open training data at every
-stage, so for once the confound can actually be pulled apart.
+Probably not. One paper used a proper statistical test and found no meaningful
+gain in visual perception even when final scores rose. RL mainly made the model
+more likely to give answers it already partly knew. Another paper found that
+**67% of remaining errors came from perception**. The null result is already
+published, but a follow-up would be cheap.
 
-> **Superseded 2026-08-02.** Scooped in April 2026; the specific question is
-> closed and B1 drops to ★★★. The remaining causal crossover also costs more
-> than the estimate below. See [[Direction-Reevaluation-2026-08]].
+**B1: Does post-training reduce variety because of the method or the data?**
 
-## The medium ones
+Fine-tuned models give less varied answers. The cause could be the training
+method or the narrow training data. The authors said they had not separated
+these causes. OLMo 3 releases weights and data at every stage, making a clean
+test possible.
 
-**T3 — Data mixing beats data filtering.**
-A large study found *no* quality filter reliably helps (best `+0.8`), but
-changing the *ratio* of instruction data to captions gives `+5.4`, and careful
-curation at fixed compute gives `+11.7` overall and `+57.1` on grounding. Huge
-effects. The catch: mixture optimization as a field is saturated, so the
-contribution has to be the constant-compute framing, not another mixer.
+> **Outdated on 2026-08-02:** an April 2026 paper answered the exact question.
+> B1 fell to ★★★. A smaller cause-and-effect crossover remains, but it costs
+> more than we first estimated. See [[Direction-Reevaluation-2026-08]].
 
-> **Superseded 2026-08-02.** The saturation was text-only — the multimodal
-> mixture lane is close to empty, and T3 rises to ★★★★½ with public
-> checkpoints cutting the cost by ~50×. See [[Direction-Reevaluation-2026-08]].
+### Medium-strength ideas
 
-**A1 — Were the video-model benchmarks ever checked against humans?**
-Mostly no. The flagship one computes its human-agreement claim from **four
-models**, where the statistic literally cannot reach significance. Another calls
-its judge "human-aligned" and reports no agreement number at all. And one
-benchmark released 102,000 human labels plus its judge, so you can check this
-without generating a single video.
+**T3: Changing the data mix helps more than filtering data.**
 
-**KV-cache allocation for the right objective.**
-Methods that decide how many bits each part of the attention cache gets all
-optimize a one-step error measure. Two other papers show the real damage is
-different — errors compound over long generations, and safety behaviour lives in
-a fragile subspace that loses 15% of refusals at almost no perplexity cost.
-Neither fixed the allocator. Two to four GPUs, no training.
+A large study found that no quality filter helped reliably; the best gain was
+`+0.8`. Changing the share of instruction data versus captions gave `+5.4`.
+Careful data selection at equal compute gave `+11.7` overall and `+57.1` on
+grounding. These are large effects. We first thought the field was too busy, so
+the paper would need to focus on equal-compute comparisons instead of adding
+another mixer.
 
-**C1 — Most LLM ablations use the wrong statistics.**
-When you test three models across many prompts, you cannot treat all runs as
-independent — model is a "hard-to-change" factor and prompt is not. Pooling them
-makes model-level effects look more significant than they are. The fix is
-standard in industrial statistics and ships as working code.
+> **Outdated on 2026-08-02:** the busy field was text-only. Multimodal data
+> mixing was nearly empty. T3 rose to ★★★★½, and public checkpoints cut the
+> expected cost by about 50×. See [[Direction-Reevaluation-2026-08]].
 
-**C2 — Detecting contamination with psychometrics.**
-There is a mature technique for spotting test questions that behave oddly for
-equally-able subjects. That is exactly the shape of "this benchmark item is easy
-for a contaminated model." Two separate searches ranked it highly.
+**A1: Were video-model benchmarks checked against people?**
 
-## The weak ones
+Mostly no. One leading benchmark based its human-agreement claim on only four
+models, too few for its test ever to find significance. Another calls its
+judge human-aligned but gives no agreement score. A third benchmark released
+102,000 human labels and its judge, so we could check it without making any new
+videos.
 
-**P3, P4** — more work on the frozen dual-encoder local branch. Six probes have
-already been rejected there, and the official code release is still a
-placeholder. **Recommended against.**
+**KV-cache allocation that protects the result we care about.**
 
-**A2, A3** — extensions of A1; only worth it if A1 lands.
+Current methods decide how many bits to give each part of the attention cache
+by minimizing one-step error. Two papers show different real harms: errors grow
+through long generations, and safety behavior lives in a fragile direction
+that loses 15% of refusals while perplexity barely changes. Neither paper
+improves the allocator. The study needs 2–4 GPUs and no training.
 
-**C3, C4** — narrow statistical transfers (survival analysis for agent failures,
-queueing theory for agent fan-out). Real but small.
+**C1: Most LLM part-removal tests use the wrong statistics.**
 
-**AHD survivors** — classical optimizers as a rival to LLM algorithm discovery
-at matched cost. Real gap, but three control papers landed in five months and
-the window is 3-6 months.
+Suppose a study tests three models on many prompts. The prompts are easy to
+change, but the models are expensive, hard-to-change units. Treating every run
+as independent makes model-level effects look more certain than they are.
+Industrial statistics already has a standard fix, and we could release working
+code for it.
 
-> **Superseded 2026-08-02.** Claims are outrunning controls roughly 10:1 and
-> the cost-normalized frontier still does not exist; AHD rises to ★★★★, with a
-> second unoccupied novelty-audit half. See [[Direction-Reevaluation-2026-08]].
+**C2: Find test-data contamination with educational-test statistics.**
 
-**Weather** — needs a meteorology collaborator to be credible.
+Psychometrics, the science of educational tests, can find questions that act
+strangely for people with the same skill. A benchmark item learned during model
+training has the same shape: it becomes unusually easy for a contaminated
+model. Two separate searches rated this idea highly.
 
----
+### Weak ideas
 
-# Part 3 — the table
+- **P3 and P4:** more work on the local branch of frozen two-encoder models.
+  Six tests already failed there, and the official code release is still an
+  empty placeholder. Do not continue.
+- **A2 and A3:** follow-ups to A1. Run them only if A1 produces a result.
+- **C3 and C4:** narrow uses of survival analysis for agent failures and
+  queueing theory for agent fan-out. Both are real but small.
+- **AHD ideas:** compare classical optimizers with LLM algorithm discovery at
+  the same cost. The gap was real, but three control papers appeared in five
+  months, leaving a 3–6 month window.
 
-> **Superseded 2026-08-02 — historical record, not guidance.** This ranking was
-> built on crowd count. That criterion has since been replaced by remaining
-> opportunity, and every crowd-count downgrade in the table below reversed while
-> both emptiness-credited rows fell. Read
-> [[Direction-Reevaluation-2026-08]] for the current stars, and
-> [[Top-Researcher-Scan-2026-08]] for the newer cross-person openings that are
-> not in this table at all.
+  > **Outdated on 2026-08-02:** claims were appearing about ten times faster
+  > than controls, and nobody had measured the cost-matched boundary. AHD rose
+  > to ★★★★. A second, still-open idea checks novelty claims. See
+  > [[Direction-Reevaluation-2026-08]].
 
-Priority is **overall recommendation**, weighing fit, cost, crowding and how
-likely it is to produce a paper.
+- **Weather:** credible work needs a meteorology collaborator.
 
-| # | Direction | Type | Field crowding | Compute | Pros | Cons | Priority |
+## Part 3: Historical July ranking
+
+> **This table is a record, not current advice.** It rewarded quiet research
+> areas and punished busy ones. We now rank by how much useful work remains.
+> Every row lowered only for being busy later rose, while both rows raised for
+> being empty later fell. [[Direction-Reevaluation-2026-08]] records that
+> August 2 change. Use [[Unified-Direction-Ranking-2026-08]] for current stars
+> and [[Top-Researcher-Scan-2026-08]] for newer ideas.
+
+The “Priority” column was the overall recommendation after considering fit,
+cost, how many groups worked nearby, and the chance of producing a paper.
+
+| # | Direction | Type | Nearby work | Compute | Good points | Bad points | July priority |
 |---|---|---|---|---|---|---|---|
-| 1 | **T1** freeze x objective x stage | Method | Medium | 300-600 GPU-h | Resolves a live 3-way disagreement; 9-hour reference run; tests a mechanism the original authors named; every outcome publishes | Adjudication-flavoured; needs careful matched-budget design | ★★★★★ |
-| 2 | **T4** anneal-window data | Method | **Very low** | ~1,000 H100-h | Biggest effect size found (+17-28); empty lane confirmed 3 ways; paired shared-trunk design | Most compute; furthest from prior experience; needs two scales | ★★★★★ |
-| 3 | **SVIB writeup** | Both | Low | **~0** | Work is done; own data so no reviewer conflict; releases a reusable artifact | Not top-tier; negative-results framing | ★★★★☆ |
-| 4 | **T2** RL perception decoupling | Method | Medium | ~256 GPU-h | Published null to build on; statistical; cheap | Extension of others' finding; RL space moves fast | ★★★★ |
-| 5 | **B1** diversity collapse | Method | Low-medium | ~200-400 GPU-h | Positive contribution; authors named the missing design; Olmo 3 makes it manipulable | Ungated; 2026 paper so someone may be on it | ★★★★ |
-| 6 | **T3** constant-compute mixture | Method | **High** | ~400 GPU-h | Largest measured effects (+5.4 to +11.7) | Mixture optimization is saturated (22+ methods, 2 surveys) | ★★★ |
-| 7 | **KV allocation** (M1/M2) | Method | High | 2-4 GPUs | Clean "beat this number"; two documented failure modes; no training | Industry-heavy; needs custom kernels to be competitive | ★★★ |
-| 8 | **A1** world-model judge audit | Evaluation | **Very low** | <100 GPU-h | Cheapest real result; finding verifiable from a PDF today; gated and held | Audit-shaped, and audits are being written faster than they publish | ★★★ |
-| 9 | **C1** split-plot ablations | Evaluation | Low | Very low | Correctness claim; ships a method not a complaint; cheap formalism | Window tight (a competitor shipped 2 weeks ago); still measurement | ★★★ |
-| 10 | **C2** contamination via DIF | Evaluation | Low-medium | Medium | Two searches converged; best use of GPUs among evaluation items | Ungated; adjacent privacy literature is active | ★★★ |
-| 11 | **A2/A3** world-model extensions | Evaluation | Low | 1-3 weeks, 8 GPUs | Natural follow-ons to A1 | Only sensible after A1 lands | ★★ |
-| 12 | **AHD** classical-optimizer comparison | Evaluation | Medium-high | Low | Real remaining gap on the standard benchmark set | 3 control papers in 5 months; 3-6 month window | ★★ |
-| 13 | **C3/C4** frailty, fork-join | Evaluation | Low | Low | Genuinely unoccupied | Narrow; small audience | ★★ |
-| 14 | **P3/P4** more local-branch work | Method | Medium | Medium | — | Six probes already rejected this family; code release is a placeholder | ★ |
-| 15 | **Weather** twPCRPS / METAR | Evaluation | Medium | Very low | Near-zero compute | Needs a domain collaborator; main claim already scooped | ★ |
+| 1 | **T1:** frozen parts × training goal × stage | Method | Medium | 300–600 GPU-h | Settles a live three-way disagreement; 9-hour reference run; tests a cause named by the original authors; every result is useful | Feels like settling a dispute; needs an exact equal-budget design | ★★★★★ |
+| 2 | **T4:** data in the cooldown window | Method | **Very low** | about 1,000 H100-h | Largest effect found, +17–28; three searches seemed to find an empty area; shared-start design gives paired comparisons | Highest compute; furthest from our experience; needs two model sizes | ★★★★★ |
+| 3 | **SVIB write-up** | Both | Low | **about 0** | Experiments are done; our own data avoids reviewer conflict; releases a reusable tool | Not a top venue; negative-result framing | ★★★★☆ |
+| 4 | **T2:** separate RL gains from perception | Method | Medium | about 256 GPU-h | Builds on a published null; statistical and cheap | Extends another group's result; RL changes quickly | ★★★★ |
+| 5 | **B1:** loss of diversity | Method | Low-medium | about 200–400 GPU-h | Could give a positive fix; authors named the missing design; OLMo 3 makes the cause testable | Had not been fully checked; a 2026 paper meant someone else might be doing it | ★★★★ |
+| 6 | **T3:** data mixture at equal compute | Method | **High** | about 400 GPU-h | Large measured gains, +5.4 to +11.7 | We thought data-mixture work already had 22+ methods and 2 surveys | ★★★ |
+| 7 | **KV allocation, M1/M2** | Method | High | 2–4 GPUs | Clear number to beat; two known failure types; no training | Strong industry groups; may need custom GPU code | ★★★ |
+| 8 | **A1:** world-model judge check | Evaluation | **Very low** | under 100 GPU-h | Cheapest real result; one finding can be checked from a PDF now | An audit, and audits may become old before publication | ★★★ |
+| 9 | **C1:** split-plot statistics for model part tests | Evaluation | Low | Very low | Correctness result; releases a method, not only a complaint | Short window because a competitor published two weeks earlier; still mainly measurement | ★★★ |
+| 10 | **C2:** contamination through DIF | Evaluation | Low-medium | Medium | Two searches agreed; strongest evaluation use of GPUs | Had not been fully checked; nearby privacy work moves quickly | ★★★ |
+| 11 | **A2/A3:** world-model follow-ups | Evaluation | Low | 1–3 weeks on 8 GPUs | Natural next steps after A1 | Make sense only if A1 works | ★★ |
+| 12 | **AHD:** classical-optimizer comparison | Evaluation | Medium-high | Low | Real missing comparison on the standard benchmarks | Three control papers in five months; only a 3–6 month window | ★★ |
+| 13 | **C3/C4:** frailty and fork-join statistics | Evaluation | Low | Low | Nobody else clearly doing them | Narrow and small audience | ★★ |
+| 14 | **P3/P4:** more local-branch work | Method | Medium | Medium | — | Six failed probes; code release is a placeholder | ★ |
+| 15 | **Weather:** twPCRPS/METAR | Evaluation | Medium | Very low | Almost no compute | Needs a domain expert; main claim already published | ★ |
 
-## If you only do two things
+## What the July page told us to do
 
-**Write up SVIB** (zero compute, converts finished work into an output) **and
-start T1** (nine-hour reference run, resolves a real disagreement, and it
-subsumes the freeze/unfreeze idea that was separately on the list).
+The July choice was to write SVIB because it needed no new compute, and to
+start T1 because its reference run took nine hours and addressed a real
+disagreement. If T1 worked, T4 was supposed to be the larger next project.
 
-If T1 goes well and you want a bigger swing afterwards, **T4** is the strongest
-paper on the list.
-
-> **Superseded 2026-08-02.** The write-up and T1 both still hold, but T4 is no
-> longer the bigger swing — it fell to ★★. T3 and the reversed self-training
-> collapse lane are the current second bets, and T1 now needs an immediate
-> re-gate against Darrell's encoder-fix cluster. See
-> [[Direction-Reevaluation-2026-08]] and [[Top-Researcher-Scan-2026-08]].
+> **Updated 2026-08-02:** writing SVIB and checking T1 still make sense, but T4
+> is no longer the large next bet; it fell to ★★. T3 and the revived
+> self-training-collapse question are now stronger second choices. T1 also
+> needs a new check against Darrell's encoder-fix group. See
+> [[Direction-Reevaluation-2026-08]] and
+> [[Top-Researcher-Scan-2026-08]].
 
 ## Related
 
-[[Direction-Reevaluation-2026-08]] — current star ranking; supersedes Part 3.
-[[Top-Researcher-Scan-2026-08]] — people-level openings, current.
-[[Method-Opportunities]] — full detail, baselines and numbers to beat.
-[[Live-Research-Opportunities]] — the evaluation-side directions.
-Post-Rebuttal-Measurement-Sprint, Cluster-1-Compositional-Scoring (svib repo
-wiki) — the SVIB evidence base.
+- [[Unified-Direction-Ranking-2026-08]] — current star ranking.
+- [[Direction-Reevaluation-2026-08]] — historical ranking that first replaced
+  Part 3.
+- [[Top-Researcher-Scan-2026-08]] — current researcher-level openings.
+- [[Method-Opportunities]] — full methods, baselines, and scores to beat.
+- [[Live-Research-Opportunities]] — evaluation ideas.
+- `Post-Rebuttal-Measurement-Sprint` and `Cluster-1-Compositional-Scoring` in
+  the `svib` repository wiki — full SVIB evidence.

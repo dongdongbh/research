@@ -1,185 +1,242 @@
-# The Compositional VLM Problem — a working survey (2026-08-03)
+# Why Vision-Language Models Struggle to Combine Ideas (2026-08-03)
 
-What we know about why contrastive VLMs fail composition — from every paper
-gated in waves 1–3, the SVIB post-mortem, and the A4/A5 decisive checks.
-Written for the lab: claims carry links or our own numbers; verdicts carry
-the gate that produced them. Companion: [[Binding-Root-Cause-Analysis]]
-(the first-principles memo), [[Method-Gates-Wave-3-2026-08]].
+This page explains what we know about a major failure in contrastive
+vision-language models (VLMs): they often notice the right objects and words
+but connect them in the wrong way. The evidence comes from papers checked in
+waves 1–3, the SVIB post-mortem, and the A4/A5 tests.
 
-## 1. The problem, precisely
+Claims link to a paper or give our own numbers. Each decision names the check
+that produced it. Also read [[Binding-Root-Cause-Analysis]] and
+[[Method-Gates-Wave-3-2026-08]].
 
-CLIP-class dual encoders score image-text pairs by a dot product of pooled
-embeddings. They pass retrieval benchmarks while failing *composition*:
-attribute binding ("red cube, blue sphere" vs "blue cube, red sphere"),
-relation direction ("dog chases cat" vs "cat chases dog" — the swap case),
-and word-order sensitivity generally
-([ARO/NegCLIP, 2210.01936](https://arxiv.org/abs/2210.01936);
-[SugarCrepe, 2306.14610](https://arxiv.org/abs/2306.14610);
-[Winoground, 2204.03162](https://arxiv.org/abs/2204.03162);
-[SVO-Probes, 2106.09141](https://arxiv.org/abs/2106.09141)). Swap cases are
-the hard core: a decade of fixes moved benchmark aggregates while swap
-subsets stay near chance.
+## 1. The exact problem
 
-The sharpest framing (ours, §1 of [[Binding-Root-Cause-Analysis]]): for any
-single swap quadruple, a rank-1 dot product solves the task trivially — one
-linear constraint. **Capacity is not the root cause. Systematicity is**:
-solving novel (A, R, B) combinations requires a consistent binding scheme,
-and the question is why training never finds one.
+Models such as CLIP use two separate encoders. One turns an image into one
+vector. The other turns text into one vector. A dot product compares them.
+These models do well at finding a matching image or caption, but often fail at
+**composition**, which means putting ideas together correctly.
 
-## 2. Our own experimental evidence (the lab's contribution to the picture)
+Examples include:
 
-- **Binding information exists pre-pooling and dies at the readout.** Dense
-  routing over patch tokens scores 4.79 vs 0.15 for the pooled global
-  score (SVIB probes). Re-encoding regions at full resolution buys +2.66
-  SugarCrepe++ at 8× cost; reusing the ViT's own ROI-pooled patch tokens
-  loses −1.32 (paired CI [−2.51, −0.12]) — the region information is
-  simply not carried into the patch tokens' pooled form.
-- **Six clever readouts lost to the raw global score** under
-  validation-locked selection (patch pooling, claim decomposition,
-  dispersion, marginal calibration, optimal transport, inductive
-  calibration). Cheap beats clever until the readout gets *training
-  signal*.
-- **A4 (2026-08-02): the dense-prediction ancestor actively destroys ITM.**
-  [CLIPSelf (2310.01403)](https://arxiv.org/abs/2310.01403)'s released
-  checkpoint lands 12.8 points BELOW the base patch arm on SCPP++ (CI
-  [−14.1, −11.5]); its objective (region→crop alignment for detection)
-  overwrites whatever compositional signal the tower had. Lineage caveat:
-  FineCLIP (NeurIPS 2024, no arXiv) shows region self-distillation CAN
-  help composition when the backbone trains — the failure is specific to
-  the frozen-ITM setting and CLIPSelf's objective.
-- **A5 (2026-08-02): the published 1× execution fix does not close our
-  gap.** The [LABCLIP-style linear map (2502.03566)](https://arxiv.org/abs/2502.03566)
-  replicates its paper's +5.2 SugarCrepe gain but closes none of the
-  (A2−A1) gap on strict SCPP++ (negative on all seeds) — evidence that
-  benchmark-level "execution fixes" and the region-information gap are
-  different quantities.
-- **Protocol lessons that shaped everything above:** α=1 reproduction
-  invariant; QuickGELU pairing; validation-locked selection; the
-  two-positive-caption instability of benchmark rankings.
+- **attribute binding:** “red cube, blue sphere” versus “blue cube, red
+  sphere”;
+- **relationship direction:** “dog chases cat” versus “cat chases dog”; and
+- **word order** in general.
 
-## 3. What people tried — five families, and where each stands
+These failures appear in
+[ARO/NegCLIP, 2210.01936](https://arxiv.org/abs/2210.01936),
+[SugarCrepe, 2306.14610](https://arxiv.org/abs/2306.14610),
+[Winoground, 2204.03162](https://arxiv.org/abs/2204.03162), and
+[SVO-Probes, 2106.09141](https://arxiv.org/abs/2106.09141).
 
-**(a) Data: hard negatives and augmentation.** NegCLIP
-([2210.01936](https://arxiv.org/abs/2210.01936)) → LLM-generated negatives
-([DeGLA, 2504.16801](https://arxiv.org/abs/2504.16801)), scene-graph-guided
-negatives ([Structure-CLIP, 2305.06152](https://arxiv.org/abs/2305.06152)),
-scene-graph supervision ([SGVL, 2305.06343](https://arxiv.org/abs/2305.06343)),
-counterfactual image pairs (VisMin, COCO-Counterfactuals — we hold filtered
-copies). *Progress:* solid benchmark gains (+3–5 typical). *Limit:*
-text-side negatives teach caption-plausibility shortcuts; swap subsets
-barely move; and [2604.16351](https://arxiv.org/abs/2604.16351) shows
-training FOR sensitivity costs dense-retrieval generalization (8–40%
-drops) — the data lever has a measured price.
+Role swaps are the hardest cases. Ten years of methods improved whole-test
+averages, but scores on swap-only groups remain near chance.
 
-**(b) Execution/readout fixes at 1× on frozen towers.** Linear text-side
-maps ([2502.03566](https://arxiv.org/abs/2502.03566)), learned readout CNNs
-over the patch×token cosine map ([DCSM, 2503.08723](https://arxiv.org/abs/2503.08723)),
-training-free late interaction ([ABE-CLIP, 2512.17178](https://arxiv.org/abs/2512.17178)),
-logic-constrained score editing (LCSE,
-[2607.23052](https://arxiv.org/abs/2607.23052)), selective aggregation
-against background-shortcut pooling
-([LaSt-ViT, 2602.22394](https://arxiv.org/abs/2602.22394) — "lazy
-aggregation," zero compositional evals yet). *Progress:* real, cheap,
-retrieval-preserving. *Limit:* our A5 result — these fix benchmark
-aggregates, not the region-information gap, and none is swap-headline.
+Our clearest explanation appears in section 1 of
+[[Binding-Root-Cause-Analysis]]. Any one swap case can be solved with a very
+small dot-product model. The problem is not raw model size. The problem is
+**systematicity**: using the same role rule for a new `(A, relationship, B)`
+combination. Training does not reliably learn that rule.
 
-**(c) Fine-grained interaction: pay compute at query time.**
-Cross-attention ITM heads ([BLIP-2, 2301.12597](https://arxiv.org/abs/2301.12597)),
-generative scoring ([DiffusionITM, 2305.16397](https://arxiv.org/abs/2305.16397)
-at ~17×; [VQAScore, 2404.01291](https://arxiv.org/abs/2404.01291)), and the
-current state of the art on frozen features:
-[TF_Local (2604.11496)](https://arxiv.org/abs/2604.11496) — a 13M-param
-fusion transformer over frozen patch+token embeddings, SugarCrepe
-73.0→86.3 with the backbone frozen. *Progress:* large — composition is
-mostly an interface problem given enough interaction compute. *Limit:*
-O(|I|×|T|) per-pair cost, no cacheable embeddings, no efficiency analysis
-anywhere in that literature (verified: TF_Local discusses cost zero times).
+## 2. What our experiments add
 
-**(d) Structured/multi-vector representations.** Role-tagged component
-sets with per-role MaxSim ([ComAlign, 2409.08206](https://arxiv.org/abs/2409.08206));
-object-centric binding modules with non-commutative relation scores and
-algebraic swap negatives ([OC-CLIP, 2502.14113](https://arxiv.org/abs/2502.14113)
-— Meta FAIR; the strongest swap-targeted method to date, but its slots are
-text-conditioned → cross-encoder-shaped); document-retrieval multi-vectors
-([ColPali, 2407.01449](https://arxiv.org/abs/2407.01449);
-[SaMer, 2607.04605](https://arxiv.org/abs/2607.04605);
-[MetaEmbed, 2509.18095](https://arxiv.org/abs/2509.18095)) — which have
-NEVER been evaluated on composition (verified, wave-3 Cell-A gate).
-Cross→bi distillation exists but always to single vectors
-([CPRD, 2407.07479](https://arxiv.org/abs/2407.07479);
-[DCLIP, 2505.21549](https://arxiv.org/abs/2505.21549)).
+- **Role information exists before pooling but disappears at the final
+  readout.** A detailed route over patch tokens scores 4.79, compared with
+  0.15 for the pooled global score. Encoding each region again at full
+  resolution improves SugarCrepe++ by 2.66 points but costs 8× more. Reusing
+  ROI-pooled tokens from the ViT itself lowers the score by 1.32 points, with
+  paired confidence interval `[−2.51, −0.12]`. The ViT's pooled patch form does
+  not carry the needed region information.
+- **Six complex readouts lost to the raw global score.** We tested patch
+  pooling, splitting captions into claims, dispersion, marginal calibration,
+  optimal transport, and inductive calibration. We chose settings only on
+  validation data. A cheap readout wins until the readout receives its own
+  training signal.
+- **A4, 2026-08-02: a model trained for dense prediction actively hurts
+  image-text matching.** The released
+  [CLIPSelf (2310.01403)](https://arxiv.org/abs/2310.01403) checkpoint scores
+  12.8 points below the base patch version on SCPP++, with confidence interval
+  `[−14.1, −11.5]`. Its region-to-crop training helps detection but overwrites
+  useful compositional information. Important limit: FineCLIP, NeurIPS 2024
+  with no arXiv version, shows that region self-distillation **can** help
+  composition when the backbone also trains. Our failure is specific to a
+  frozen backbone, image-text matching, and CLIPSelf's training goal.
+- **A5, 2026-08-02: a published 1× scoring fix does not recover our missing
+  information.** A
+  [LABCLIP-style linear map (2502.03566)](https://arxiv.org/abs/2502.03566)
+  reproduces the paper's 5.2-point SugarCrepe gain. However, it closes none of
+  the A2-minus-A1 gap on strict SCPP++; every seed is negative. Raising an
+  overall benchmark score and recovering region information are different
+  goals.
+- **Protocol lessons:** keep the `alpha=1` reproduction check; pair models with
+  the correct QuickGELU activation; choose settings only on validation data;
+  and remember that adding a second valid caption can make benchmark rankings
+  unstable.
 
-**(e) Theory.** Contrastive objectives suppress discrimination-redundant
-features ([2106.11230](https://arxiv.org/abs/2106.11230),
-[2011.02803](https://arxiv.org/abs/2011.02803)); multimodal contrastive
-learning identifies shared content under assumptions that plausibly exclude
-roles ([2303.09166](https://arxiv.org/abs/2303.09166)); CLIP-space meanings
-are near-linear/additive ([2302.14383](https://arxiv.org/abs/2302.14383)),
-generalizing models use *multiplicative* binding
-([2605.31503](https://arxiv.org/abs/2605.31503)), and compositional
-generalization requires linear-orthogonal concept factors with surprisingly
-low dimension ([2602.24264, ICML 2026](https://arxiv.org/abs/2602.24264)).
-The Tübingen group owns this lane and is one empirical paper from several
-cells we care about.
+## 3. Five kinds of attempted fix
 
-## 4. What is still open, and why
+### A. Better data and harder negative examples
 
-1. **Swap at 1× with cacheable embeddings.** Every swap-competent system
-   (OC-CLIP, TF_Local, generative scorers) pays per-pair compute. Additive
-   composition is commutative BY CONSTRUCTION — E(dog chases cat) =
-   E(cat chases dog) under a bag scheme — so single-vector swap
-   sensitivity requires a non-commutative binding algebra (HRR/TPR/VSA;
-   capacity bounds: [2301.10352](https://arxiv.org/abs/2301.10352)).
-   The algebra × contrastive-ITM cell is EMPTY (43 HRR papers, zero in
-   ITM; wave-3 RB gate). The load-bearing unknown: image-side role
-   extraction without text conditioning — OC-CLIP dodged it; nobody has
-   measured whether frozen ViT features even contain it. ★★½ until the
-   probe answers that.
-2. **The efficiency–compositionality frontier is unmeasured** (Cell A,
-   ★★★½, CVPR candidate): nobody has drawn binding-retention vs
-   bytes-per-image; theory predicts no breakpoint; the compression line
-   never evaluates composition. The method it unlocks —
-   binding-preserving pooling via margin distillation — is also
-   unoccupied.
-3. **Which failures are even position-dependent?** No per-item image-side
-   split of compositional benchmarks exists (Cell B, ★★½); aggregate
-   evidence ([2503.17349](https://arxiv.org/abs/2503.17349): 0.2–2.7%
-   shuffle drops) plus LaSt-ViT's lazy-aggregation mechanism suggest much
-   of "composition" may be solvable by order-free readouts — meaning
-   benchmarks under-test binding.
-4. **The sensitivity–generalization tradeoff**
-   ([2604.16351](https://arxiv.org/abs/2604.16351)): every training-based
-   fix pays retrieval; whether an architectural (by-construction) fix
-   escapes the tradeoff is open and testable.
-5. **Benchmark validity itself:** rankings flip under a second valid
-   positive caption (our lesson #4); memorization splits reorder
-   leaderboards (CompLearn/CTB line); swap subsets are small. Any method
-   claim needs subset-level, CI-carrying evaluation.
+This group includes NegCLIP
+([2210.01936](https://arxiv.org/abs/2210.01936)), LLM-written negatives in
+[DeGLA, 2504.16801](https://arxiv.org/abs/2504.16801), scene-graph negatives in
+[Structure-CLIP, 2305.06152](https://arxiv.org/abs/2305.06152), scene-graph
+training in [SGVL, 2305.06343](https://arxiv.org/abs/2305.06343), and paired
+changed images from VisMin and COCO-Counterfactuals. We have filtered copies of
+the last two.
 
-## 5. What is worth trying (ranked, with the decisive experiment first)
+**Progress:** usually 3–5 points on full benchmarks.
 
-1. **The role-decodability probe** (running as of 2026-08-03; ~20–50
-   GPU-h): is agent/patient linearly decodable from (i) frozen patch
-   tokens, (ii) pooled image vector, (iii) text vector, on swap-paired
-   data? One experiment discriminates the three root-cause accounts
-   (data / objective-suppression / algebra), gates the algebraic method's
-   crux, and supplies Cell A's mechanism story.
-2. **Cell A: the readout-budget vs binding frontier + binding-preserving
-   pooling** (★★★½, CVPR ~Nov 13) — our infra advantage, theory
-   counter-prediction to test, method arm folds in our crop-distillation
-   machinery. 1-day dynamic-range pilot first; Tübingen and the LaSt-ViT
-   group are the scoop watch.
-3. **Algebraic role-binding embeddings** (★★½, re-rate on probe outcome):
-   fixed HRR/TPR operator in frozen towers, single cacheable vector,
-   algebraic swap negatives; headline = escaping the 2604.16351 tradeoff
-   by construction.
-4. **If the probe says roles aren't in frozen features at all:** the
-   honest conclusion is that no readout can fix binding — mid-training
-   with role-bearing objectives becomes the only path, and the frozen-lane
-   program narrows to Cell A's frontier measurement.
+**Limit:** text-only negatives may teach the model to spot an unnatural
+caption instead of understanding roles. Swap scores barely change. Also,
+[2604.16351](https://arxiv.org/abs/2604.16351) finds that training for more
+compositional sensitivity lowers dense-retrieval quality by 8–40%. Better
+sensitivity has a measured cost.
+
+### B. Cheap scoring fixes on frozen encoders
+
+These methods keep the image and text towers frozen and aim for about 1× cost:
+
+- linear maps on the text side
+  ([2502.03566](https://arxiv.org/abs/2502.03566));
+- learned CNN readouts over the patch-by-token similarity map
+  ([DCSM, 2503.08723](https://arxiv.org/abs/2503.08723));
+- training-free late interaction
+  ([ABE-CLIP, 2512.17178](https://arxiv.org/abs/2512.17178));
+- score editing with logic rules, called LCSE
+  ([2607.23052](https://arxiv.org/abs/2607.23052)); and
+- selective aggregation that avoids pooling background shortcuts
+  ([LaSt-ViT, 2602.22394](https://arxiv.org/abs/2602.22394)). LaSt-ViT calls
+  this “lazy aggregation” and has not yet tested composition.
+
+**Progress:** these methods are cheap, produce real gains, and keep retrieval
+quality.
+
+**Limit:** our A5 result shows that they can raise the overall score without
+recovering the missing region information. None has made role swaps its main
+result.
+
+### C. More image-text interaction at scoring time
+
+This group spends more compute every time it compares an image and caption:
+
+- cross-attention image-text matching heads such as
+  [BLIP-2, 2301.12597](https://arxiv.org/abs/2301.12597);
+- generative scoring, including
+  [DiffusionITM, 2305.16397](https://arxiv.org/abs/2305.16397) at about 17× cost
+  and [VQAScore, 2404.01291](https://arxiv.org/abs/2404.01291); and
+- [TF_Local, 2604.11496](https://arxiv.org/abs/2604.11496), the best current
+  method on frozen features. Its 13M-parameter fusion transformer uses frozen
+  image patches and text tokens. It raises SugarCrepe from 73.0 to 86.3 while
+  the backbone stays frozen.
+
+**Progress:** large gains show that composition is mostly a problem at the
+image-text interface when enough interaction is allowed.
+
+**Limit:** cost grows with every image-text pair, written as
+`O(|I| × |T|)`. The model cannot save one reusable image vector. This line of
+work gives no efficiency analysis; TF_Local discusses cost zero times.
+
+### D. Structured or multi-vector representations
+
+Examples include:
+
+- role-tagged parts with per-role MaxSim
+  ([ComAlign, 2409.08206](https://arxiv.org/abs/2409.08206));
+- object-based binding with order-sensitive relationship scores and generated
+  swaps ([OC-CLIP, 2502.14113](https://arxiv.org/abs/2502.14113)). This Meta
+  FAIR method is the strongest swap-focused method so far. Its object slots
+  depend on the text, so it works more like a cross encoder;
+- document-retrieval multi-vectors:
+  [ColPali, 2407.01449](https://arxiv.org/abs/2407.01449),
+  [SaMer, 2607.04605](https://arxiv.org/abs/2607.04605), and
+  [MetaEmbed, 2509.18095](https://arxiv.org/abs/2509.18095). The wave-3 Cell A
+  check found that none has tested composition; and
+- methods that teach a two-sided interacting model to become a two-encoder
+  model. [CPRD, 2407.07479](https://arxiv.org/abs/2407.07479) and
+  [DCLIP, 2505.21549](https://arxiv.org/abs/2505.21549) do this only for single
+  vectors.
+
+### E. Theory about why the failure happens
+
+- Contrastive goals can hide features that are not needed for choosing the
+  right pair
+  ([2106.11230](https://arxiv.org/abs/2106.11230),
+  [2011.02803](https://arxiv.org/abs/2011.02803)).
+- Theory says multimodal contrastive learning can find shared content only
+  under assumptions that may leave out roles
+  ([2303.09166](https://arxiv.org/abs/2303.09166)).
+- Meanings in CLIP space are close to linear and additive
+  ([2302.14383](https://arxiv.org/abs/2302.14383)).
+- Models that generalize well use multiplication-like binding
+  ([2605.31503](https://arxiv.org/abs/2605.31503)).
+- Compositional generalization may need concept parts that are linear and
+  orthogonal, but the required space can be surprisingly small
+  ([2602.24264, ICML 2026](https://arxiv.org/abs/2602.24264)).
+
+The Tübingen group leads this research area. One more empirical paper from
+them could cover several questions we care about.
+
+## 4. Important questions that remain open
+
+1. **Can a model solve swaps at 1× cost with reusable vectors?** Every strong
+   swap method—OC-CLIP, TF_Local, and generative scorers—spends compute on
+   each image-text pair. Adding word vectors cannot show order because
+   `E(dog chases cat) = E(cat chases dog)` under that rule. A single-vector
+   method needs an order-sensitive binding rule such as HRR, TPR, or VSA. A
+   capacity result appears in
+   [2301.10352](https://arxiv.org/abs/2301.10352). The wave-3 check found zero
+   work combining this algebra with contrastive image-text matching: 43 HRR
+   papers, zero ITM uses. The key unknown is whether image roles can be found
+   without text guiding the search. OC-CLIP avoids that problem, and nobody
+   has measured whether frozen ViT features contain the roles. Rating: ★★½
+   until the probe answers it.
+2. **Nobody has measured the speed-versus-composition tradeoff.** Cell A rates
+   ★★★½ as a CVPR candidate. No paper plots how much role information remains
+   against bytes stored per image. Theory predicts no sudden breaking point,
+   while compression papers do not test composition. This study could lead to
+   binding-preserving pooling trained by margin distillation. Nobody has
+   claimed that method.
+3. **Which failures truly depend on position?** No benchmark splits items by
+   whether the image-side error depends on position. Overall evidence from
+   [2503.17349](https://arxiv.org/abs/2503.17349) shows only 0.2–2.7% loss when
+   order is shuffled. LaSt-ViT's lazy-aggregation account also suggests that
+   order-free readouts may solve much of what benchmarks call composition.
+   The benchmarks may not test binding strongly enough. Cell B rates ★★½.
+4. **Can a built-in structure avoid the sensitivity-versus-retrieval loss?**
+   [2604.16351](https://arxiv.org/abs/2604.16351) finds that every training fix
+   it tested loses retrieval quality. A role rule built into the architecture
+   might avoid that tradeoff. This is open and easy to test clearly.
+5. **Are the benchmarks themselves dependable?** Our rankings change when a
+   second valid positive caption is used. Memorization-based splits from the
+   CompLearn/CTB line also reorder leaderboards, and swap groups are small.
+   Every method claim needs results by subset and confidence intervals.
+
+## 5. What to try next, in order
+
+1. **Run the role-decoding probe first.** As of 2026-08-03 it was running and
+   expected to cost 20–50 GPU-hours. Test whether agent and patient roles can
+   be decoded with a linear model from frozen patch tokens, the pooled image
+   vector, and the text vector. One experiment separates the data, suppression,
+   and algebra accounts. It also checks the key assumption of the algebraic
+   method and gives Cell A its explanation of the mechanism.
+2. **Run Cell A: readout budget versus role information, then test
+   binding-preserving pooling.** Rating ★★★½; possible CVPR deadline around
+   November 13. We already have useful infrastructure. Theory gives a clear
+   prediction to challenge, and the method arm can reuse our crop-distillation
+   tools. Start with a one-day pilot to check that the scores vary enough.
+   Watch the Tübingen and LaSt-ViT groups for competing work.
+3. **Reconsider algebraic role-bound vectors only after the probe.** Current
+   rating ★★½. The idea uses a fixed HRR or TPR operator in frozen towers, one
+   saved vector, and swaps made by changing the algebra. Its main claim would
+   be avoiding the tradeoff found in 2604.16351 because the order rule is built
+   in.
+4. **If frozen features contain no roles, stop trying new readouts.** Training
+   earlier layers with role-aware goals would be the only path. The frozen
+   model program should then shrink to Cell A's measurement of the frontier.
 
 ## Related
 
 [[Binding-Root-Cause-Analysis]] · [[Method-Gates-Wave-3-2026-08]] ·
-[[Method-Gates-Wave-2-2026-08]] · [[Prereg-Crop-Consistency-Distillation]]
-· [[Status-And-Survivors]] · [[Wiki-Citation-Audit-2026-08]]
+[[Method-Gates-Wave-2-2026-08]] · [[Prereg-Crop-Consistency-Distillation]] ·
+[[Status-And-Survivors]] · [[Wiki-Citation-Audit-2026-08]]
