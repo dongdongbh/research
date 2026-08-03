@@ -33,33 +33,33 @@ already in print.
 
 Three independent problems, any one survivable, together fatal.
 
-**1. Already run, in print.** DistiLLM-2 (`2503.07067`, ICML 2025) Table 8
+**1. Already run, in print.** DistiLLM-2 ([`2503.07067`](https://arxiv.org/abs/2503.07067), ICML 2025) Table 8
 crosses teachers `{1.8B, 7B, 14B}` (Qwen1.5-Chat) into a fixed 0.5B student,
-comparing GKD (on-policy) against DistiLLM (off-policy). Result:
+comparing [GKD](https://arxiv.org/abs/2306.13649) (on-policy) against DistiLLM (off-policy). Result:
 `64.18 / 71.15 / 72.59` on-policy versus `65.23 / 72.11 / 72.11` off-policy —
 **monotonically increasing, no U-shape**, with the on-policy advantage crossing
 from negative to positive at 14B. A weak, uncontrolled version of the predicted
 effect is already published.
 
 **2. Registered as someone's to-do.** The on-policy distillation survey
-(`2604.00626`, 89pp) notes Busbridge's non-monotonicity was obtained "under an
+([`2604.00626`](https://arxiv.org/abs/2604.00626), 89pp) notes [Busbridge](https://arxiv.org/abs/2502.08606)'s non-monotonicity was obtained "under an
 off-policy setting," conjectures an interference term, and states verbatim:
 *"Future work could conduct controlled grid searches that independently vary
 N_S, N_T, and D_on under on-policy training."*
 
-**3. My imitation-learning framing was backwards.** I argued that because DAgger
+**3. My imitation-learning framing was backwards.** I argued that because [DAgger](https://arxiv.org/abs/1011.0686)
 assumes realizability, on-policy should *not* fix a capacity gap if the gap is a
 realizability failure. The literature says the opposite:
 
-- Foster, Block & Misra (`2407.15007`, NeurIPS 2024): **under realizability**,
+- Foster, Block & Misra ([`2407.15007`](https://arxiv.org/abs/2407.15007), NeurIPS 2024): **under realizability**,
   online IL *cannot* improve over offline IL.
-- Espinosa-Dice et al. (`2503.13162`, ICLR 2025): **under misspecification**,
+- Espinosa-Dice et al. ([`2503.13162`](https://arxiv.org/abs/2503.13162), ICLR 2025): **under misspecification**,
   interaction is *fundamentally required*.
-- Zhang et al. (`2606.30445`, Jun 2026) proves an information-theoretic barrier
+- Zhang et al. ([`2606.30445`](https://arxiv.org/abs/2606.30445), Jun 2026) proves an information-theoretic barrier
   for offline IL under misspecification even at horizon 1, states in a footnote
   that strong-to-weak distillation **is** the non-realizable setting, and
   empirically finds that with a realizable expert SFT matches it while
-  on-policy adds nothing. It uses the same models as `2604.13016`.
+  on-policy adds nothing. It uses the same models as [`2604.13016`](https://arxiv.org/abs/2604.13016).
 
 So non-realizability is precisely where on-policy is *theorized to help*, the
 prediction is published with theorems, and the outcome was largely determined in
@@ -67,7 +67,7 @@ advance.
 
 **4. The premise is probably false at task scale.** Every teacher ladder found
 at post-training scale is monotonic: DistiLLM-2 above, and Visual-Advantage OPD
-(`2605.21924`) sweeping Qwen3-VL `{4B, 8B, 32B}` under on-policy reporting the
+([`2605.21924`](https://arxiv.org/abs/2605.21924)) sweeping Qwen3-VL `{4B, 8B, 32B}` under on-policy reporting the
 gain "growing monotonically along the teacher-size axis." **No genuine U-shape
 has been reported for task distillation with a modern model family.** The
 experiment presupposes the effect it intends to explain.
@@ -76,9 +76,9 @@ experiment presupposes the effect it intends to explain.
 Capacity Gap in Distilling Language Models*, inducts a law: optimal teacher
 scale is **linear in student scale**, verified to 7B.
 
-Also dead per the same sweeps: forward-versus-reverse KL (`2404.02657`, COLING
+Also dead per the same sweeps: forward-versus-reverse KL ([`2404.02657`](https://arxiv.org/abs/2404.02657), COLING
 2025, finds "neither mode-seeking nor mean-seeking properties manifest in KD for
-LLMs"); per-token adaptive temperature (`2510.11615`); compute-matched KD versus
+LLMs"); per-token adaptive temperature ([`2510.11615`](https://arxiv.org/abs/2510.11615)); compute-matched KD versus
 SFT (Busbridge, 69pp).
 
 ## Survivor 1: the LLM-judge noise floor in KD, anchored on a documented regression
@@ -101,17 +101,17 @@ from a lineage whose own predecessor reported error bars.
 **The study.** Decompose the noise floor into its sources — training seed, judge
 model, judge sampling seed, decoding temperature — then overlay published deltas
 from the KD literature and report what fraction sit below it. Comparable seed
-practice elsewhere: MiniLLM 5 seeds, GKD 3 seeds, DistiLLM 5 seeds with std.
+practice elsewhere: [MiniLLM](https://arxiv.org/abs/2306.08543) 5 seeds, [GKD](https://arxiv.org/abs/2306.13649) 3 seeds, DistiLLM 5 seeds with std.
 
 **Feasibility.** DistiLLM-2's own setup is 4x A100-80GB with LoRA; all four
 codebases are public. Reproducible on 8 GPUs.
 
-**Competition.** EasyOPD (`2607.11012`) states the thesis verbatim in its
+**Competition.** EasyOPD ([`2607.11012`](https://arxiv.org/abs/2607.11012)) states the thesis verbatim in its
 abstract — "fragmented implementations that are difficult to reproduce and
 extend" — and then **ships a library instead of an audit**. That is the citation
 and the only visible competitor. No survey flags comparability: Xu et al.
-(`2402.13116`, 43pp), Yang et al. (`2407.01885`), Mansourian et al.
-(`2503.12067`, TMLR, 102pp).
+([`2402.13116`](https://arxiv.org/abs/2402.13116), 43pp), Yang et al. ([`2407.01885`](https://arxiv.org/abs/2407.01885)), Mansourian et al.
+([`2503.12067`](https://arxiv.org/abs/2503.12067), TMLR, 102pp).
 
 ## Survivor 2: contamination dose-response through distillation
 
@@ -121,37 +121,37 @@ of the distillation corpus?
 
 **Why the dose-response framing matters.** The researcher controls the dose, so
 no frontier teacher is needed: contaminate an open 7B model on `k` copies of a
-held-out eval slice, distill to 1.5B under SeqKD / logit-KD / on-policy, and
+held-out eval slice, distill to 1.5B under [SeqKD](https://arxiv.org/abs/1606.07947) / logit-KD / on-policy, and
 measure lift against dose and objective — **with n-gram and embedding
 decontamination applied to the distillation corpus**, plus a test of whether
-Min-K%, Min-K%++ and ConStat fire on the *student*.
+[Min-K%](https://arxiv.org/abs/2310.16789), [Min-K%++](https://arxiv.org/abs/2404.02936) and [ConStat](https://arxiv.org/abs/2405.16281) fire on the *student*.
 
-**Four gates already named.** DCLLM (ACL ARR `l5MK6mLjFi`, resubmitted
-`mmbmGjQUQb`, no acceptance visible) measures teacher-contamination inflating
+**Four gates already named.** DCLLM (ACL ARR [`l5MK6mLjFi`](https://openreview.net/forum?id=l5MK6mLjFi), resubmitted
+[`mmbmGjQUQb`](https://openreview.net/forum?id=mmbmGjQUQb), no acceptance visible) measures teacher-contamination inflating
 student scores as a route to a decontamination method. The memorization twin is
-well executed twice: `2508.07054` runs 6 KD techniques x 7 tasks x 3 teacher
-families; `2601.15394` finds hard distillation inherits **2.7x** more
-teacher-specific examples than soft. `2604.15559` shows a student inheriting an
+well executed twice: [`2508.07054`](https://arxiv.org/abs/2508.07054) runs 6 KD techniques x 7 tasks x 3 teacher
+families; [`2601.15394`](https://arxiv.org/abs/2601.15394) finds hard distillation inherits **2.7x** more
+teacher-specific examples than soft. [`2604.15559`](https://arxiv.org/abs/2604.15559) shows a student inheriting an
 unsafe behavior at 100% versus 5% baseline **despite full keyword sanitation**.
-`2510.02386` (ICLR 2026) shows brief GRPO training conceals contamination and
+[`2510.02386`](https://arxiv.org/abs/2510.02386) (ICLR 2026) shows brief [GRPO](https://arxiv.org/abs/2402.03300) training conceals contamination and
 makes detectors near-random.
 
 **Framing constraint.** Must be pitched as **benchmark validity**, not as "does
-memorization transfer" — the latter is `2508.07054` and `2601.15394` and will be
+memorization transfer" — the latter is [`2508.07054`](https://arxiv.org/abs/2508.07054) and [`2601.15394`](https://arxiv.org/abs/2601.15394) and will be
 gated on sight.
 
 **The fusion idea, strongest of the three.** Is "distilled reasoning ability"
 partly inherited contamination? Nobody has separated reasoning-transfer from
 format-transfer on a contamination-controlled out-of-distribution set. Setup
-exists: `2502.12143` (models under 3B do not consistently benefit from long-CoT
-distillation) and `2606.21704`.
+exists: [`2502.12143`](https://arxiv.org/abs/2502.12143) (models under 3B do not consistently benefit from long-CoT
+distillation) and [`2606.21704`](https://arxiv.org/abs/2606.21704).
 
 ## Retractions recorded
 
 An agent retracted three of its own claims mid-survey, correctly: that seed
-variance is essentially never reported in LLM KD (false — MiniLLM 5, GKD 3,
+variance is essentially never reported in LLM KD (false — [MiniLLM](https://arxiv.org/abs/2306.08543) 5, [GKD](https://arxiv.org/abs/2306.13649) 3,
 DistiLLM 5 with std; the failure is specific to DistiLLM-2); that compute-matched
-KD versus SFT is open (taken by Busbridge at 69 pages); and that teacher size is
+KD versus SFT is open (taken by [Busbridge](https://arxiv.org/abs/2502.08606) at 69 pages); and that teacher size is
 the live question (closed by the ACL 2025 capacity-gap law).
 
 ## Related

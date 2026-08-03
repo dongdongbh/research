@@ -33,11 +33,11 @@ angle), or OPEN (specific unclaimed gap named).
 
 | Direction | Verdict | Reason |
 |---|---|---|
-| Full fine-tuning / better general VLM | **SATURATED, industry-owned** | VladVA needs 32×A100. Sub-4B SOTA is HuggingFace/Alibaba/Google/Apple/Samsung. Open-Qwen2VL is the only academic near-miss and had ByteDance + NVIDIA co-authors |
-| Visual token selection / pruning | **SATURATED** | ~145 papers/yr run rate. UniPruneBench: random pruning is competitive, no method consistently wins. "Are We Solving the Right Problem?" (ACL Findings 2025): many methods underperform random selection |
-| Vision-text tower interaction | **ACTIVE, partly claimed** | C2LIP (CVPR 2026) already asserts "global pooling destroys binding" with parameter-free attention pooling at 8×A40. FLAIR, FILIP, TFLocal, ColPali exist. Gap: no factorial ablation isolating granularity vs interaction vs training signal |
-| Gemma/open-VLM as teacher or data generator | **CROWDED, documented failure modes** | Recap-DataComp-1B recaptioned 1.3B images for +3.1% retrieval. MLLMCLIP (feature-level MLLM→CLIP) was **withdrawn** from ICLR 2026. ACL 2025 (2411.05195) shows the generative advantage is architectural — patch tokens, position embeddings, prompt weighting — so a pooled dual encoder structurally cannot inherit it |
-| Distillation to smaller models | **Mostly industry; one live niche** | CompoDistill (ICLR 2026) distills *compositional* ability via visual-attention alignment: 60.7→66.7 where general KD gives 61.5. Note "When Better Teachers Don't Make Better Students" (2511.17886): stronger CLIP teachers do not reliably give better students |
+| Full fine-tuning / better general VLM | **SATURATED, industry-owned** | [VladVA](https://arxiv.org/abs/2412.04378) needs 32×A100. Sub-4B SOTA is HuggingFace/Alibaba/Google/Apple/Samsung. [Open-Qwen2VL](https://arxiv.org/abs/2504.00595) is the only academic near-miss and had ByteDance + NVIDIA co-authors |
+| Visual token selection / pruning | **SATURATED** | ~145 papers/yr run rate. [UniPruneBench](https://arxiv.org/abs/2511.02650): random pruning is competitive, no method consistently wins. ["Are We Solving the Right Problem?"](https://arxiv.org/abs/2502.11501) (ACL Findings 2025): many methods underperform random selection |
+| Vision-text tower interaction | **ACTIVE, partly claimed** | [C2LIP](https://arxiv.org/abs/2603.25722) (CVPR 2026) already asserts "global pooling destroys binding" with parameter-free attention pooling at 8×A40. [FLAIR](https://arxiv.org/abs/2412.03561), [FILIP](https://arxiv.org/abs/2111.07783), TFLocal, [ColPali](https://arxiv.org/abs/2407.01449) exist. Gap: no factorial ablation isolating granularity vs interaction vs training signal |
+| Gemma/open-VLM as teacher or data generator | **CROWDED, documented failure modes** | [Recap-DataComp-1B](https://arxiv.org/abs/2406.08478) recaptioned 1.3B images for +3.1% retrieval. [MLLMCLIP](https://openreview.net/forum?id=jZrjHDqTBo) (feature-level MLLM→CLIP) was **withdrawn** from ICLR 2026. ACL 2025 ([2411.05195](https://arxiv.org/abs/2411.05195)) shows the generative advantage is architectural — patch tokens, position embeddings, prompt weighting — so a pooled dual encoder structurally cannot inherit it |
+| Distillation to smaller models | **Mostly industry; one live niche** | [CompoDistill](https://arxiv.org/abs/2510.12184) (ICLR 2026) distills *compositional* ability via visual-attention alignment: 60.7→66.7 where general KD gives 61.5. Note "When Better Teachers Don't Make Better Students" ([2511.17886](https://arxiv.org/abs/2511.17886)): stronger CLIP teachers do not reliably give better students |
 | **Conformal / selective prediction for VL matching** | **ACTIVE field; tested signal closed** | ICLR 2026 already claims compositional risk-coverage, and the locked four-model probe finds no practically meaningful dispersion gain beyond a learned margin-only selector |
 
 **Outcome notes 2026-08-02.** Row 5 (distillation): the theory-side reframing
@@ -54,9 +54,9 @@ treat their 2026-07 crowding counts as stale.
 **Correction recorded 2026-07-25.** The survey's original claim that no
 risk-coverage protocol existed for compositional matching was false.
 **Leveraging Data to Say No: Memory Augmented Plug-and-Play Selective
-Prediction** (ICLR 2026, OpenReview `wWxdT6LB2D`) reports AURC and
-risk-coverage results on SugarCrepe, Winoground, What'sUp, VL-Checklist, and
-Foil. **Look Again Before You Abstain** (arXiv `2606.16667`, v4) also makes the
+Prediction** (ICLR 2026, OpenReview [`wWxdT6LB2D`](https://openreview.net/forum?id=wWxdT6LB2D)) reports AURC and
+risk-coverage results on [SugarCrepe](https://arxiv.org/abs/2306.14610), [Winoground](https://arxiv.org/abs/2204.03162), [What'sUp](https://arxiv.org/abs/2310.19785), [VL-Checklist](https://arxiv.org/abs/2207.00221), and
+[Foil](https://arxiv.org/abs/1705.01359). **Look Again Before You Abstain** ([arXiv `2606.16667`](https://arxiv.org/abs/2606.16667), v4) also makes the
 broad VLM conformal-abstention space active rather than open.
 
 The surviving narrow gap was tested in Conformal-Probe-Preregistration
@@ -101,22 +101,22 @@ only the within-equivalence-class calibration signal remains plausibly open:
    above directly reports it.
 2. **Nobody has made the input-side semantic equivalence class the calibration
    unit.** The machinery exists and is unused in vision-language: hierarchical
-   exchangeability (Lee/Barber/Willett 2306.06342 — groups exchangeable,
-   observations within group exchangeable), macro-coverage (2606.28598),
-   SymmPI (2312.16160), equivariant CP (2602.03986). The strong target is
+   exchangeability (Lee/Barber/Willett [2306.06342](https://arxiv.org/abs/2306.06342) — groups exchangeable,
+   observations within group exchangeable), macro-coverage ([2606.28598](https://arxiv.org/abs/2606.28598)),
+   SymmPI ([2312.16160](https://arxiv.org/abs/2312.16160)), equivariant CP ([2602.03986](https://arxiv.org/abs/2602.03986)). The strong target is
    **all-realizations coverage**: `P(correct for every realization of a
    held-out meaning) >= 1-alpha`. That is arguably what a compositionality
    claim *should* assert, and no benchmark tests it.
 3. **The specific descriptive → incremental-signal step remains untested in
-   the located work.** PRSM (2511.11141, MMM 2026) and LGIP (2511.13494,
+   the located work.** PRSM ([2511.11141](https://arxiv.org/abs/2511.11141), MMM 2026) and LGIP ([2511.13494](https://arxiv.org/abs/2511.13494),
    Pattern Recognition Letters 2026) both measure CLIP paraphrase instability
    and stop. The new probe asks whether that dispersion improves selection
    after controlling for margin.
 
-Adjacent-but-not-it, to cite and distinguish: Conf-OT (CVPR 2025, zero-shot
-classification), ConfLVLM (2502.20560, generative claim-level), VL-Uncertainty
-(CVPR 2025, LVLM hallucination), the probabilistic-embedding line (PCME++,
-ProbVLM — produce uncertainty scores, never a calibrated abstain rule or a
+Adjacent-but-not-it, to cite and distinguish: [Conf-OT](https://arxiv.org/abs/2505.24693) (CVPR 2025, zero-shot
+classification), ConfLVLM ([2502.20560](https://arxiv.org/abs/2502.20560), generative claim-level), [VL-Uncertainty](https://arxiv.org/abs/2411.11919)
+(CVPR 2025, LVLM hallucination), the probabilistic-embedding line ([PCME++](https://arxiv.org/abs/2305.18171),
+[ProbVLM](https://arxiv.org/abs/2307.00398) — produce uncertainty scores, never a calibrated abstain rule or a
 risk-coverage curve).
 
 **Data caution.** Within-class exchangeability must hold. LLM-generated
@@ -134,7 +134,7 @@ risk). Bare oracle numbers read as padding.
 ### Gap 2 (fallback): effective resolution / receptive-field granularity as a causal variable for binding
 
 The competitor's own numbers contain an unexplained inversion. Miranda et al.
-(2604.11496, Apr 2026, UPV/EHU) report on BiSCoR-Ctrl: **SGI (separately
+([2604.11496](https://arxiv.org/abs/2604.11496), Apr 2026, UPV/EHU) report on BiSCoR-Ctrl: **SGI (separately
 encoded crops, training-free) = 24.9** versus **TFLocal (patch tokens, 13.3M
 trained params) = 13.2**. The crop route beats the patch-token route on their
 own OOD diagnostic and they offer no explanation and no head-to-head ablation.
@@ -146,19 +146,19 @@ crops versus spatial-correlation collapse under pooling — are unstudied and
 directly testable on existing infrastructure. Full detail: svib repo wiki,
 page Post-Rebuttal-Measurement-Sprint.
 
-C2LIP asserts the adjacent claim ("final global pooling leads to loss of
+[C2LIP](https://arxiv.org/abs/2603.25722) asserts the adjacent claim ("final global pooling leads to loss of
 binding information") but supports it with architectural argument and attention
 maps, not a controlled experiment. That is the exploitable soft spot.
 
 ## Threats to know before writing anything
 
 1. **"CLIP Models Generalize Less Than Compositional Benchmarks Suggest"**
-   (ICML 2026 CTB workshop). On ARO VG-A, positive captions overlap COCO
+   (ICML 2026 CTB workshop). On [ARO](https://arxiv.org/abs/2210.01936) VG-A, positive captions overlap COCO
    attribute-object bindings **79.8%** of the time versus **41.8%** for
    swapped negatives; only 1.2% of samples have no COCO-overlapping bindings.
    Overlap-balanced splits **reorder the leaderboard and flip model ranks**.
    This threatens any paper reporting SCPP++ deltas of our magnitude.
-2. **Test-Time Matching** (2510.07632, ICLR 2026) reports SigLIP-B16 Winoground
+2. **Test-Time Matching** ([2510.07632](https://arxiv.org/abs/2510.07632), ICLR 2026) reports SigLIP-B16 [Winoground](https://arxiv.org/abs/2204.03162)
    group `10.25 → 72.50`. This is a **changed task**, twice: GroupMatch's
    chance level is `1/k! = 50%` versus GroupScore's `(k-1)!/(2k-1)! = 16.7%`
    (both proven in their own paper), and TTM fine-tunes on pseudo-labels
@@ -166,10 +166,10 @@ maps, not a controlled experiment. That is the exploitable soft spot.
    `-6.4` above chance → `+22.5` above chance on a strictly easier decision.
    Reviewers will cite it; have the chance-level table and the transductivity
    objection ready in one sentence.
-3. **C2LIP** (2603.25722, CVPR 2026, Samsung) is a direct competitor at our
+3. **[C2LIP](https://arxiv.org/abs/2603.25722)** ([2603.25722](https://arxiv.org/abs/2603.25722), CVPR 2026, Samsung) is a direct competitor at our
    exact compute scale (8×A40, CC3M, 5 epochs) with retrieval *above* the
    SigLIP baseline.
-4. **Miranda et al.** (2604.11496) is the fair competitor for Gap 2 and is
+4. **Miranda et al.** ([2604.11496](https://arxiv.org/abs/2604.11496)) is the fair competitor for Gap 2 and is
    actively working it.
 
 ## Why Gap 1 fits this group specifically

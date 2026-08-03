@@ -33,7 +33,7 @@ candidate must be gated that way before it is taken seriously.
 ## Gate 1: distillation capacity gap — SCOOPED, and my framing was factually wrong
 
 **The theorem exists and is named.** Busbridge et al., *Distillation Scaling
-Laws* (`2502.08606`, Apple, **ICML 2025**), **Appendix C.1.3, titled "U-shape in
+Laws* ([`2502.08606`](https://arxiv.org/abs/2502.08606), Apple, **ICML 2025**), **Appendix C.1.3, titled "U-shape in
 the student error."** Lemma C.1, Lemma C.2, two cases (`m < n` decreasing,
 `m >= n` increasing), interior optimum at `m ~ n`, closed with a formal QED.
 That is the target theorem, proved, named, a year ago. An earlier survey
@@ -41,7 +41,7 @@ described this paper as "fitted, not derived" — **that was wrong** and is
 corrected here.
 
 **Worse, the motivating contradiction does not exist.** Menon et al.
-(`2005.10419`) does **not** predict monotone improvement in teacher capacity. It
+([`2005.10419`](https://arxiv.org/abs/2005.10419)) does **not** predict monotone improvement in teacher capacity. It
 contains a subsection literally titled *"Why can more accurate teachers distill
 worse?"*, a subsection *"Trading off bias for variance: model complexity"*, and
 a synthetic experiment reporting *"There is an optimal depth d = 8."* The pitch
@@ -49,7 +49,7 @@ a synthetic experiment reporting *"There is an optimal depth d = 8."* The pitch
 
 Also: Harutyunyan et al. §3.1 is titled *"Trade-off between teacher accuracy,
 margin, and complexity"* and derives an interior optimum (in temperature), and
-Ildiz et al. Prop 3 already derives an interior optimum in teacher capacity in
+[Ildiz et al.](https://arxiv.org/abs/2410.18837) Prop 3 already derives an interior optimum in teacher capacity in
 high-dimensional asymptotics.
 
 **The phenomenon may not even be robust.** CRD Table 10: same student, teachers
@@ -70,10 +70,10 @@ the modern RMT replacement already published: Dobriban & Owen, *Deterministic
 Parallel Analysis* (**JRSS-B 2019**) and Dobriban, *Permutation methods for
 factor analysis and PCA* (**Annals of Statistics 2020**). Factor-number
 determination via BBP is settled in econometrics (Onatski 2009/2010, Bai & Ng,
-Ahn & Horenstein), with a new entry three weeks ago (`2607.06908`).
+Ahn & Horenstein), with a new entry three weeks ago ([`2607.06908`](https://arxiv.org/abs/2607.06908)).
 
 **Empirically**, the question is already answered on the exact data. *AI
-Cartography* (`2605.25272`, May 2026) runs item-level CFA/SEM on Open LLM
+Cartography* ([`2605.25272`](https://arxiv.org/abs/2605.25272), May 2026) runs item-level CFA/SEM on Open LLM
 Leaderboard responses — 4,000+ models, six benchmarks — compares six competing
 latent structures including unidimensional, uses permutation controls, and
 concludes *"unidimensional and independent-benchmark assumptions are
@@ -99,16 +99,16 @@ Indyk, or Meyer. Three omissions are damaging:
   implementing finite state machines — `O(sqrt(m))` unrestricted,
   `O(sqrt(m) log m)` with weights in `{-1,1}`, `O(m)` with fan-in 2 — **with
   matching lower bounds**, 32 years earlier, measuring RNN size *intrinsically*.
-- **Sanford, Hsu & Telgarsky (NeurIPS 2023)** already prove a transformer-vs-RNN
+- **[Sanford, Hsu & Telgarsky](https://arxiv.org/abs/2306.02896) (NeurIPS 2023)** already prove a transformer-vs-RNN
   **size** separation using communication complexity, the sharper technique.
-- **Gelade & Neven (STACS 2008)** prove tight matched double-exponential bounds,
+- **[Gelade & Neven](https://arxiv.org/abs/0802.2869) (STACS 2008)** prove tight matched double-exponential bounds,
   a stronger result form than the transformer paper's Thm 17.
 
 What is genuinely the paper's own: the UHAT counter construction, the
 exponential UHAT-to-LTL translation (improving a doubly-exponential one), and
 EXPSPACE-**completeness**.
 
-**(a) SSM/Mamba succinctness — SCOOPED. Kill.** Asserted in the camera-ready
+**(a) SSM/[Mamba](https://arxiv.org/abs/2312.00752) succinctness — SCOOPED. Kill.** Asserted in the camera-ready
 abstract with no body proof, because every fixed-precision SSM is a bounded
 state vector, hence a DFA with `2^{kD}` states, hence Thm 17 applies. Jelassi et
 al. (ICML 2024) independently published a transformer-vs-SSM size separation
@@ -150,7 +150,7 @@ grant and the 2026 Heinz Maier-Leibnitz Prize and is hiring onto this agenda.
 The framing claim is stale: "little work investigates learnability" is
 contradicted by Chen/Ma/Li (ICML'25), Yang et al. (ICML'26), Izzo et al., Huang
 et al. (NeurIPS'25), and two Bhattamishra papers. What is actually thin is
-*sample* complexity specifically. And the target paper (`2607.11760`) is 12 days
+*sample* complexity specifically. And the target paper ([`2607.11760`](https://arxiv.org/abs/2607.11760)) is 12 days
 old, by four insiders including the two best placed to finish it.
 
 Tempo warning: the computability of C-RASP length-generalization bounds was an

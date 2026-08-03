@@ -7,7 +7,7 @@ because the failure was mine and the mode is instructive.
 ## Gate result — and my error
 
 **Williams & Aletras, *On the Impact of Calibration Data in Post-training
-Quantization and Pruning* (`2311.09755`, ACL 2024) ran exactly this experiment**,
+Quantization and Pruning* ([`2311.09755`](https://arxiv.org/abs/2311.09755), ACL 2024) ran exactly this experiment**,
 down to the token count. Verbatim:
 
 > *"To examine the variability introduced by random sampling, we repeat the
@@ -16,7 +16,7 @@ down to the token count. Verbatim:
 
 128 examples x 2,048 tokens = 262,144 tokens per set — the identical figure this
 protocol proposed. Five sources x ten draws, sampled without replacement.
-Methods: GPTQ, SpQR, SparseGPT, Wanda. Models: LLaMA/Vicuna 7-33B, OPT 6.7-30B.
+Methods: [GPTQ](https://arxiv.org/abs/2210.17323), [SpQR](https://arxiv.org/abs/2306.03078), [SparseGPT](https://arxiv.org/abs/2301.00774), [Wanda](https://arxiv.org/abs/2306.11695). Models: LLaMA/Vicuna 7-33B, OPT 6.7-30B.
 
 **My error was severe and self-inflicted.** This protocol cited Williams &
 Aletras *as prior work that varies calibration source or configuration* — a
@@ -26,9 +26,9 @@ distinction without reading the paper, and the wedge was false from the first
 draft.
 
 **Independently replicated twice.** Ji et al., *Beware of Calibration Data for
-Pruning Large Language Models* (`2410.17711`, ICLR 2025, Soochow/Huawei):
+Pruning Large Language Models* ([`2410.17711`](https://arxiv.org/abs/2410.17711), ICLR 2025, Soochow/Huawei):
 *"all our experiments repeat the calibration data sampling 20 times with
-different random seeds."* And Williams, Chrysostomou & Aletras (`2410.17170`,
+different random seeds."* And Williams, Chrysostomou & Aletras ([`2410.17170`](https://arxiv.org/abs/2410.17170),
 NAACL 2025) repeat the protocol on Gemma 2B, Phi-2, Mistral 7B, Llama 3.1 8B.
 
 ## The measured answer, so nobody re-derives it
@@ -38,14 +38,14 @@ accuracy:
 
 | Method | std (pp) | best-worst range |
 |---|---:|---:|
-| SpQR | 0.1-0.2 | 0.6-1.0% |
-| GPTQ | 0.2-0.4 | 0.9-1.6% |
-| Wanda | 0.1-0.4 | 0.6-2.9% |
-| SparseGPT | 0.1-0.6 | 2.4-4.8% |
+| [SpQR](https://arxiv.org/abs/2306.03078) | 0.1-0.2 | 0.6-1.0% |
+| [GPTQ](https://arxiv.org/abs/2210.17323) | 0.2-0.4 | 0.9-1.6% |
+| [Wanda](https://arxiv.org/abs/2306.11695) | 0.1-0.4 | 0.6-2.9% |
+| [SparseGPT](https://arxiv.org/abs/2301.00774) | 0.1-0.6 | 2.4-4.8% |
 
 WikiText PPL std: SpQR `0.00-0.02`, SparseGPT `0.04-0.31`, Wanda `0.01-0.41`.
 Single-task extremes are far larger than the aggregate: LLaMA-7B + SparseGPT
-across ten C4 draws moves **RTE 52.7 to 61.7 (9.0 pp)** and **BoolQ 66.4 to
+across ten C4 draws moves **RTE 52.7 to 61.7 (9.0 pp)** and **[BoolQ](https://arxiv.org/abs/1905.10044) 66.4 to
 73.0 (6.6 pp)**.
 
 Ji et al. add the dose-response: draw-noise shrinks as calibration size grows,
@@ -54,19 +54,19 @@ and sensitivity rises sharply with compression — under 0.1% at low sparsity,
 
 ## What genuinely remains, and it is thin
 
-1. **AWQ is uncovered by construction.** Zero AWQ mentions in Williams &
+1. **[AWQ](https://arxiv.org/abs/2306.00978) is uncovered by construction.** Zero AWQ mentions in Williams &
    Aletras, and `mit-han-lab/llm-awq` hardcodes `dataset.shuffle(seed=42)` with
    no seed flag — so **every published AWQ model used the same 512 pileval
    samples.** Unstudied because it is un-varyable without patching the library.
 2. **Aggressive bit-widths.** Ji et al.'s amplification curve is established for
    sparsity, not for 2-3 bit, NVFP4 or MXFP4.
 3. **Generative and reasoning metrics.** All three papers use multiple-choice
-   and perplexity. Draw variance on GSM8K, MMLU-CoT, or long-form generation is
+   and perplexity. Draw variance on [GSM8K](https://arxiv.org/abs/2110.14168), [MMLU-CoT](https://arxiv.org/abs/2009.03300), or long-form generation is
    unmeasured — and matters more now than it did in 2023.
 4. **Hessian concentration with effective sample size for correlated tokens** —
-   genuinely open. The strongest existing theory (`2508.04853`) bounds OPTQ
+   genuinely open. The strongest existing theory ([`2508.04853`](https://arxiv.org/abs/2508.04853)) bounds OPTQ
    error *conditionally on the realized* X and never bounds its fluctuation
-   across draws. Note GPTQ's mandatory damping (`percdamp=0.01`) is indirect
+   across draws. Note [GPTQ](https://arxiv.org/abs/2210.17323)'s mandatory damping (`percdamp=0.01`) is indirect
    evidence the empirical Hessian is not tightly concentrated at this size.
 5. **The calibration monoculture.** `llm-compressor`'s canonical example is
    `load_dataset(ID, split="train_sft[:512]")` followed by `.shuffle(seed=42)`
@@ -88,28 +88,28 @@ without a collaborator.
 calibration data... This provides a total of **1,800 compressed models**...
 **19,800 model evaluations**."* They also pre-empt the intended secondary
 finding — *"a seemingly robust perplexity of 12.72±0.18. In contrast, the same
-models achieve 66.7%±4.7 on BoolQ, with accuracy ranging from 57.0% to 71.6%"* —
+models achieve 66.7%±4.7 on [BoolQ](https://arxiv.org/abs/1905.10044), with accuracy ranging from 57.0% to 71.6%"* —
 and the reproducibility recommendation to release calibration data.
 
 **The appendix risk fired exactly as predicted, in two of the papers I named.**
 
-- **SparseGPT**, verbatim: *"We repeat a standard 50% pruning run 5 times with
+- **[SparseGPT](https://arxiv.org/abs/2301.00774)**, verbatim: *"We repeat a standard 50% pruning run 5 times with
   different random seeds for data sampling and get **13.52 ± 0.075**...
   SparseGPT is quite robust to the precise calibration data being used."*
-- **Wanda** App. D.2, Table 18: mean±std over 5 seeds, 2 methods x 4 models x 3
+- **[Wanda](https://arxiv.org/abs/2306.11695)** App. D.2, Table 18: mean±std over 5 seeds, 2 methods x 4 models x 3
   sparsities.
-- OBC and *Is C4 Optimal* likewise. AQLM reports SD `0.127` at 128 sequences
+- [OBC](https://arxiv.org/abs/2208.11580) and *Is C4 Optimal* likewise. [AQLM](https://arxiv.org/abs/2401.06118) reports SD `0.127` at 128 sequences
   falling to `0.005` at 4096.
 
-**My premise was also factually wrong about the setup.** QuIP# and QTIP do *not*
+**My premise was also factually wrong about the setup.** [QuIP#](https://arxiv.org/abs/2402.04396) and [QTIP](https://arxiv.org/abs/2406.11235) do *not*
 use 128 C4 sequences — *"Hessian matrices H were generated with 6144
-sequences"* of RedPajama. AWQ uses Pile-val at sequence length 512 and claims 16
+sequences"* of RedPajama. [AWQ](https://arxiv.org/abs/2306.00978) uses Pile-val at sequence length 512 and claims 16
 sequences suffice. **"Everyone uses ~128 random C4" is wrong for three of the
 five methods I named**, and AQLM's numbers predict draw noise is negligible at
 the sample counts modern methods actually use. The expected result was null.
 
 **The older-vocabulary trap fired again, and I had been warned about it.**
-Bouthillier et al. (MLSys 2021, `2103.03098`) own the statistic: **P(A > B)**,
+Bouthillier et al. (MLSys 2021, [`2103.03098`](https://arxiv.org/abs/2103.03098)) own the statistic: **P(A > B)**,
 *"the probability of measuring a better performance for A than B across
 fluctuations,"* with threshold `gamma = 0.75`. My "inversion probability" is
 `1 - P(A > B)`, reinvented.
@@ -124,7 +124,7 @@ are coin flips** — LLaMA-7B 50% and LLaMA-13B 4:8 and LLaMA-2-13B 2:4 all at
 Two items are worth carrying into [[KD-Noise-Floor-Stage1]] as a **second case
 study, zero compute, published numbers only**:
 
-1. **QTIP's NeurIPS checklist, verbatim:** *"Answer: No. Justification: **It is
+1. **[QTIP](https://arxiv.org/abs/2406.11235)'s NeurIPS checklist, verbatim:** *"Answer: No. Justification: **It is
    standard practice in LLM quantization papers to not report error bars on
    metrics.**"* A second literature stating the norm openly, in a mandated
    disclosure form. That is cross-domain evidence for the KD paper's thesis —
@@ -133,14 +133,14 @@ study, zero compute, published numbers only**:
 2. **The four coin-flip cells above**, computed from published mean±std with
    arithmetic, using Bouthillier's `P(A > B)` and citing it as theirs.
 
-Clean negatives worth recording: **GPTQ** has zero occurrences of "seed" and no
-`±` anywhere; **AWQ**'s robustness experiment swaps two different-domain Pile
+Clean negatives worth recording: **[GPTQ](https://arxiv.org/abs/2210.17323)** has zero occurrences of "seed" and no
+`±` anywhere; **[AWQ](https://arxiv.org/abs/2306.00978)**'s robustness experiment swaps two different-domain Pile
 subsets at one run per cell and is always worded as insensitivity to
 *distribution*, with the first author stating on GitHub *"we have not
-extensively ablated the use of calibration sets"*; **OmniQuant**'s Table A10 is
+extensively ablated the use of calibration sets"*; **[OmniQuant](https://arxiv.org/abs/2308.13137)**'s Table A10 is
 labelled "Varience" but is between-source variance at `n=1` per source, unable
-to separate source effect from draw noise; **SmoothQuant** calibrates *"once
-with 512 random sentences"*; **QuaRot** has no seeds and no `±`.
+to separate source effect from draw noise; **[SmoothQuant](https://arxiv.org/abs/2211.10438)** calibrates *"once
+with 512 random sentences"*; **[QuaRot](https://arxiv.org/abs/2404.00456)** has no seeds and no `±`.
 
 ## Process finding — twelve gates, and two self-inflicted
 
@@ -174,9 +174,9 @@ Six open items blocked locking, including the prior-art gate. Written
 Prior work varies the calibration **source or configuration**, which is a
 **design factor**:
 
-- Williams & Aletras (ACL 2024, `2311.09755`) — first extensive calibration-data
+- Williams & Aletras (ACL 2024, [`2311.09755`](https://arxiv.org/abs/2311.09755)) — first extensive calibration-data
   study; *"substantial variations in downstream task performance."*
-- *Is C4 Dataset Optimal for Pruning?* (`2410.07461`) — no; arithmetic data does
+- *Is C4 Dataset Optimal for Pruning?* ([`2410.07461`](https://arxiv.org/abs/2410.07461)) — no; arithmetic data does
   as well or better.
 - *Rethinking Layer Redundancy* (ACL ARR 2026) — *"the calibration
   configuration plays a substantially larger role than the choice of search
@@ -205,11 +205,11 @@ cited.
 
 | Method | Type | Calibration role |
 |---|---|---|
-| GPTQ | quantization | Hessian estimation |
-| AWQ | quantization | activation-scale search |
-| SparseGPT | pruning | Hessian estimation |
-| Wanda | pruning | activation-norm statistics |
-| A VQ-class method (QTIP or QuIP#) | quantization | Hessian + codebook |
+| [GPTQ](https://arxiv.org/abs/2210.17323) | quantization | Hessian estimation |
+| [AWQ](https://arxiv.org/abs/2306.00978) | quantization | activation-scale search |
+| [SparseGPT](https://arxiv.org/abs/2301.00774) | pruning | Hessian estimation |
+| [Wanda](https://arxiv.org/abs/2306.11695) | pruning | activation-norm statistics |
+| A VQ-class method ([QTIP](https://arxiv.org/abs/2406.11235) or [QuIP#](https://arxiv.org/abs/2402.04396)) | quantization | Hessian + codebook |
 | **RTN** | quantization | **none — calibration-free control** |
 
 **RTN is load-bearing.** It uses no calibration, so its across-draw variance
@@ -231,9 +231,9 @@ across-draw spread, the study reports that instead and stops.
 - **Compression levels.** 4-bit, 3-bit, 2-bit for quantization; 50% unstructured
   and 2:4 semi-structured for pruning. H3 predicts the effect grows as
   compression becomes more aggressive.
-- **Evaluation.** WikiText-2 perplexity (the field's currency) plus the standard
-  lm-eval zero-shot six (ARC-easy, ARC-challenge, HellaSwag, PIQA, WinoGrande,
-  BoolQ). All are likelihood-scored and deterministic given the model, so **the
+- **Evaluation.** [WikiText-2](https://arxiv.org/abs/1609.07843) perplexity (the field's currency) plus the standard
+  lm-eval zero-shot six ([ARC-easy](https://arxiv.org/abs/1803.05457), ARC-challenge, [HellaSwag](https://arxiv.org/abs/1905.07830), [PIQA](https://arxiv.org/abs/1911.11641), [WinoGrande](https://arxiv.org/abs/1907.10641),
+  [BoolQ](https://arxiv.org/abs/1905.10044)). All are likelihood-scored and deterministic given the model, so **the
   calibration draw is the only randomness source in the pipeline.** That is what
   makes the measurement clean.
 
@@ -315,8 +315,8 @@ result rather than a failure.
 
 - **Not** that calibration data matters — Williams & Aletras established that.
   Our claim is about draws within a fixed source.
-- **Not** that perplexity is a poor proxy — LLM-KICK, *Accuracy is Not All You
-  Need*, *The Benchmark Illusion* and *Silent Failures* own that.
+- **Not** that perplexity is a poor proxy — [LLM-KICK](https://arxiv.org/abs/2310.01382), *Accuracy is Not All You
+  Need*, *[The Benchmark Illusion](https://arxiv.org/abs/2606.17609)* and *Silent Failures* own that.
 - **Not** that compression methods are useless. The finding, if it lands,
   concerns the resolvability of *rankings*, not the value of compression.
 - **Not** an accusation of poor practice by any author. Reporting 128 random

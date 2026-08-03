@@ -10,17 +10,17 @@ standard confirmatory pass (recent 8 weeks explicit) at prereg lock.
 ## Gate 1 — Crop-consistency distillation → **SURVIVES, ★★★★ conditional**
 
 **The mechanism exists; the method target does not.**
-- **CLIPSelf (arXiv 2310.01403, ICLR 2024)** is the ancestor: it "aligns a
+- **[CLIPSelf](https://arxiv.org/abs/2310.01403) ([arXiv 2310.01403](https://arxiv.org/abs/2310.01403), ICLR 2024)** is the ancestor: it "aligns a
   region representation extracted from its dense feature map with the
   image-level representation of the corresponding image crop" — crop→dense
   self-distillation. But: open-vocabulary **dense prediction** only
   (detection/segmentation), full ViT fine-tuning, **zero compositional/ITM
   evaluation**. Checked 100 citing papers for compositional applications:
   none applies the mechanism to caption-pair compositional matching.
-- Nearest compositional competitor, **DeGLA (2504.16801)**, is a different
+- Nearest compositional competitor, **DeGLA ([2504.16801](https://arxiv.org/abs/2504.16801))**, is a different
   mechanism (global EMA-teacher self-distillation to *preserve* knowledge
   during hard-negative fine-tuning + text-side IGC/TGC losses; +3.5% avg on
-  VALSE/SugarCrepe/ARO). It becomes a **mandatory baseline**, not a scoop.
+  [VALSE](https://arxiv.org/abs/2112.07566)/[SugarCrepe](https://arxiv.org/abs/2306.14610)/[ARO](https://arxiv.org/abs/2210.01936)). It becomes a **mandatory baseline**, not a scoop.
 - No hit for crop-re-encoding→patch distillation on frozen backbones, nor
   for a structured multi-region teacher, in any 2024–2026 sweep query.
 
@@ -40,7 +40,7 @@ comparison is an arm, and a kill criterion, not a threat).
 
 **Baselines table:** raw frozen backbone · grid+self-attn @8× (upper
 anchor) · patch-ROI @1.06× (lower anchor) · CLIPSelf checkpoint ROI-pooled
-(repo `wusize/CLIPSelf`, 207★, frozen since 2024-02, **no license** —
+(repo [`wusize/CLIPSelf`](https://github.com/wusize/CLIPSelf), 207★, frozen since 2024-02, **no license** —
 evaluate, don't fork) · DeGLA · aggregation-fix @1×.
 
 **Cost/venue:** 200–400 GPU-h (adapter training + our cached-feature
@@ -62,15 +62,15 @@ is specified solely at the level of requirements (i.e., we do not provide a
 completed algorithm)."
 
 **The dangerous neighbor family is tag conditioning, and it is distinct:**
-- **Source-aware training (2404.01019, Khalifa et al.):** associates "unique
+- **Source-aware training ([2404.01019](https://arxiv.org/abs/2404.01019), Khalifa et al.):** associates "unique
   source document identifiers with the knowledge in each document" then
   instruction-tunes to cite — **ID tags, synthetic data, attribution-only
   outcomes**; no text rewriting, no calibration/sycophancy/goal-adoption
   measurement. Their own emphasis on "pretraining data augmentation" being
   necessary is useful supporting evidence that data-side intervention is the
   active lever.
-- CTRL-style control codes / conditional pretraining: prepended tags, not
-  epistemic restructuring. GenProve (2601.04932) is generation-side
+- [CTRL-style control codes](https://arxiv.org/abs/1909.05858) / conditional pretraining: prepended tags, not
+  epistemic restructuring. GenProve ([2601.04932](https://arxiv.org/abs/2601.04932)) is generation-side
   provenance. None rewrites assertions into attributed-claim records
   (Bengio Def 3.22).
 
@@ -80,11 +80,11 @@ vs "S claimed X at T in V"), with a **tag-only-conditioning arm** that
 separates rewriting from metadata conditioning — the exact control that
 pre-empts the "metadata conditioning rediscovered" objection.
 
-**Evaluation assets verified live:** ConflictBank (2408.12076, knowledge
+**Evaluation assets verified live:** ConflictBank ([2408.12076](https://arxiv.org/abs/2408.12076), knowledge
 conflicts), "How LLMs Balance Internal Knowledge with User and Document
-Assertions" (2604.22193 — near-perfect fit), sycophancy suites, standard
+Assertions" ([2604.22193](https://arxiv.org/abs/2604.22193) — near-perfect fit), sycophancy suites, standard
 capability battery for the tax. Placebo-rewrite is established hygiene
-(2603.24826) — ours adds the tag-only arm as the scientific control.
+([2603.24826](https://arxiv.org/abs/2603.24826)) — ours adds the tag-only arm as the scientific control.
 
 **What must be true to win:** contextualized models beat raw AND tag-only
 AND placebo on calibration-under-conflict + sycophancy at a small capability
@@ -101,7 +101,7 @@ LawZero 6–12 months, NVIDIA-backed — re-gate at each milestone.
 Both method candidates survive their gates. Proceed to pre-registrations:
 crop-consistency distillation as the **ICLR method flagship** (replacing the
 parallel-RL factorial, which moves to bench), epistemic contextualization as
-the **ICML method flagship** (replacing the SigLIP-2 ladder, which moves to
+the **ICML method flagship** (replacing the [SigLIP-2](https://arxiv.org/abs/2502.14786) ladder, which moves to
 bench). The judge-audit (ICLR) and 1-NFE (CVPR) diagnostics are unchanged.
 
 ## Related

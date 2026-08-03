@@ -23,24 +23,24 @@ abstract is committed.
 | # | Direction | ★ | Cost / cluster | ICLR? | Method-unlock |
 |---|---|---|---|---|---|
 | 1 | **Autoresearch FDR + sound accept rule** — **DECLINED as a paper by owner 2026-08-03** (statistics-as-contribution reads as engineering; see the removed autoresearch accept-rule draft (git history)). Retained as internal tooling only | ~~★★★★★~~ | — | — | — |
-| 2 | **Judge/evaluator validity-audit program** (anchor: RoboReward; + DreamGen judge-swap + off-the-shelf VLM judges; ground truth = RoboArena human dumps) | **★★★★½** | 250–500 GPU-h · inference-only, OrangeGrid | **Yes** | Rank-calibrated evaluator + "evaluator report card" |
-| 3 | **Abbeel parallel-RL factorial** (BRC vs TD-overfitting contradiction; factorial around authors' own published config) | **★★★★½** | 400–650 GPU-h · OrangeGrid, MuJoCo-only | **Yes** | Minimal FastTD3 recipe |
+| 2 | **Judge/evaluator validity-audit program** (anchor: [RoboReward](https://arxiv.org/abs/2601.00675); + [DreamGen](https://arxiv.org/abs/2505.12705) judge-swap + off-the-shelf VLM judges; ground truth = [RoboArena](https://arxiv.org/abs/2506.18123) human dumps) | **★★★★½** | 250–500 GPU-h · inference-only, OrangeGrid | **Yes** | Rank-calibrated evaluator + "evaluator report card" |
+| 3 | **Abbeel parallel-RL factorial** (BRC vs TD-overfitting contradiction; factorial around authors' own published config) | **★★★★½** | 400–650 GPU-h · OrangeGrid, MuJoCo-only | **Yes** | Minimal [FastTD3](https://arxiv.org/abs/2505.22642) recipe |
 
 ### Strong tier (★★★★)
 
 | Direction | Cost | ICLR? | Note |
 |---|---|---|---|
-| Replay-mechanism arbitration (Liang 2603.04964; 5 mechanisms incl. loss-spike discriminator) | 250–400 · OG | Yes | Unlocks replay-free stage-transition schedule; Marin dual-track (contribute infra, keep hypotheses private) |
+| Replay-mechanism arbitration (Liang [2603.04964](https://arxiv.org/abs/2603.04964); 5 mechanisms incl. loss-spike discriminator) | 250–400 · OG | Yes | Unlocks replay-free stage-transition schedule; Marin dual-track (contribute infra, keep hypotheses private) |
 | RLVR × self-consistency calibration tension (D. Zhou; DCPO misses on all 3 axes) | 100–250 · OG+Anvil | Yes | Unlocks calibrated-agreement aggregation; Olmo-3 lineages free |
-| Cross-scaffold critic transfer (+ PACE forward test as validity section) | 100–500 + API | Yes | Ships 8B critic weights; outcome-labeled traces are our edge (TraceLab killed exclusivity) |
+| Cross-scaffold critic transfer (+ [PACE](https://arxiv.org/abs/2606.08106) forward test as validity section) | 100–500 + API | Yes | Ships 8B critic weights; outcome-labeled traces are our edge ([TraceLab](https://arxiv.org/abs/2606.30560) killed exclusivity) |
 | 1-NFE diversity: averaging vs intrinsic (Drifting = falsifier; recall computable today, unreported) | 150–350 | Likely | Different venue/community — keep separate from LLM collapse |
 | Agentic KV-footprint audit (footprint metric never tested on agent workloads; gap publicly named Jul 9) | 200–400 · OG eval-only | Yes | Unlocks turn-aware eviction; PruLong checkpoints missing — drop or retrain |
 | Bengio sparsity-premise falsification (Req 5.23; ~300 small predictors) | ~250 · OG | Yes | Gates the full contextualization build (M4) |
-| MOCHI VLM arm (human RTs shipped; unclaimed across all citations) | 20–60 · OG L40S | Yes | Perception-aligned training signal |
+| [MOCHI](https://arxiv.org/abs/2409.05862) VLM arm (human RTs shipped; unclaimed across all citations) | 20–60 · OG L40S | Yes | Perception-aligned training signal |
 | Bundle A "the readout, not the representation" (Isola shared-Q on compositional probes + map-class ladder + COCO-nuisance join; binding-locus as a cited rung) | <100 · cached features | Yes, gated | Compositionality-preserving alignment map. **Gate: zero-GPU DataComp 7×7 Jaccard first** |
 | Sutskever RL-environment provenance | 350–600 + heavy authoring | No — ICML | **2-week decision clock** (Microsoft Echoverse owns adjacent apparatus) |
 | GMP 3-mechanism arbitration (Song) | 100–250 | Yes | **Gate: read the PDF — does it self-ablate?** |
-| Levine offline-RL arbitration, reframed as theory-test of 2601.00831's 3 failure modes | ~840 (was 200–500) | Tight | **Expires ~Sep 13** — independent group ran our methodology on OGBench Jul 29 |
+| Levine offline-RL arbitration, reframed as theory-test of [2601.00831](https://arxiv.org/abs/2601.00831)'s 3 failure modes | ~840 (was 200–500) | Tight | **Expires ~Sep 13** — independent group ran our methodology on OGBench Jul 29 |
 | SigLIP-2 ingredient ranking across scale | 1,000–1,400 H100-h · **Delta 8×H200-long** | No — ICML/CVPR | 3 of 5 ingredients must be built in OpenCLIP (big_vision frozen) |
 | Arora drag=fork arbitration (bolt-on) | 50–200 | Yes | Fork-preserving context intervention |
 
@@ -49,7 +49,7 @@ abstract is committed.
 | Direction | Was | Now | Why |
 |---|---|---|---|
 | **T1 freeze × objective × stage (as designed)** | ★★★★½ #1 | **★★★** | Three of four cells published at CVPR/ICLR/ICML 2026 (CoVFT; **PIVOT — title: "RL makes MLLMs see better than SFT"**; From Seeing to Thinking). The flagged scoop risk (Darrell) was the wrong group. Budget was also ~5× low vs PIVOT's own 144 H100-h/recipe. **Narrowed survivor (★★★★): interaction-term + {tuned}×{auxiliary} + GRPO arm at 1.5–3B on PIVOT's harness, 150–250 GPU-h, mid-tier venue** |
-| KV from-scratch factorial (M1) | ★★★★ (scan) | **★★★** | Dropped twice: Cost-Optimal GQA (EMNLP 2025) ran the from-scratch KV-head sweep incl. n_kv=1; CLA crossed heads×tying at matched bytes; MixAttention crossed tying×window. Survivor: the three-way interaction only, pilot-gated. LCKV repo implements all 3 axes (port-and-scale, not invent) |
+| KV from-scratch factorial (M1) | ★★★★ (scan) | **★★★** | Dropped twice: [Cost-Optimal GQA (EMNLP 2025)](https://arxiv.org/abs/2503.09579) ran the from-scratch KV-head sweep incl. n_kv=1; [CLA](https://arxiv.org/abs/2405.12981) crossed heads×tying at matched bytes; [MixAttention](https://arxiv.org/abs/2409.15012) crossed tying×window. Survivor: the three-way interaction only, pilot-gated. LCKV repo implements all 3 axes (port-and-scale, not invent) |
 | Choi hivemind decomposition | ★★★★ (scan) | ★★★½ | "First decomposition" dead — 3 rival causal accounts published Apr–May 2026, mutually unreconciled. Survivor: inter-model axis + 3-account arbitration. **Blocker: Infinity-Chat HF dataset 404s** |
 | Wei verifier-rule Q1 | ★★★★ (scan) | ★★½ | ICML 2026 37-author saturation study owns corpus + attention control; verifiability axes absent but delta is absorbable |
 | CAID budget-matching (as paper) | Tier-1 (scan) | internal only | Headline answered 5× in 8 months, ending in **Nature MI 2026-07-24**; honest cost $2–5k. Run narrowed edit-isolation internally |
@@ -58,12 +58,12 @@ abstract is committed.
 
 ### Killed this sweep (evidence in lane reports)
 
-Hyperball factorial (scooped 2607.22444 + design mis-specified + refuted in
+Hyperball factorial (scooped [2607.22444](https://arxiv.org/abs/2607.22444) + design mis-specified + refuted in
 advance by source group) · M7 verifier hardening (claimed 2×, 3 days apart,
-Jun 2026) · **safety-aware KV allocation** (2606.09864 ran the exact study
+Jun 2026) · **safety-aware KV allocation** ([2606.09864](https://arxiv.org/abs/2606.09864) ran the exact study
 Jun 1 — "no universal safe bit-width", diverge published; AnchorKV Jun 16 is
 the allocator; **both predate our July gate that called it unclaimed**) ·
-binding-locus arbitration as framed (LABCLIP Feb 2025 + DCSM ICCV 2025) ·
+binding-locus arbitration as framed (LABCLIP Feb 2025 + [DCSM ICCV 2025](https://arxiv.org/abs/2503.08723)) ·
 VPBench grid as proposed (category error; salvage = COCO annotation join) ·
 LPT token-matched control (conclusion published ACL 2026; target superseded) ·
 PULSE replication (no deployment path) · DriveJudge audit **for now**
@@ -83,7 +83,7 @@ generator as the artifact).
 2. **Judge-audit program first paper** — uses the VLM eval infra,
    inference-only, disjoint resources from #1. Week-1 go/no-go: RoboArena
    dump storage footprint.
-3. **Cheap bolt-ons in parallel:** MOCHI (20–60), calibration tension test
+3. **Cheap bolt-ons in parallel:** [MOCHI](https://arxiv.org/abs/2409.05862) (20–60), calibration tension test
    (100–250), Bundle A if the Jaccard gate passes (<100).
 
 **Next cycle — SELECTED (pre-registrations drafted):** 1-NFE diversity →
@@ -107,9 +107,9 @@ pre-register autoresearch noise floor and launch the 30 repeats (~10 GPU-h).
 
 - The collapse direction's "statistical stopping rule" secondary track is
   **struck** — it belongs to flagship #1 (same claim, same reviewers).
-- The 60k-trajectory agentic-variance study (2602.07150) is fit **once** as a
+- The 60k-trajectory agentic-variance study ([2602.07150](https://arxiv.org/abs/2602.07150)) is fit **once** as a
   shared variance/power module serving flagships #1–#2 and the critic paper.
-- The predictive-validity framing (2606.19704) is assigned to the critic/PACE
+- The predictive-validity framing ([2606.19704](https://arxiv.org/abs/2606.19704)) is assigned to the critic/PACE
   paper, not the FDR paper.
 - LLM collapse and 1-NFE diversity stay **separate papers** sharing one
   instrumentation layer (matched-quality coverage protocol).

@@ -38,8 +38,8 @@ Verified by full-text extraction, not search snippets.
 
 | Paper | ECE | Brier | NLL | Reliability diagram | Source-matched calibration |
 |---|---:|---:|---:|---:|---|
-| Leveraging Data to Say No (ICLR 2026, arXiv `2601.22570`) | 0 | 0 | 0 | 0 | No |
-| Look Again Before You Abstain / BCEA (arXiv `2606.16667` v4) | 0 | 0 | 0 | 0 | No |
+| Leveraging Data to Say No (ICLR 2026, [arXiv `2601.22570`](https://arxiv.org/abs/2601.22570)) | 0 | 0 | 0 | 0 | No |
+| Look Again Before You Abstain / BCEA ([arXiv `2606.16667`](https://arxiv.org/abs/2606.16667) v4) | 0 | 0 | 0 | 0 | No |
 
 PaPSP's "calibration" is **geometric, not probabilistic** — distances to
 semantically equivalent examples varying by embedding location, addressed with
@@ -48,8 +48,8 @@ unfine-tuned MA-PaPSP, which is a method comparison, not a fine-tuned-versus-
 its-own-source calibration comparison. BCEA's ~40 uses of "calibrat*" are all
 split-conformal. Neither touches either gap.
 
-Note: the OpenReview ID recorded earlier (`wWxdT6LB2D`) differs from the
-publicly indexed one (`2OcklgJiU0`); the arXiv camera-ready confirms it is the
+Note: the OpenReview ID recorded earlier ([`wWxdT6LB2D`](https://openreview.net/forum?id=wWxdT6LB2D)) differs from the
+publicly indexed one ([`2OcklgJiU0`](https://openreview.net/forum?id=2OcklgJiU0)); the arXiv camera-ready confirms it is the
 same work.
 
 ## Gap verdicts
@@ -59,13 +59,13 @@ badly narrowed.** Zero hits across many full-text queries — SugarCrepe + ECE,
 SugarCrepe + reliability diagram, NegCLIP + ECE, NegCLIP + overconfident,
 VALSE + ECE, Winoground + reliability diagram. But three papers now own pieces:
 
-- **Text as Partial Constraint** (arXiv `2607.03143`, 3 Jul 2026 — *three weeks
+- **Text as Partial Constraint** ([arXiv `2607.03143`](https://arxiv.org/abs/2607.03143), 3 Jul 2026 — *three weeks
   old*) publishes the exact protocol: softmax CLIP similarities over a
   standardized candidate set, then ECE/NLL on top-1 correctness, Brier, and
   risk-coverage curves. It is ~400-way retrieval on COCO/Flickr30K, not the
   2-way caption pair, and it is a method paper. **Re-check before any
   submission in case it expands to compositional benchmarks.**
-- **DeCC** (EMNLP 2024, `2407.07840`) reports Brier on Winoground, for
+- **DeCC** (EMNLP 2024, [`2407.07840`](https://arxiv.org/abs/2407.07840)) reports Brier on Winoground, for
   generative VLMs.
 - **PaPSP** owns AURC on exactly our ITM benchmark set.
 
@@ -74,13 +74,13 @@ scorer," which a hostile reviewer reads as a substrate swap on TPC's protocol.
 
 **Gap B (source-matched calibration of hard-negative fine-tuning): STILL OPEN,
 stronger, narrative shape occupied.** Nobody has measured it — confirmed by
-four zero-hit full-text queries plus direct inspection of FSC-CLIP, CLIC, and
-TripletCLIP. FSC-CLIP's "Selective Calibrated Regularization" is a vocabulary
+four zero-hit full-text queries plus direct inspection of [FSC-CLIP](https://arxiv.org/abs/2410.05210), [CLIC](https://arxiv.org/abs/2505.24424), and
+[TripletCLIP](https://arxiv.org/abs/2411.02545). FSC-CLIP's "Selective Calibrated Regularization" is a vocabulary
 trap: focal loss plus label smoothing, `ECE` = 0, `Brier` = 0.
 
 But "fine-tuning CLIP miscalibrates it relative to its zero-shot source, here
-is a fix" is precisely ICML 2024 Open-Vocabulary Calibration (`2402.04655`) and
-NeurIPS 2024 DOR (`2410.02681`). Novelty is confined to substrate and
+is a fix" is precisely ICML 2024 Open-Vocabulary Calibration ([`2402.04655`](https://arxiv.org/abs/2402.04655)) and
+NeurIPS 2024 DOR ([`2410.02681`](https://arxiv.org/abs/2410.02681)). Novelty is confined to substrate and
 mechanism, not observation type.
 
 ## Where a changed decision would actually exist
@@ -110,7 +110,7 @@ Ranked by strength. All three escape the rank-invariance problem.
   full text, so zero-counts are strong but not absolute.
 - OpenReview was unreachable (Cloudflare), so 2026 submissions under review are
   a blind spot.
-- `2607.03143` is three weeks old and must be re-checked before submission.
+- [`2607.03143`](https://arxiv.org/abs/2607.03143) is three weeks old and must be re-checked before submission.
 
 ## Related
 

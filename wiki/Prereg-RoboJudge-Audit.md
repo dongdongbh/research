@@ -26,23 +26,23 @@ same groups that build them.
 
 ## 2. Current research state
 
-Eleven evaluator systems appeared in roughly ten months (WorldEval,
-WorldGym, Ctrl-World, RobotArena∞, PolaRiS, SC3-Eval, RoboWorld, dWorldEval,
-PiL-World, GigaWorld-1, RoboReward). Each validates itself, on tiny policy
+Eleven evaluator systems appeared in roughly ten months ([WorldEval](https://arxiv.org/abs/2505.19017),
+[WorldGym](https://arxiv.org/abs/2506.00613), [Ctrl-World](https://arxiv.org/abs/2510.10125), [RobotArena∞](https://arxiv.org/abs/2510.23571), [PolaRiS](https://arxiv.org/abs/2512.16881), [SC3-Eval](https://arxiv.org/abs/2606.18610), [RoboWorld](https://arxiv.org/abs/2607.01060), [dWorldEval](https://arxiv.org/abs/2604.22152),
+[PiL-World](https://arxiv.org/abs/2606.05773), [GigaWorld-1](https://arxiv.org/abs/2607.02642), [RoboReward](https://arxiv.org/abs/2601.00675)). Each validates itself, on tiny policy
 sets: SC3-Eval reports "Pearson correlation of 0.929" on **seven** policies;
 RoboWorld reports "Pearson's r = 0.989" similarly. **No independent audit of
 any of them exists** (lane-wide sweep, Aug 2026).
 
 Three facts define the opening:
 
-1. A position paper (arXiv 2606.15032) names exactly the missing checks —
+1. A position paper ([arXiv 2606.15032](https://arxiv.org/abs/2606.15032)) names exactly the missing checks —
    "policy-ranking agreement," "model exploitability," "uncertainty
    calibration" — and runs none of them ("zero experiments").
 2. The audit *genre* is proven publishable in the text/code domain: a
-   tool-calling-benchmark validity audit (2607.02577) found an 18.5%
+   tool-calling-benchmark validity audit ([2607.02577](https://arxiv.org/abs/2607.02577)) found an 18.5%
    evaluator–human misalignment rate. Ours is the embodied instance.
-3. **The ground truth already exists in public.** RoboArena released its raw
-   evaluation dumps (`RoboArena/DataDump_02-03-2026`, MIT): 3,284 double-blind
+3. **The ground truth already exists in public.** [RoboArena](https://arxiv.org/abs/2506.18123) released its raw
+   evaluation dumps ([`RoboArena/DataDump_02-03-2026`](https://huggingface.co/datasets/RoboArena/DataDump_02-03-2026), MIT): 3,284 double-blind
    pairwise human comparisons, 9,589 real-robot episodes across 15 policies,
    with per-episode `binary_success`, `partial_success`, videos, and
    free-text rationales. **Corrected against the parsed dump (2026-08-02,
@@ -56,7 +56,7 @@ Three facts define the opening:
 
 **One pre-registered protocol, applied to multiple evaluators, against human
 ground truth.** Novelty claims — **repositioned 2026-08-02 pre-lock**: the
-confirmatory pass found **2606.01036 (ICML 2026, Tian/Wu/Bajcsy)** already
+confirmatory pass found **[2606.01036](https://arxiv.org/abs/2606.01036) (ICML 2026, Tian/Wu/Bajcsy)** already
 uses RoboArena human pairwise labels as ground truth for three reward models
 (rollout-pair agreement 0.72–0.77 on easy tasks → 0.52–0.62 on Tool Use)
 — so "first to use the dump as evaluator ground truth" is CEDED; it becomes
@@ -105,13 +105,15 @@ the middle of the human ranking is statistically indistinguishable.
   instruction–video mismatch pairs; no-progress segments extracted from
   failed episodes presented as complete episodes. An evaluator should score
   these at the bottom.
-- A5 (DreamGen component): regenerate DreamGen Bench videos for the 4
+- A5 ([DreamGen](https://arxiv.org/abs/2505.12705) component): regenerate DreamGen Bench videos for the 4
   published video models; score under 5 judges (A2 set + Cosmos-Reason);
   hold the published downstream policy-success vector fixed; test whether
   the "strong correlation" claim survives judge swap.
 
 **Primary metrics:** Kendall τ and Spearman ρ vs the human ranking with
-bootstrap CIs; MMRV (SC3-Eval's own metric, for comparability); top-1 flip
+bootstrap CIs; MMRV (introduced by
+[SIMPLER (2405.05941)](https://arxiv.org/abs/2405.05941), used by SC3-Eval
+— for comparability; attribution corrected 2026-08-02); top-1 flip
 rate under evaluator swap; blind floor = τ(A3-language-only)/τ(A1).
 
 **Hypotheses (directional, locked):**
@@ -121,7 +123,7 @@ rate under evaluator swap; blind floor = τ(A3-language-only)/τ(A1).
 - **H3:** the n=7 bootstrap CI on Pearson r contains 0.5 (predict TRUE).
 - **H4:** ≥1 evaluator scores ≥1 degenerate episode class above the median
   real episode (predict TRUE).
-- **H5:** RoboRewardBench benchmark accuracy does not rank the arms by
+- **H5:** [RoboRewardBench](https://crfm.stanford.edu/helm/robo-reward-bench) benchmark accuracy does not rank the arms by
   rank-fidelity τ (predict TRUE — benchmark accuracy ≠ ranking validity).
 - **H6 (DreamGen):** the video-model ranking is not judge-invariant, and the
   downstream correlation across judges spans ≥0.4 width.
@@ -166,7 +168,7 @@ Wk1 gate + ranking freeze → Wk2–3 A1/A2 → Wk4 A3/A4 → Wk5 A5 → Wk6 ana
 - RoboArena dump too large / labels insufficient for Bradley–Terry → fall
   back to the 2025-08 dump (7,513 files) or per-episode binary success.
 - The evaluator authors' orbit (Levine/Finn/Pertsch/Liang students) could
-  self-audit — 6-week re-gate clock; watch citations of 2606.15032 and the
+  self-audit — 6-week re-gate clock; watch citations of [2606.15032](https://arxiv.org/abs/2606.15032) and the
   tool-calling audit.
 - Coverage caveat from the gate: venue-native proceedings under-swept; run
   one clean confirmatory search before locking (§8).
@@ -193,9 +195,9 @@ Wk1 gate + ranking freeze → Wk2–3 A1/A2 → Wk4 A3/A4 → Wk5 A5 → Wk6 ana
    (it clears ≥600 but is a near-degenerate outlier, 17W/511L, θ=−2.47,
    which dominates the strength marginal) — default: keep, per the rule.
 5. ~~Confirmatory literature pass (recent 8 weeks explicitly).~~ DONE
-   2026-08-02: partial threat 2606.01036 → repositioned (§3); RoboWorld v4
+   2026-08-02: partial threat [2606.01036](https://arxiv.org/abs/2606.01036) → repositioned (§3); RoboWorld v4
    now claims r=0.989 (n-sensitivity figure sharpened); ArmnetBench
-   (2607.24481, 3,118 human-scored episodes) is a scoop-enabler — window
+   ([2607.24481](https://arxiv.org/abs/2607.24481), 3,118 human-scored episodes) is a scoop-enabler — window
    argument strengthened. **Caveat: OpenReview rate-limited during the
    sweep — run one manual OpenReview pass (ICLR'27/NeurIPS'26 submissions)
    before lock.**

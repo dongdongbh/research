@@ -181,7 +181,7 @@ never as backup.
   login (Duo/no-SSH-keys)
 - OrangeGrid HTCondor: su-jsm.atlassian.net/wiki/spaces/RESCOMP/pages/164169368
 - Globus CLI: docs.globus.org/cli/reference/transfer/
-- croc: github.com/schollz/croc
+- croc: [github.com/schollz/croc](https://github.com/schollz/croc)
 
 ## Related
 

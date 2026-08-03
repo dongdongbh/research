@@ -40,14 +40,14 @@ Improve test coverage for the training/evaluation CLI surface.
 
 ## Not Installed
 
-`https://github.com/uditgoenka/autoresearch`
+[`https://github.com/uditgoenka/autoresearch`](https://github.com/uditgoenka/autoresearch)
 
 - It now documents Codex support, but it overlaps strongly with
   `codex-autoresearch`.
 - It has a larger command and hook surface. Keep it as a reference for now
   rather than installing a second autoresearch loop framework.
 
-`https://github.com/alvinreal/awesome-autoresearch`
+[`https://github.com/alvinreal/awesome-autoresearch`](https://github.com/alvinreal/awesome-autoresearch)
 
 - It is a curated index, not a directly installable Codex skill.
 - Keep it as a discovery source for later, especially if a project needs a more

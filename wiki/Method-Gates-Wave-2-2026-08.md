@@ -11,7 +11,7 @@ evidence; 4-axis overlap scoring, worst-case level).
 
 **Method definition (owner, updated 2026-08-02).** Three admission routes:
 (1) a new mechanism — architecture, training procedure, representation,
-broken assumption, changed data/workflow (diffusion, VGGT, D4RT, 3DGS,
+broken assumption, changed data/workflow (diffusion, [VGGT](https://arxiv.org/abs/2503.11651), [D4RT](https://arxiv.org/abs/2512.08924), [3DGS](https://arxiv.org/abs/2308.04079),
 Dreamer); (2) an improvement on a current method; (3) **an old method
 applied to a new problem**. Diagnosis/ablation/statistics alone do not
 qualify; statistics-flavored candidates pass only if the deliverable is a
@@ -23,9 +23,9 @@ shipped working mechanism.
 |---|---|
 | M6 generative-teacher distillation | Absorbed — one teacher arm of the crop-distillation flagship |
 | M7 uncertainty-routed two-tier ITM | Route-3 method but transfer too familiar; absorbed as a flagship inference-policy arm |
-| M8 stage-transition smoothing | Scooped — 2607.00634 (found during replay gate) |
+| M8 stage-transition smoothing | Scooped — [2607.00634](https://arxiv.org/abs/2607.00634) (found during replay gate) |
 | M9 granular-nonlinearity block | Wrong regime — pretraining-scale architecture race |
-| M10 turn-aware KV eviction | Engineering per owner definition; MemDecay owns the observation; gated on D. Chen audit |
+| M10 turn-aware KV eviction | Engineering per owner definition; [MemDecay](https://arxiv.org/abs/2607.10582) owns the observation; gated on D. Chen audit |
 | M11 diversity-preserving post-training | Saturated lane (15+ occupants); gated on collapse-mechanism diagnosis |
 | M12 format-anchored RL | Premature — method before the collapse arbitration has run |
 
@@ -36,37 +36,37 @@ gated-on-diagnosis per the scan's standing rule; S-M7 folds into the E lane.
 
 | # | Candidate | Verdict | Lvl | Closest prior | ★ |
 |---|---|---|---|---|---|
-| M1 | Energy/predictive scoring head (frozen VLM) | **SCOOPED** | 2 | DCSM (ICCV 2025); 2604.11496 | 0 |
-| M2 | Binding-register adapter tokens | **SCOOPED** | 1 | SGVL (EMNLP 2023); BLIP-2 Q-Former mechanism match | 0 |
-| M3 | Fork-preserving context construction | **SURVIVES-NARROWED** | 3 | 2607.26117 (5 days old); DeepMind 2604.05868 | ★★½ |
-| M4 | Compositionality-preserving merging maps | **SCOOPED** | 2 | AlignMerge 2512.16245 | ★ |
-| M5 | Active-view spatial pretraining | **SCOOPED** | 1 | World2VLM 2604.26934; SIMS-V 2511.04668 | ½ |
-| S-M1 | From-scratch KV recipe @ matched bytes | **SCOOPED** | 2 | CLA 2405.12981 (NeurIPS 2024); MixAttention | ★ |
-| S-M2 | FDR-controlled accept rule (autoresearch) | **SCOOPED** | 2 | PACE 2606.08106 (Jun 2026) | ★½ |
-| S-M3 | Cross-scaffold agent critic | **SCOOPED** | 2 | Neubig's own 2603.03800 (Mar 2026) | ½ |
+| M1 | Energy/predictive scoring head (frozen VLM) | **SCOOPED** | 2 | [DCSM (ICCV 2025)](https://arxiv.org/abs/2503.08723); [2604.11496](https://arxiv.org/abs/2604.11496) | 0 |
+| M2 | Binding-register adapter tokens | **SCOOPED** | 1 | [SGVL (EMNLP 2023)](https://arxiv.org/abs/2305.06343); [BLIP-2](https://arxiv.org/abs/2301.12597) Q-Former mechanism match | 0 |
+| M3 | Fork-preserving context construction | **SURVIVES-NARROWED** | 3 | [2607.26117](https://arxiv.org/abs/2607.26117) (5 days old); DeepMind [2604.05868](https://arxiv.org/abs/2604.05868) | ★★½ |
+| M4 | Compositionality-preserving merging maps | **SCOOPED** | 2 | AlignMerge [2512.16245](https://arxiv.org/abs/2512.16245) | ★ |
+| M5 | Active-view spatial pretraining | **SCOOPED** | 1 | World2VLM [2604.26934](https://arxiv.org/abs/2604.26934); SIMS-V [2511.04668](https://arxiv.org/abs/2511.04668) | ½ |
+| S-M1 | From-scratch KV recipe @ matched bytes | **SCOOPED** | 2 | CLA [2405.12981](https://arxiv.org/abs/2405.12981) (NeurIPS 2024); MixAttention | ★ |
+| S-M2 | FDR-controlled accept rule (autoresearch) | **SCOOPED** | 2 | PACE [2606.08106](https://arxiv.org/abs/2606.08106) (Jun 2026) | ★½ |
+| S-M3 | Cross-scaffold agent critic | **SCOOPED** | 2 | Neubig's own [2603.03800](https://arxiv.org/abs/2603.03800) (Mar 2026) | ½ |
 
 ## Gate records (condensed)
 
-**M1/M2 — frozen-encoder binding heads.** DCSM (ICCV 2025) occupies the
-learned-1×-readout-on-frozen-CLIP slot; DiffusionITM's 17× cost (68 min vs
+**M1/M2 — frozen-encoder binding heads.** [DCSM (ICCV 2025)](https://arxiv.org/abs/2503.08723) occupies the
+learned-1×-readout-on-frozen-CLIP slot; [DiffusionITM](https://arxiv.org/abs/2305.16397)'s 17× cost (68 min vs
 4 min per their own numbers) was M1's one real delta and DCSM already spent
-it. M2 = BLIP-2 Q-Former's ITC path verbatim (32 query tokens on frozen
+it. M2 = [BLIP-2](https://arxiv.org/abs/2301.12597) Q-Former's ITC path verbatim (32 query tokens on frozen
 ViT, max-over-query scoring, hard-negative ITM — verified; zero
-compositional eval in BLIP-2), stacked on SGVL → Level 1. **Byproducts for
-the flagship:** "LABCLIP" is really **2502.03566 (ICLR 2026)** — D×D
-text-side matrix, frozen encoders, ARO+SugarCrepe → mandatory baseline; the
-whole neighborhood (DCSM, LABCLIP, ABE-CLIP, TF-Local) reads out *existing*
+compositional eval in BLIP-2), stacked on [SGVL](https://arxiv.org/abs/2305.06343) → Level 1. **Byproducts for
+the flagship:** "LABCLIP" is really **[2502.03566](https://arxiv.org/abs/2502.03566) (ICLR 2026)** — D×D
+text-side matrix, frozen encoders, [ARO](https://arxiv.org/abs/2210.01936)+[SugarCrepe](https://arxiv.org/abs/2306.14610) → mandatory baseline; the
+whole neighborhood (DCSM, LABCLIP, [ABE-CLIP](https://arxiv.org/abs/2512.17178), TF-Local) reads out *existing*
 frozen features — none injects a stronger teacher into the 1× patch path,
-which is exactly the flagship's mechanism. FILIP/SPARC/DINOSAUR downgrade
+which is exactly the flagship's mechanism. [FILIP](https://arxiv.org/abs/2111.07783)/[SPARC](https://arxiv.org/abs/2401.09865)/[DINOSAUR](https://arxiv.org/abs/2209.14860) downgrade
 to citations (no compositional eval, not heads-on-frozen).
 
 **M3 — fork-preserving context (the survivor).** Framing and insight are
-published: 2607.26117 (blind resample beats self-repair below 7B at 2.5–5.5×
+published: [2607.26117](https://arxiv.org/abs/2607.26117) (blind resample beats self-repair below 7B at 2.5–5.5×
 fewer tokens; anchoring reproduces the failed program in 33–68% of retries),
-DeepMind 2604.05868 (sequential deficit = exploration loss, and anchoring is
-**correctness-agnostic**), 2605.08563 (contamination model + clean-restart
-dominance theorem), Meta 2604.16529 (summarize operator shipped on
-SWE-bench/Terminal-Bench). **Unoccupied cell:** operators that keep a
+DeepMind [2604.05868](https://arxiv.org/abs/2604.05868) (sequential deficit = exploration loss, and anchoring is
+**correctness-agnostic**), [2605.08563](https://arxiv.org/abs/2605.08563) (contamination model + clean-restart
+dominance theorem), Meta [2604.16529](https://arxiv.org/abs/2604.16529) (summarize operator shipped on
+[SWE-bench](https://arxiv.org/abs/2310.06770)/Terminal-Bench). **Unoccupied cell:** operators that keep a
 failure's *information* while removing its *anchoring* (redact /
 counterfactual-rewrite, beyond keep-vs-wipe), selected by an
 entropy-at-forking-tokens diagnostic. Win regime: long-horizon agentic tasks
@@ -76,48 +76,48 @@ matched token budget. Required control: same operators on *successful*
 attempts (correctness-agnostic check). Lane pace ~1 adjacent paper/month
 since May; **48h re-gate before any commitment.** ★★½.
 
-**M4 — compositional merging maps.** AlignMerge (2512.16245) is the same
+**M4 — compositional merging maps.** AlignMerge ([2512.16245](https://arxiv.org/abs/2512.16245)) is the same
 template with the property swapped: "merging can preserve loss while quietly
 destroying alignment" + explicit latent-preservation regularizer in the
-merge objective. Representation Surgery (ICML 2024/25) is the ICML
-precedent; Tam et al. 2409.18314 owns the title collision. Premise is also
-contested: 2509.19476 and Mai (CVPR 2026) find merged/stitched models can
+merge objective. [Representation Surgery](https://arxiv.org/abs/2402.02705) (ICML 2024/25) is the ICML
+precedent; Tam et al. [2409.18314](https://arxiv.org/abs/2409.18314) owns the title collision. Premise is also
+contested: [2509.19476](https://arxiv.org/abs/2509.19476) and [Mai (CVPR 2026)](https://arxiv.org/abs/2603.12433) find merged/stitched models can
 *exceed* parents on structural competence. Residual: nobody runs
 compositional probes on merged CLIPs — a one-week **measurement** note at
 most, not a method paper. Gate-process flag: the first pass missed
 AlignMerge entirely; the verification sweep caught it.
 
-**M5 — active-view spatial.** World2VLM (2604.26934) owns action-conditioned
-view-transition mid-training with zero-shot SAT/VSI-Bench/MindCube transfer;
-SIMS-V (2511.04668, by the VSI-Bench authors) owns sim-data-to-real-transfer
-(25K examples beat a 72B baseline); Spatial-SSRL owns non-QA predictive
-objectives. No axis left. Bonus hazard: 2511.16655 shows the
+**M5 — active-view spatial.** World2VLM ([2604.26934](https://arxiv.org/abs/2604.26934)) owns action-conditioned
+view-transition mid-training with zero-shot SAT/VSI-Bench/[MindCube](https://arxiv.org/abs/2506.21458) transfer;
+SIMS-V ([2511.04668](https://arxiv.org/abs/2511.04668), by the [VSI-Bench](https://arxiv.org/abs/2412.14171) authors) owns sim-data-to-real-transfer
+(25K examples beat a 72B baseline); [Spatial-SSRL](https://arxiv.org/abs/2510.27606) owns non-QA predictive
+objectives. No axis left. Bonus hazard: [2511.16655](https://arxiv.org/abs/2511.16655) shows the
 spatial-supersensing eval family is gameable. Abandon.
 
 **S-M1 — KV recipe.** Matched-KV-bytes-per-token is CLA's own Figure-3 axis
 (NeurIPS 2024); its from-scratch 1B/3B grid already contains the
-MQA-vs-GQA overturn (MQA ties GQA-2 at half the bytes) and reaches the
-proposed conclusion ("CLA2 + MQA"). MixAttention (2409.15012) published the
-Character.AI local:global × cross-layer recipe with RULER-32K. Residual:
+MQA-vs-GQA overturn ([MQA](https://arxiv.org/abs/1911.02150) ties [GQA-2](https://arxiv.org/abs/2305.13245) at half the bytes) and reaches the
+proposed conclusion ("CLA2 + MQA"). MixAttention ([2409.15012](https://arxiv.org/abs/2409.15012)) published the
+Character.AI local:global × cross-layer recipe with [RULER-32K](https://arxiv.org/abs/2404.06654). Residual:
 the three-way interaction (heads × tying × local:global) at long context —
 affordable only at 300M, underpowered for the interesting 0.03–0.06-ppl
-effects; Gemma 4 ships axes 1+2 as product default. ★.
+effects; [Gemma 4](https://arxiv.org/abs/2607.02770) ships axes 1+2 as product default. ★.
 
-**S-M2 — accept rule.** PACE (2606.08106) is the same paper: acceptor as
+**S-M2 — accept rule.** PACE ([2606.08106](https://arxiv.org/abs/2606.08106)) is the same paper: acceptor as
 the silent weak point, greedy accept = "the agent p-hacks itself,"
 anytime-valid e-process commit gate, online-FDR baseline already run (too
 conservative). autoresearch PR #560 (unmerged 2σ noise floor) is the
-repo-level incumbent; Rehearse (2607.27687) owns the nanochat testbed with
+repo-level incumbent; Rehearse ([2607.27687](https://arxiv.org/abs/2607.27687)) owns the [nanochat](https://github.com/karpathy/nanochat) testbed with
 4,000 runs. Residual: run-level-scalar k-seed racing under GPU-hour cost
 with a **run-level** FDR guarantee (PACE's is per-decision on paired
 per-instance outcomes). ★½→★★ only if hard-narrowed; gate-before-gate: ~20
 GPU-h σ_seed measurement on nanochat speedruns.
 
-**S-M3 — agent critic.** Neubig's group already shipped it: 2603.03800 —
-rubric-supervised 4B critic on 154K private OpenHands production segments,
+**S-M3 — agent critic.** Neubig's group already shipped it: [2603.03800](https://arxiv.org/abs/2603.03800) —
+rubric-supervised 4B critic on 154K private [OpenHands](https://arxiv.org/abs/2407.16741) production segments,
 Best@8 +15.9, early stopping at 83% compute reduction, **checkpoint
-released**. SWE-RM (2512.21919) did 400K multi-scaffold trajectories;
-2607.05391's "Agent Harness Generalization" appendix answers the
+released**. SWE-RM ([2512.21919](https://arxiv.org/abs/2512.21919)) did 400K multi-scaffold trajectories;
+[2607.05391](https://arxiv.org/abs/2607.05391)'s "Agent Harness Generalization" appendix answers the
 cross-harness question (transfers fine, at least training-free). Residual:
 the trained-critic scaffold-transfer off-diagonal — a 5 GPU-h kill-arm
 (score our Claude Code/Codex traces with their released critic; <2–3 pt gap
@@ -141,7 +141,7 @@ Dispositions:
 2. **Bench notes (recorded, not scheduled):** S-M2 hard-narrowed (σ_seed
    gate first); S-M1 three-way interaction (underpowered at our budget);
    S-M3 5-GPU-h kill-arm; M4 merged-CLIP compositional measurement note.
-3. **Flagship additions from Gate A:** LABCLIP (2502.03566) and DCSM become
+3. **Flagship additions from Gate A:** LABCLIP ([2502.03566](https://arxiv.org/abs/2502.03566)) and [DCSM](https://arxiv.org/abs/2503.08723) become
    named baselines / A5 instantiations in the crop prereg (edit logged
    there).
 

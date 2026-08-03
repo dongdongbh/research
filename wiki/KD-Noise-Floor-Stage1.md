@@ -22,7 +22,7 @@ prior-art gate tests.
 **1. The finding is not information — the field already knows.** This is the
 serious one. The evidence is inside the protocol itself:
 
-- **QTIP's checklist states the convention openly.** I had filed this as
+- **[QTIP](https://arxiv.org/abs/2406.11235)'s checklist states the convention openly.** I had filed this as
   *evidence for* the thesis. It is equally evidence that the thesis is common
   knowledge: the field discloses the practice in a mandated form and continues.
 - **SparseGPT and Wanda both measured seed variance, reported it, and shipped
@@ -40,15 +40,15 @@ policy — neither of which is a paper a single researcher writes.
 
 **2. Reviewer conflict of interest.** An audit of N papers draws reviewers from
 the authors of those papers. The session's own evidence supports the concern:
-SWE-Bench+ was withdrawn from ICLR 2026 and rejected from ICLR 2025 before
-landing at AIWare 2026; Xu et al.'s diagonalization-based hallucination paper
+[SWE-Bench+](https://arxiv.org/abs/2410.06992) was withdrawn from ICLR 2026 and rejected from ICLR 2025 before
+landing at AIWare 2026; [Xu et al.](https://arxiv.org/abs/2401.11817)'s diagonalization-based hallucination paper
 was rejected by TMLR while a friendlier formulation landed; *The Invisible
 Leash* was rejected at ICLR 2026 while its purely empirical twin took a NeurIPS
 Oral.
 
 This objection is real but **weaker than the first**, and bounded. Audit papers
-do land — MaxCut-Bench, FrontierCO (ICLR 2026), *The dark side of the forces*
-(ICML 2025 Oral), *Faults in Our Formal Benchmarking* (ICML 2026), *Token
+do land — [MaxCut-Bench](https://arxiv.org/abs/2406.11897), [FrontierCO](https://arxiv.org/abs/2505.16952) (ICLR 2026), *[The dark side of the forces](https://arxiv.org/abs/2412.11569)*
+(ICML 2025 Oral), *[Faults in Our Formal Benchmarking](https://arxiv.org/abs/2606.29493)* (ICML 2026), *Token
 Pruning: Are We Solving the Right Problem?* (ACL Findings 2025), *Revisiting
 RaBitQ and TurboQuant* (overturning a Google result). The pattern among
 survivors is that they ship a **tool, benchmark, or positive protocol**, and
@@ -95,7 +95,7 @@ than the practitioners.
 
 ## Case study A — knowledge distillation (VERIFIED)
 
-**The variance estimate.** DistiLLM-1 (`2402.03898`, ICML 2024) publishes mean
+**The variance estimate.** DistiLLM-1 ([`2402.03898`](https://arxiv.org/abs/2402.03898), ICML 2024) publishes mean
 and standard deviation over five seeds for **GPT-4 Eval**, not merely ROUGE-L.
 Parsed directly from Tables 11-13 (GPT-2, OPT, OpenLLaMA2 families), taking the
 `GPT-4 Eval` columns for Dolly, Self-Instruct and Vicuna: **52 data rows, 156
@@ -110,11 +110,11 @@ standard deviations.**
 | max | 1.83 |
 | fraction `> 0.21` | **75.6%** (118/156) |
 
-Reproduction recipe: extract Tables 11-13 from `2402.03898`, match
+Reproduction recipe: extract Tables 11-13 from [`2402.03898`](https://arxiv.org/abs/2402.03898), match
 `(\d+\.\d+)\s*\(\s*(\d+\.\d+)\s*\)`, keep rows with exactly 8 matched cells,
 take columns 0, 2, 4.
 
-**The comparison point.** DistiLLM-2 (`2503.07067`, **ICML 2025 Oral**) orders
+**The comparison point.** DistiLLM-2 ([`2503.07067`](https://arxiv.org/abs/2503.07067), **ICML 2025 Oral**) orders
 GKD `56.14` below DistiLLM `56.35` — a **0.21** gap — from a **single unseeded
 run**, with student sampling at temperature 0.8 / top-p 0.95 and the judge at
 temperature 0.7. Zero variance reporting anywhere in the camera-ready.
@@ -130,9 +130,9 @@ appears.
 ## Case study B — post-training compression (VERIFIED)
 
 **The variance estimate is stronger here**, because it is the right component.
-Wanda (`2306.11695`) Appendix D.2, Table 18 reports mean±std over **five
+Wanda ([`2306.11695`](https://arxiv.org/abs/2306.11695)) Appendix D.2, Table 18 reports mean±std over **five
 calibration-draw seeds** — i.e. across *different compressed models*, which is
-exactly the variance relevant to a method comparison. SparseGPT (`2301.00774`)
+exactly the variance relevant to a method comparison. SparseGPT ([`2301.00774`](https://arxiv.org/abs/2301.00774))
 independently reports `13.52 ± 0.075` over five data seeds and concludes it is
 "quite robust to the precise calibration data being used."
 
@@ -149,7 +149,7 @@ Wanda, four of twelve published comparison cells are coin flips:
 Remaining eight cells resolve cleanly. **Report all twelve** — the denominator
 is part of the finding.
 
-**Larger-scale corroboration.** Williams & Aletras (ACL 2024, `2311.09755`) run
+**Larger-scale corroboration.** Williams & Aletras (ACL 2024, [`2311.09755`](https://arxiv.org/abs/2311.09755)) run
 1,800 compressed models and 19,800 evaluations, reporting across-draw std of
 0.1-0.6pp on aggregate accuracy with single-task ranges up to 9pp, plus the
 directly relevant observation that *"a seemingly robust perplexity of
@@ -186,7 +186,7 @@ to check the mathematics, and nobody worried about competence to check the
 statistics.**
 
 **2. A second literature stating the convention outright, in a mandated
-disclosure.** QTIP's NeurIPS reproducibility checklist, verbatim:
+disclosure.** [QTIP](https://arxiv.org/abs/2406.11235)'s NeurIPS reproducibility checklist, verbatim:
 
 > *"Answer: No. Justification: **It is standard practice in LLM quantization
 > papers to not report error bars on metrics.**"*
@@ -201,7 +201,7 @@ form designed to surface exactly this question.
 **Primary.** For each harvested published comparison `(m, n)`, the resolvability
 statistic **`P(A > B)`** — *"the probability of measuring a better performance
 for A than B across fluctuations"* — **of Bouthillier et al., MLSys 2021
-(`2103.03098`)**, with their threshold `gamma = 0.75`. A claimed ordering is
+([`2103.03098`](https://arxiv.org/abs/2103.03098))**, with their threshold `gamma = 0.75`. A claimed ordering is
 **unresolved** when `P(A > B) < 0.75`.
 
 **Attribution is mandatory and non-negotiable.** This statistic is Bouthillier's.
@@ -267,7 +267,7 @@ disappointment.
 ## What may not be claimed
 
 - **Not** that variance is unmeasured in these literatures. It is measured —
-  MiniLLM (5 seeds), GKD (3), DistiLLM (5 with std), SparseGPT (5), Wanda (5),
+  [MiniLLM](https://arxiv.org/abs/2306.08543) (5 seeds), GKD (3), DistiLLM (5 with std), SparseGPT (5), Wanda (5),
   Williams & Aletras (10 draws x 5 sources). The failure is that it is **not
   used when orderings are asserted**.
 - **Not** that calibration or seed choice is a novel concern. Williams & Aletras,
@@ -295,7 +295,7 @@ disappointment.
 1. **Final prior-art gate**, executed under the standing rule below: has anyone
    applied `P(A > B)` or an equivalent resolvability audit across a published ML
    literature? Check the reproducibility, meta-science and benchmark-reliability
-   literatures by task, not by method name. Note `2605.20798` ran an
+   literatures by task, not by method name. Note [`2605.20798`](https://arxiv.org/abs/2605.20798) ran an
    iso-compute noise-floor audit for transformer modifications — read its
    **method section** and quote the sentence that distinguishes it.
 2. Declare the harvest paper list, venue set and date range.
@@ -323,5 +323,5 @@ positioning must say so.
 
 [[KD-Evidence-Audit-Gate]] — the gate that produced Case A and its corrections.
 [[Calibration-Draw-Preregistration]] — the failed compression gate that yielded
-Case B and the QTIP disclosure.
+Case B and the [QTIP](https://arxiv.org/abs/2406.11235) disclosure.
 [[Direction-Gate-Results]] — the thirteen-gate record and failure modes.

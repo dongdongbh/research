@@ -12,7 +12,7 @@ rules 5–6). Sibling pages: [[Prereg-RoboJudge-Audit]] ·
 
 ## 1. The problem, in plain language
 
-One-step ("1-NFE") image generators — MeanFlow, Shortcut models, and now
+One-step ("1-NFE") image generators — [MeanFlow](https://arxiv.org/abs/2505.13447), [Shortcut models](https://arxiv.org/abs/2410.12557), and now
 Drifting — produce a full image in a single network call instead of dozens,
 making generation ~50× cheaper. Their headline quality (FID) now rivals
 multi-step diffusion. But several groups report they are **less diverse**:
@@ -30,24 +30,24 @@ Nobody has run the experiment that separates them.
 
 ## 2. Current research state
 
-- **SubFlow** (arXiv 2604.12273, Apr 2026) named the mechanism — "when
+- **SubFlow** ([arXiv 2604.12273](https://arxiv.org/abs/2604.12273), Apr 2026) named the mechanism — "when
   trained with MSE objectives, class-conditional flows learn a
   frequency-weighted mean over intra-class sub-modes" — and fixed it with
   sub-mode conditioning. **But it only tested the averaging family**
   (MeanFlow, Shortcut). Its code is announced, not released.
-- **Drifting** (He group, arXiv 2602.04770) reaches 1-NFE **without an
+- **Drifting** (He group, [arXiv 2602.04770](https://arxiv.org/abs/2602.04770)) reaches 1-NFE **without an
   averaging objective** (it "evolves the pushforward distribution during
   training"). It is the natural falsifier — and it has never been measured
   for diversity. Decisive substrate fact (verified Aug 2026): the released
-  `inference.py` in `lambertae/drifting` (485★) **already computes FID, IS,
+  `inference.py` in [`lambertae/drifting`](https://github.com/lambertae/drifting) (485★) **already computes FID, IS,
   precision, and recall — the paper reports only FID/IS. Recall is
   computable today and unreported.**
-- Matched averaging-family substrate: `kvfrans/shortcut-models` (762★)
+- Matched averaging-family substrate: [`kvfrans/shortcut-models`](https://github.com/kvfrans/shortcut-models) (762★)
   releases ImageNet-256 weights with **native 1/4/128-step sampling from the
   same checkpoint**; MeanFlow/iMF/pMF weights on HF.
 - The crowded periphery is orthogonal: distillation-side diversity fixes
-  (1.x-Distill, Diversity-Preserved DMD, Data-Forcing, Don't-Settle-at-the-
-  Mode) all live *inside* the averaging/distillation family. The
+  ([1.x-Distill](https://arxiv.org/abs/2604.04018), [Diversity-Preserved DMD](https://arxiv.org/abs/2602.03139), [Data-Forcing](https://arxiv.org/abs/2606.18478), [Don't-Settle-at-the-
+  Mode](https://arxiv.org/abs/2606.27371)) all live *inside* the averaging/distillation family. The
   **cross-family arbitration is unrun** (lane sweep, Aug 2026).
 
 ## 3. Our method and novelty
@@ -78,11 +78,11 @@ outside the family it was derived on.
 ## 4. Pre-registered design
 
 **Substrates:** released checkpoints — Drifting latent/pixel B & L
-(`Goodeat/drifting`), Shortcut DiT-B/XL, MeanFlow/iMF/pMF (HF weights) — plus
+([`Goodeat/drifting`](https://huggingface.co/Goodeat/drifting)), Shortcut DiT-B/XL, MeanFlow/iMF/pMF (HF weights) — plus
 a many-step reference (standard flow/diffusion at matched arch) for the
 precision-matched recall ceiling; plus the from-scratch B/4 pair.
 
-**Metrics:** precision/recall (Kynkäänniemi k-NN, k pre-fixed), coverage &
+**Metrics:** precision/recall ([Kynkäänniemi k-NN](https://arxiv.org/abs/1904.06991), k pre-fixed), coverage &
 density, per-class recall on ImageNet-256 (class-conditional sub-mode
 coverage is where averaging distortion bites), and a memorization check
 (nearest-train-neighbor distance) so "diverse" is not "copying." All at
@@ -136,7 +136,7 @@ from-scratch pair → Wk9–10 H4 → Wk11–13 analysis/writing.
 ## 7. Risks and scoop watch
 
 - SubFlow releasing code + cross-family results is the main scoop path —
-  watch `2604.12273` versions; 6-week re-gate clock.
+  watch [`2604.12273`](https://arxiv.org/abs/2604.12273) versions; 6-week re-gate clock.
 - The He group could self-measure Drifting's recall (it is their
   `inference.py`) — mitigated by speed: the first sweep is days of work.
 - Precision-matching may be impossible for some checkpoint pairs → report

@@ -10,14 +10,14 @@ preserved as record; the recommendation it reaches was falsified within days.
 > 1. **The calibration-draw noise floor (the lead candidate below) — GATE
 >    FAILED, SCOOPED.** See [[Calibration-Draw-Preregistration]]. Williams &
 >    Aletras, *On the Impact of Calibration Data in Post-training Quantization
->    and Pruning* (`2311.09755`, **ACL 2024**) ran exactly this experiment down
+>    and Pruning* ([`2311.09755`](https://arxiv.org/abs/2311.09755), **ACL 2024**) ran exactly this experiment down
 >    to the token count — ten non-overlapping draws per source, 1,800 compressed
 >    models, 19,800 evaluations — and it has been independently replicated twice
->    (`2410.17711` ICLR 2025 with 20 seeds; `2410.17170` NAACL 2025). The wedge
+>    ([`2410.17711`](https://arxiv.org/abs/2410.17711) ICLR 2025 with 20 seeds; [`2410.17170`](https://arxiv.org/abs/2410.17170) NAACL 2025). The wedge
 >    asserted below ("prior work varies calibration *source or configuration*;
 >    nobody varies *draws from the same source*") is **factually false** and was
 >    asserted without reading the paper it cites. The measured answer, the thin
->    residue that genuinely remains (AWQ's hardcoded seed, aggressive
+>    residue that genuinely remains ([AWQ](https://arxiv.org/abs/2306.00978)'s hardcoded seed, aggressive
 >    bit-widths, generative/reasoning metrics, Hessian concentration theory, the
 >    calibration monoculture), and the full post-mortem are on that page.
 > 2. **The KD half — SUSPENDED**, not scooped. See [[KD-Noise-Floor-Stage1]].
@@ -92,31 +92,31 @@ regardless of intent.
 
 ## Compression survey: "smarter than quantization" is the wrong question
 
-Quantization has already won empirically — LLM-KICK, Decoding Compressed Trust
-(ICML 2024) and UniComp independently find it dominates pruning on the
+Quantization has already won empirically — [LLM-KICK](https://arxiv.org/abs/2310.01382), [Decoding Compressed Trust](https://arxiv.org/abs/2403.15447)
+(ICML 2024) and [UniComp](https://arxiv.org/abs/2602.09130) independently find it dominates pruning on the
 accuracy/compression frontier. And the information-theoretic thread has closed
-most remaining headroom **on the objective everyone optimizes**: WaterSIC is
+most remaining headroom **on the objective everyone optimizes**: [WaterSIC](https://arxiv.org/abs/2603.04956) is
 within `0.255` bits of the IT limit uniformly over covariances, the universality
-price is `<= 0.11` bit, and GSQ shows even *scalar* quantization recovers most
+price is `<= 0.11` bit, and [GSQ](https://arxiv.org/abs/2604.18556) shows even *scalar* quantization recovers most
 of the vector-quantization gap at 2-3 bits.
 
-**Every method lane is industry-gated.** GPTQ/SparseGPT/GSQ = IST Austria.
-QuIP#/QTIP/YAQA = Cornell. AWQ/SmoothQuant = MIT Han Lab + NVIDIA. SpinQuant =
-Meta. BitNet/VPTQ = Microsoft. GPTVQ = Qualcomm. TurboQuant = Google. A credible
+**Every method lane is industry-gated.** [GPTQ](https://arxiv.org/abs/2210.17323)/[SparseGPT](https://arxiv.org/abs/2301.00774)/GSQ = IST Austria.
+[QuIP#](https://arxiv.org/abs/2402.04396)/QTIP/[YAQA](https://arxiv.org/abs/2505.22988) = Cornell. [AWQ](https://arxiv.org/abs/2306.00978)/[SmoothQuant](https://arxiv.org/abs/2211.10438) = MIT Han Lab + NVIDIA. [SpinQuant](https://arxiv.org/abs/2405.16406) =
+Meta. [BitNet](https://arxiv.org/abs/2310.11453)/[VPTQ](https://arxiv.org/abs/2409.17066) = Microsoft. [GPTVQ](https://arxiv.org/abs/2402.15319) = Qualcomm. [TurboQuant](https://arxiv.org/abs/2504.19874) = Google. A credible
 PTQ paper now needs custom CUDA kernels — a multi-person quarter. The IT thread
 (Ordentlich/Polyanskiy, HUJI + MIT) is pure theory, which is why an outsider
 cannot win there either.
 
 > **Partial correction (2026-08-02).** The custom-kernel bar is **not** general
 > to compression. [[Direction-Reevaluation-2026-08]] refutes it for the
-> KV-cache lane specifically: KVTuner (ICML 2025), EvolKV (EMNLP) and SCBench
+> KV-cache lane specifically: [KVTuner](https://arxiv.org/abs/2502.04420) (ICML 2025), [EvolKV](https://arxiv.org/abs/2509.08315) (EMNLP) and [SCBench](https://arxiv.org/abs/2412.10319)
 > (ICLR 2025) all published with **zero kernel work** — the actual bar there is
 > serving-compatible granularity plus throughput on top of existing kernels.
 > Treat "needs custom kernels" as a claim about weight-PTQ competition against
 > the named industrial groups, not as a property of compression research.
 
-**"Smarter" saliency is mostly repackaged.** Magnitude → Wanda → GPTQ/SparseGPT
-(Hessian/OBS) → AWQ → Fisher-based (YAQA, GFWSVD) are one second-order idea with
+**"Smarter" saliency is mostly repackaged.** Magnitude → [Wanda](https://arxiv.org/abs/2306.11695) → GPTQ/SparseGPT
+(Hessian/OBS) → AWQ → Fisher-based (YAQA, [GFWSVD](https://arxiv.org/abs/2505.17974)) are one second-order idea with
 better curvature estimators. Circuit-aware compression is thin **for a reason**:
 the interpretability literature runs the arrow backwards, using pruning to
 *discover* circuits. And "compress what the model doesn't use" is ill-posed —
@@ -130,11 +130,11 @@ Which is exactly where the opening is.
 > **Scooped, confirmed 2026-07-26.** Everything in this section is retained as
 > record of the error. The wedge stated in the next-but-one paragraph is the
 > false claim; the correct facts are in [[Calibration-Draw-Preregistration]].
-> Three further factual errors were found in the same gate: SparseGPT and Wanda
-> both already report mean ± std over 5 seeds in their appendices; QuIP#/QTIP do
-> **not** use 128 C4 sequences (6,144 RedPajama sequences) and AWQ uses 16
+> Three further factual errors were found in the same gate: [SparseGPT](https://arxiv.org/abs/2301.00774) and [Wanda](https://arxiv.org/abs/2306.11695)
+> both already report mean ± std over 5 seeds in their appendices; [QuIP#](https://arxiv.org/abs/2402.04396)/QTIP do
+> **not** use 128 C4 sequences (6,144 RedPajama sequences) and [AWQ](https://arxiv.org/abs/2306.00978) uses 16
 > Pile-val sequences at length 512, so "everyone uses ~128 random C4" is wrong
-> for three of the five methods named below; and AQLM's published SD (`0.127` at
+> for three of the five methods named below; and [AQLM](https://arxiv.org/abs/2401.06118)'s published SD (`0.127` at
 > 128 sequences → `0.005` at 4,096) predicts the effect is negligible at the
 > sample counts modern methods actually use. **The expected result was null and
 > that was knowable from the papers being cited.**
@@ -153,7 +153,7 @@ than the choice of search algorithm"). Those treat it as a **design factor**.
 **Nobody varies draws from the same source — a noise source.** State that
 distinction explicitly in the paper or a reviewer will conflate them.
 
-**Design.** For each of {GPTQ, AWQ, SparseGPT, Wanda, a QTIP-class VQ method,
+**Design.** For each of {[GPTQ](https://arxiv.org/abs/2210.17323), AWQ, SparseGPT, Wanda, a QTIP-class VQ method,
 one IT-optimal method}, draw `K = 10` independent 128x2048 calibration sets from
 the same source, compress, evaluate. **Primary pre-registered quantity: the
 ratio of between-method spread to within-method calibration-draw spread, per
@@ -168,8 +168,8 @@ Stage 2, which needs full retraining because DistiLLM-2 released no student
 checkpoints.
 
 **Published precedent that this genre lands here.** *Revisiting RaBitQ and
-TurboQuant: A Symmetric Comparison* (`2604.19528`, Apr 2026) overturns a Google
-result — TurboQuant worse than RaBitQ in most settings, and *"several reported
+TurboQuant: A Symmetric Comparison* ([`2604.19528`](https://arxiv.org/abs/2604.19528), Apr 2026) overturns a Google
+result — [TurboQuant](https://arxiv.org/abs/2504.19874) worse than [RaBitQ](https://arxiv.org/abs/2405.12497) in most settings, and *"several reported
 runtime and recall results in the TurboQuant paper could not be reproduced from
 the released implementation under the stated configuration."*
 
@@ -177,7 +177,7 @@ the released implementation under the stated configuration."*
 
 **Q3 (intellectually strongest).** Does the IT-optimal proxy buy end-task
 capability? Measure rank correlation between layerwise proxy loss and a
-downstream capability battery across methods. **WaterSIC concedes the limitation
+downstream capability battery across methods. **[WaterSIC](https://arxiv.org/abs/2603.04956) concedes the limitation
 itself** — it optimizes "Euclidean post-matmul loss, not PPL/KL targets," with
 no seeds, on **Llama-3.2-1B**, evaluated by **single-run WikiText-2
 perplexity**. A near-optimality theorem validated that way is a visible
@@ -189,21 +189,21 @@ coupled to what matters.
 calibration. ECE/Brier/selective-prediction AUC versus bit-rate, against Q1's
 noise floor. Prediction: calibration degrades earlier and more
 method-discriminatively than accuracy — i.e. it is a **higher-SNR discriminator
-between compression methods**. Area is thin: essentially only `2606.24970`.
+between compression methods**. Area is thin: essentially only [`2606.24970`](https://arxiv.org/abs/2606.24970).
 
 **Q5.** Multilingual is the least-crowded capability cell (~35 hits versus ~210
-for reasoning) with a documented calibration-*language* confound (`2408.14398`).
+for reasoning) with a documented calibration-*language* confound ([`2408.14398`](https://arxiv.org/abs/2408.14398)).
 
 **Avoid.** Recognition-versus-production (*The Benchmark Illusion*,
-`2606.17609`) is one month old and its authors will extend it. KV-cache
+[`2606.17609`](https://arxiv.org/abs/2606.17609)) is one month old and its authors will extend it. KV-cache
 compression is the most crowded area in the field (556 hits, new papers weekly)
 and already has its own critique layer.
 
 > **Superseded 2026-08-02 — the KV-cache "avoid" was a crowd-count verdict, and
 > crowd counts predicted nothing.** [[Direction-Reevaluation-2026-08]] rates
 > KV-cache **★★★★ when narrowed to safety-aware allocation**: six targeted
-> searches found no safety-objective allocator at all, KVFundaBench v2 dropped
-> safety from its abstract, and `2510.00231` documents instructions "completely
+> searches found no safety-objective allocator at all, [KVFundaBench](https://arxiv.org/abs/2502.01941) v2 dropped
+> safety from its abstract, and [`2510.00231`](https://arxiv.org/abs/2510.00231) documents instructions "completely
 > ignored" under compression. The crowded part is the perplexity-objective part.
 > Note the direction of the correction — **a direction is filtered out only when
 > the remaining opportunity is gone, never because it is hot** — and note that

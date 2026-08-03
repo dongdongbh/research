@@ -19,7 +19,7 @@ page.
 >    leaves both metric families **bit-identical**. Decision delta exactly zero
 >    against a bar of diagnosis → mechanism → fix → changed decision. The gate
 >    also found three papers that have since taken pieces of Gap A
->    (`2607.03143`, three weeks old at gate time, publishes the exact protocol
+>    ([`2607.03143`](https://arxiv.org/abs/2607.03143), three weeks old at gate time, publishes the exact protocol
 >    at ~400-way retrieval). Only the three escape routes listed there —
 >    threshold transfer, CLIP-as-scorer downstream, cross-model fusion — carry a
 >    changed decision.
@@ -41,9 +41,9 @@ diagrams), not conformal coverage.
 The mandatory gate on the conformal probe located work this survey missed:
 
 - **Leveraging Data to Say No: Memory Augmented Plug-and-Play Selective
-  Prediction** (ICLR 2026, OpenReview `wWxdT6LB2D`) reports AURC and
-  risk-coverage on SugarCrepe, Winoground, What'sUp, VL-Checklist, and Foil.
-- **Look Again Before You Abstain** (arXiv `2606.16667`, v4) further crowds VLM
+  Prediction** (ICLR 2026, OpenReview [`wWxdT6LB2D`](https://openreview.net/forum?id=wWxdT6LB2D)) reports AURC and
+  risk-coverage on [SugarCrepe](https://arxiv.org/abs/2306.14610), [Winoground](https://arxiv.org/abs/2204.03162), [What'sUp](https://arxiv.org/abs/2310.19785), [VL-Checklist](https://arxiv.org/abs/2207.00221), and [Foil](https://arxiv.org/abs/1705.01359).
+- **Look Again Before You Abstain** ([arXiv `2606.16667`](https://arxiv.org/abs/2606.16667), v4) further crowds VLM
   conformal abstention.
 
 **Consequence for this page.** The "consequence" leg of the merged-paper
@@ -66,9 +66,9 @@ benchmark name and by task, not only by method term.
 
 | Area | Verdict | Detail |
 |---|---|---|
-| Calibration of CLIP zero-shot **classification** | **SATURATED** | LeVine et al. 2303.12748; Tu et al. NeurIPS 2023 (2402.07410) and ICML 2024 (2402.07417). Consensus: mildly overconfident, single-digit ECE, and almost entirely fixed by one global temperature |
-| Prompt-tuning calibration | **OVERSATURATED** | C-TPT (ICLR'24) → DAC (ICML'24) → DOR (ICML'25) → O-TPT (CVPR'25) → D-TPT → TCPT (CVPR'26). Four generations in two years on the same 11 datasets. Do not enter |
-| Calibration under distribution shift | **SATURATED for classification** | CaRot (NeurIPS'24) gives a theoretical bound; Murugesan et al. (ECCV'24) show adapters/TTA break it. All classification |
+| Calibration of CLIP zero-shot **classification** | **SATURATED** | LeVine et al. [2303.12748](https://arxiv.org/abs/2303.12748); Tu et al. NeurIPS 2023 ([2402.07410](https://arxiv.org/abs/2402.07410)) and ICML 2024 ([2402.07417](https://arxiv.org/abs/2402.07417)). Consensus: mildly overconfident, single-digit ECE, and almost entirely fixed by one global temperature |
+| Prompt-tuning calibration | **OVERSATURATED** | [C-TPT](https://arxiv.org/abs/2403.14119) (ICLR'24) → [DAC](https://arxiv.org/abs/2402.04655) (ICML'24) → [DOR](https://arxiv.org/abs/2410.02681) (ICML'25) → [O-TPT](https://arxiv.org/abs/2503.12096) (CVPR'25) → [D-TPT](https://arxiv.org/abs/2510.09473) → [TCPT](https://arxiv.org/abs/2602.19024) (CVPR'26). Four generations in two years on the same 11 datasets. Do not enter |
+| Calibration under distribution shift | **SATURATED for classification** | [CaRot](https://arxiv.org/abs/2311.01723) (NeurIPS'24) gives a theoretical bound; [Murugesan et al.](https://arxiv.org/abs/2407.13588) (ECCV'24) show adapters/TTA break it. All classification |
 | Calibrated ranking (IR/ads) | **SATURATED** | KDD'22 → CIKM'23 → KDD'23 → SIGIR'25 → MLPlatt 2026. Mature industrial subfield; never ported to cross-modal |
 | **Calibration of the image-text MATCHING decision** | **OPEN** | See below |
 | **Hard-negative fine-tuning → miscalibration** | **OPEN** | See below |
@@ -79,30 +79,30 @@ benchmark name and by task, not only by method term.
 
 Searched across seven query formulations in one agent and independently in a
 second. **No paper computes ECE, Brier, NLL, or reliability diagrams for the
-binary image-text matching decision.** Nothing on SugarCrepe, ARO, VALSE, or
-Winoground asks whether the model's confidence in picking the right caption is
+binary image-text matching decision.** Nothing on [SugarCrepe](https://arxiv.org/abs/2306.14610), [ARO](https://arxiv.org/abs/2210.01936), [VALSE](https://arxiv.org/abs/2112.07566), or
+[Winoground](https://arxiv.org/abs/2204.03162) asks whether the model's confidence in picking the right caption is
 calibrated.
 
 Stated precisely: for `p = sigma(logit_scale * (s_pos - s_neg))`, nobody has
 reported "when CLIP says 0.9 on SugarCrepe, it is right X% of the time."
 
 Closest existing work is a **side table**: Oh et al., Geodesic Multi-Modal
-Mixup (NeurIPS 2023, 2203.03897) reports Flickr30k retrieval ECE — zero-shot
+Mixup (NeurIPS 2023, [2203.03897](https://arxiv.org/abs/2203.03897)) reports Flickr30k retrieval ECE — zero-shot
 `1.90/1.88`, naive fine-tune `2.26/2.00`. Three numbers in a mixup paper, no
 definition of what confidence means for retrieval, no analysis.
 
 Everything else that looks adjacent is something else: the probabilistic-
-embedding line (PCME, PCME++, ProbVLM, GroVE, Post-hoc Probabilistic VLMs
+embedding line ([PCME](https://arxiv.org/abs/2101.05068), [PCME++](https://arxiv.org/abs/2305.18171), [ProbVLM](https://arxiv.org/abs/2307.00398), [GroVE](https://arxiv.org/abs/2505.05163), Post-hoc Probabilistic VLMs
 ICLR'26) plots uncertainty-bin versus Recall@1, a monotonicity diagnostic with
-no proper scoring rule; the hubness/score-normalization line (QB-Norm CVPR'22,
-DBNorm, Sinkhorn, Test-Time Distribution Normalization NeurIPS'23) fixes
+no proper scoring rule; the hubness/score-normalization line ([QB-Norm](https://arxiv.org/abs/2112.12777) CVPR'22,
+[DBNorm](https://arxiv.org/abs/2310.11612), Sinkhorn, Test-Time Distribution Normalization NeurIPS'23) fixes
 ranking and reports R@K, never ECE.
 
 ### Gap B: hard-negative fine-tuning versus its own source checkpoint
 
 Source-matched calibration comparison is **standard practice** in the VLM
-literature — Fine-Tuning is Fine, if Calibrated (NeurIPS'24, 2409.16223),
-CAC (2501.19060), DAC, DOR, CaRot all use the zero-shot checkpoint as
+literature — Fine-Tuning is Fine, if Calibrated (NeurIPS'24, [2409.16223](https://arxiv.org/abs/2409.16223)),
+CAC ([2501.19060](https://arxiv.org/abs/2501.19060)), [DAC](https://arxiv.org/abs/2402.04655), [DOR](https://arxiv.org/abs/2410.02681), [CaRot](https://arxiv.org/abs/2311.01723) all use the zero-shot checkpoint as
 reference. **Every one of them studies base/new-class classification with
 prompt tuning or adapters.** None studies contrastive hard-negative
 fine-tuning, and none evaluates on matching or retrieval.
@@ -112,10 +112,10 @@ confidence, measured as ECE against the source checkpoint.* The second agent
 called this "the most under-claimed link in the whole survey."
 
 The prior that it is true is strong and already published as accuracy-only
-findings: SugarCrepe (NeurIPS'23 D&B) showed NegCLIP exploits hard-negative
-artifacts; The Hard Positive Truth (ECCV'24) measured up to `38.7%` drops for
+findings: [SugarCrepe](https://arxiv.org/abs/2306.14610) (NeurIPS'23 D&B) showed NegCLIP exploits hard-negative
+artifacts; [The Hard Positive Truth](https://arxiv.org/abs/2409.17958) (ECCV'24) measured up to `38.7%` drops for
 hard-negative-finetuned CLIP under hard positives; Oh et al. already show plain
-fine-tuning worsens retrieval ECE. Murugesan et al.'s diagnosis — adaptation
+fine-tuning worsens retrieval ECE. [Murugesan et al.](https://arxiv.org/abs/2407.13588)'s diagnosis — adaptation
 degrades calibration via **increased logit range** — transfers to this setting
 almost mechanically and nobody has run it.
 
@@ -130,7 +130,7 @@ expensive part. Full detail: **svib repo wiki**, Stage-E pages.
 
 Proposed hypothesis: the learned `logit_scale` is optimized for in-batch
 contrastive classification at batch size N, then applied to K-way decisions at
-test time (K=2 SCPP++, K=4 Winoground, K=5000 COCO retrieval), creating
+test time (K=2 SCPP++, K=4 [Winoground](https://arxiv.org/abs/2204.03162), K=5000 COCO retrieval), creating
 uncorrected K-dependent miscalibration.
 
 Refuted on three counts:
@@ -139,11 +139,11 @@ Refuted on three counts:
    (tau = 0.01) and essentially every released checkpoint sits *at the clamp*.
    It is a training-stability artifact, not an optimum for batch size N.
 2. **The theorem is published.** "softmax is not enough (for sharp size
-   generalisation)" (Veličković et al., **ICML 2025**, 2410.01104) proves
+   generalisation)" (Veličković et al., **ICML 2025**, [2410.01104](https://arxiv.org/abs/2410.01104)) proves
    softmax provably disperses as item count grows at test time and proposes
    adaptive inference temperature. K-dependent dispersion is a corollary.
-3. **"Nobody corrects it" is false.** Inverted softmax, DSL, QB-Norm (CVPR'22),
-   DBNorm, Sinkhorn normalization, and Test-Time Distribution Normalization
+3. **"Nobody corrects it" is false.** [Inverted softmax](https://arxiv.org/abs/1702.03859), [DSL](https://arxiv.org/abs/2109.04290), [QB-Norm](https://arxiv.org/abs/2112.12777) (CVPR'22),
+   [DBNorm](https://arxiv.org/abs/2310.11612), Sinkhorn normalization, and Test-Time Distribution Normalization
    (NeurIPS'23) all renormalize over the actual candidate set. The recsys logQ
    correction line has addressed the train/test normalizer mismatch since 2019.
 4. **Contradicting evidence exists.** LeVine et al. and Tu et al. both find a
@@ -209,18 +209,18 @@ svib repo wiki, Stage-E pages.)
 ## Terminology disambiguation required in any writeup
 
 "Calibration" is badly overloaded here and reviewers will pattern-match. One
-early paragraph must distinguish proper-scoring calibration from: CalibCLIP
+early paragraph must distinguish proper-scoring calibration from: [CalibCLIP](https://arxiv.org/abs/2510.05586)
 (ACM MM'25, *attention* calibration), Contrast-Aware Calibration
-(classification), hubness score normalization (QB-Norm line), calibrated
+(classification), hubness score normalization ([QB-Norm](https://arxiv.org/abs/2112.12777) line), calibrated
 recommendations (Steck RecSys'18, genre distribution), conformal coverage, and
-the uncertainty-versus-recall curves of the PCME line.
+the uncertainty-versus-recall curves of the [PCME](https://arxiv.org/abs/2101.05068) line.
 
 ## Other risks
 
-- **Minderer et al., NeurIPS 2021** ("Revisiting the Calibration of Modern
+- **[Minderer et al.](https://arxiv.org/abs/2106.07998), NeurIPS 2021** ("Revisiting the Calibration of Modern
   Neural Networks") is the standard counterattack on any "modern models are
   miscalibrated" framing. Address it directly.
-- SigLIP's learnable bias `b` is structurally a candidate-count prior
+- [SigLIP](https://arxiv.org/abs/2303.15343)'s learnable bias `b` is structurally a candidate-count prior
   (introduced for batch pos:neg imbalance, never revisited at inference). Cheap
   unclaimed sub-gap, but verify the claim that SigLIP resists temperature
   scaling — the only source found for it is not a real venue.

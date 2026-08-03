@@ -25,7 +25,7 @@ kills all of them.
 Compounding it, I over-read the SVIB failure as "method campaigns don't work for
 this group." SVIB failed for specific reasons — an invalid baseline and an
 ablatable mechanism — not because method work is out of reach at this scale.
-C2LIP is 8xA40 on CC3M. CLIC is ~1M samples, text-encoder only. Those are real
+C2LIP is 8xA40 on CC3M. [CLIC](https://arxiv.org/abs/2505.24424) is ~1M samples, text-encoder only. Those are real
 method papers at this compute.
 
 **The correct question for a method: where is the current best WEAK, and what is
@@ -49,15 +49,15 @@ locks): **svib repo wiki**, pages *Cluster-1-Compositional-Scoring* and
 ## General lessons kept from this cluster
 
 - **Never compare an inductive method against transductive numbers.** Test-Time
-  Matching's frozen-SigLIP Winoground jump (`10.25 → 67.00`) requires the
+  Matching's frozen-SigLIP [Winoground](https://arxiv.org/abs/2204.03162) jump (`10.25 → 67.00`) requires the
   test-set group partition and *changes the event being scored*: four
   independent inequalities at `16.7%` random chance become one joint assignment
   at `50%`. It is not a legal baseline and not "available headroom". A metric
   change disguised as headroom must be caught before the run.
 - **Check whether the headline number is the training-free number.** The
-  `73.0 → 86.3` SugarCrepe figure that motivated this cluster belongs to a
+  `73.0 → 86.3` [SugarCrepe](https://arxiv.org/abs/2306.14610) figure that motivated this cluster belongs to a
   *trained* 13.3M-parameter cross-modal module; the training-free method it was
-  attributed to was never evaluated on SugarCrepe, BiVLC, ARO or Winoground.
+  attributed to was never evaluated on SugarCrepe, [BiVLC](https://arxiv.org/abs/2406.09952), ARO or Winoground.
   Reading a claim from the abstract instead of the evaluation table cost a
   cluster of planning.
 - **Derive the algebra before buying the compute.** Separable per-image and
@@ -83,34 +83,34 @@ locks): **svib repo wiki**, pages *Cluster-1-Compositional-Scoring* and
 > **Supersession note (2026-08-02).** [[Direction-Reevaluation-2026-08]] re-rated
 > this cluster **★★★★ only if narrowed to safety-aware allocation**, and **★★★
 > as scoped below**. What died: the long-horizon/rollout slot (M1 below) is now
-> claimed by CONF-KV (`2605.24786`), and compounding error already has three
-> published remedies (SQuat, KVarN, VeriCache). What survives is **M2** — six
+> claimed by CONF-KV ([`2605.24786`](https://arxiv.org/abs/2605.24786)), and compounding error already has three
+> published remedies ([SQuat](https://arxiv.org/abs/2503.24358), KVarN, [VeriCache](https://arxiv.org/abs/2605.17613)). What survives is **M2** — six
 > targeted searches returned no safety-objective allocator, KVFundaBench v2
-> dropped safety from its abstract, and CAQ (`2511.07842`) proves the
+> dropped safety from its abstract, and CAQ ([`2511.07842`](https://arxiv.org/abs/2511.07842)) proves the
 > objective-mismatch template publishable in weight PTQ. The one falsifiable
 > sweep is safety-optimal versus perplexity-optimal per-layer allocation: they
 > either coincide (cheap death) or diverge (novel map plus allocator).
-> Pre-register `2605.18053` (protection beats scoring) as the control. Also
+> Pre-register [`2605.18053`](https://arxiv.org/abs/2605.18053) (protection beats scoring) as the control. Also
 > refuted there: the folk objection that this lane needs custom CUDA kernels —
-> KVTuner (ICML'25), EvolKV (EMNLP) and SCBench (ICLR'25) published with zero
+> [KVTuner](https://arxiv.org/abs/2502.04420) (ICML'25), [EvolKV](https://arxiv.org/abs/2509.08315) (EMNLP) and [SCBench](https://arxiv.org/abs/2412.10319) (ICLR'25) published with zero
 > kernel work; the real bar is serving-compatible granularity plus throughput
 > atop existing kernels. Related: [[Top-Researcher-Scan-2026-08]] M6
 > (turn-aware KV eviction for agents) merges with the safety-aware allocator.
 
 **My lead was scooped, and the replacement is better.** Per-head/per-layer KV
-allocation is *not* unexploited — **RateQuant** (`2605.06675`) does closed-form
-reverse waterfilling, beating KIVI `49.3 → 14.9` PPL on Qwen3-8B at 2.5 bits.
-**RDKV** (`2605.08317`) waterfills over tokens and channels. Plus KVTuner,
-KVmix, SpectrumKV, MixKVQ, MoQAE. The WaterSIC transplant is dead on arrival.
+allocation is *not* unexploited — **RateQuant** ([`2605.06675`](https://arxiv.org/abs/2605.06675)) does closed-form
+reverse waterfilling, beating [KIVI](https://arxiv.org/abs/2402.02750) `49.3 → 14.9` PPL on Qwen3-8B at 2.5 bits.
+**RDKV** ([`2605.08317`](https://arxiv.org/abs/2605.08317)) waterfills over tokens and channels. Plus KVTuner,
+[KVmix](https://arxiv.org/abs/2506.08018), [SpectrumKV](https://arxiv.org/abs/2606.08635), [MixKVQ](https://arxiv.org/abs/2512.19206), [MoQAE](https://arxiv.org/abs/2506.07533). The WaterSIC transplant is dead on arrival.
 
 **But every one of them optimizes a static, one-step distortion proxy**, and two
 separate literatures document that this is the failure point without joining it
 to the allocator:
 
-- **Rollout compounding.** KVarN (`2606.03458`): *"quantization errors accumulate
+- **Rollout compounding.** KVarN ([`2606.03458`](https://arxiv.org/abs/2606.03458)): *"quantization errors accumulate
   across timesteps."* Its fix is a **representation** fix (Hadamard plus variance
   normalization), **not an allocation fix**.
-- **Capability subspace collapse.** `2606.09864`: Mistral-7B loses **15.2% of
+- **Capability subspace collapse.** [`2606.09864`](https://arxiv.org/abs/2606.09864): Mistral-7B loses **15.2% of
   refusals at 1.03x perplexity**; safety lives in a subspace **10^2-10^3x more
   vulnerable** than the full space. It states outright that it *"succeeds where
   attention-based allocation approaches fail."*
@@ -131,7 +131,7 @@ subspace by difference-in-means on contrastive prompts; waterfill on distortion
 than a point. **Beat:** PCR's post-hoc repair operating point, without the repair
 pass. **4 GPUs.**
 
-**M3 — Kronecker-factored end-to-end objective**, porting YAQA's sketch to the
+**M3 — Kronecker-factored end-to-end objective**, porting [YAQA](https://arxiv.org/abs/2505.22988)'s sketch to the
 cache where head x channel structure is *more* natural than in weights. The
 cleanest possible ablation: change only the distortion metric inside a fixed
 allocator.
@@ -205,7 +205,7 @@ intervals and provenance hashes: **svib repo wiki**, pages
 > **Note (2026-08-02).** The two "move areas" suggestions made here have since
 > moved: Cluster 2 (KV-cache) is ★★★★ only under the safety-aware narrowing,
 > and B1 (diversity-collapse isolation) was **downgraded to ★★★ — scooped in
-> April 2026** by `2604.16027`, which traces Olmo 3's three lineages. B2
+> April 2026** by [`2604.16027`](https://arxiv.org/abs/2604.16027), which traces Olmo 3's three lineages. B2
 > (visual attention-sink emergence) was not re-gated. See
 > [[Direction-Reevaluation-2026-08]] and [[Live-Research-Opportunities]].
 
@@ -220,10 +220,10 @@ by an order of magnitude. Confirmed reference costs on this exact hardware class
 |---|---|---|
 | **Prismatic VLM, full 7B run** | **8x A100, under 9 hours** | ICML 2024 |
 | C2LIP | 8x A40, CC3M, 5 epochs, batch 768 | CVPR 2026 |
-| Open-Qwen2VL | 220 A100-40G GPU-h pretrain + 48 SFT | beats Qwen2-VL-2B |
-| DIVA | 66.4 GPU-hours total | — |
+| [Open-Qwen2VL](https://arxiv.org/abs/2504.00595) | 220 A100-40G GPU-h pretrain + 48 SFT | beats Qwen2-VL-2B |
+| [DIVA](https://arxiv.org/abs/2407.20171) | 66.4 GPU-hours total | — |
 | Perception-R1 | 16x A100, ~16h (~256 GPU-h) | — |
-| DINORankCLIP | 8x H100, 72h for a *full ablation* | May 2026 |
+| [DINORankCLIP](https://arxiv.org/abs/2605.06592) | 8x H100, 72h for a *full ablation* | May 2026 |
 
 A 1B model on 6.25B tokens is ~80 H100-hours — ten hours on eight GPUs. Full
 fine-tuning at 7-8B, contrastive training at CC3M scale, VLM instruction tuning,
@@ -233,7 +233,7 @@ and small-scale pretraining are all **in scope**.
 
 > **Update 2026-08-02 — confirmed ★★★★½, design revised.**
 > [[Direction-Reevaluation-2026-08]] re-gated T1 and it held at HIGH density:
-> CoVFT (`2603.21077`) states freeze-vs-finetune "remains unresolved" and its own
+> CoVFT ([`2603.21077`](https://arxiv.org/abs/2603.21077)) states freeze-vs-finetune "remains unresolved" and its own
 > benchmark is SFT-only (VFT wins on 6/12); no consolidating survey on VLM
 > training recipes exists; the 7B band is uncontested. **Design change:** the
 > objective axis becomes **three-level — SFT / RL / SFT + perceptual auxiliary
@@ -247,7 +247,7 @@ and small-scale pretraining are all **in scope**.
 
 **A live three-way contradiction on the most basic VLM training question.**
 
-**Prismatic** (`2402.07865`, ICML 2024) claims verbatim that *"including the
+**Prismatic** ([`2402.07865`](https://arxiv.org/abs/2402.07865), ICML 2024) claims verbatim that *"including the
 explicit projector pretraining stage is unnecessary, with single-stage training
 improving aggregate performance"* (saving 20-25% of cost), and that
 *"finetuning the visual backbone significantly degrades performance, especially
@@ -258,8 +258,8 @@ TextVQA `44.45 -> 38.33`, GQA `62.57 -> 59.65`.
 
 | Claim | Supports | Contradicts |
 |---|---|---|
-| Alignment stage unnecessary | Prismatic, Molmo | Eagle (pre-align helps *atop* unfreezing, `662.5 -> 672.3`), MM1.5, LLaVA-OV-1.5 |
-| Unfreeze the ViT | Cambrian-1 (*"benefits performance across all benchmarks"*), Eagle (`616.5 -> 674.2`), InternVL3 (*"trains every layer jointly"*) | Prismatic, NVLM-1.0 (InternViT-6B frozen through *every* stage at 72B) |
+| Alignment stage unnecessary | Prismatic, [Molmo](https://arxiv.org/abs/2409.17146) | [Eagle](https://arxiv.org/abs/2408.15998) (pre-align helps *atop* unfreezing, `662.5 -> 672.3`), [MM1.5](https://arxiv.org/abs/2409.20566), [LLaVA-OV-1.5](https://arxiv.org/abs/2509.23661) |
+| Unfreeze the ViT | [Cambrian-1](https://arxiv.org/abs/2406.16860) (*"benefits performance across all benchmarks"*), Eagle (`616.5 -> 674.2`), [InternVL3](https://arxiv.org/abs/2504.10479) (*"trains every layer jointly"*) | Prismatic, [NVLM-1.0](https://arxiv.org/abs/2409.11402) (InternViT-6B frozen through *every* stage at 72B) |
 
 **And Prismatic names its own suspect mechanism, untested by anyone:**
 
@@ -268,7 +268,7 @@ TextVQA `44.45 -> 38.33`, GQA `62.57 -> 59.65`.
 > train on to **language generation as a learning objective (vs. objectives that
 > encourage learning fine-grained perceptual features)**."*
 
-**PIVOT** (`2510.16333`) supplies exactly that missing arm: RL *"produces
+**PIVOT** ([`2510.16333`](https://arxiv.org/abs/2510.16333)) supplies exactly that missing arm: RL *"produces
 stronger and precisely localized visual representations"* at under 1% of
 vision-pretraining cost.
 
@@ -283,26 +283,26 @@ it **subsumes** the earlier freeze/unfreeze proposal (B2); the reference run is
 ## T2 — RL improves the answer without improving the seeing
 
 > **Update 2026-08-02 — held ★★★★, reframed as a cross-method perception audit.**
-> The original framing is partly scooped (`2602.12395` corroborated
-> Perception-R1's null mechanistically; `2603.01301` ran the sharpening
+> The original framing is partly scooped ([`2602.12395`](https://arxiv.org/abs/2602.12395) corroborated
+> Perception-R1's null mechanistically; [`2603.01301`](https://arxiv.org/abs/2603.01301) ran the sharpening
 > decomposition in the medical domain), and the PSR estimator was flagged broken
-> on 2026-07-30 (`2607.28336`: it "conflates perceptual insufficiency with
+> on 2026-07-30 ([`2607.28336`](https://arxiv.org/abs/2607.28336): it "conflates perceptual insufficiency with
 > reasoning difficulty"). **What is open and unclaimed:** roughly 50
 > perception-targeted RL methods exist against three 2026 diagnostics showing
-> gains survive image masking/corruption (`2605.09266`, `2604.03179`) — and
+> gains survive image masking/corruption ([`2605.09266`](https://arxiv.org/abs/2605.09266), [`2604.03179`](https://arxiv.org/abs/2604.03179)) — and
 > *nobody has run those controls on the methods claiming the fix*. The
 > diagnostic sub-lane is unowned (those papers have 3 / 0 / ~0 citations).
 > Inference-only on open weights, control arms are small 3B–7B GRPO runs,
 > ~256 GPU-h, ICLR-2027-feasible. See [[Direction-Reevaluation-2026-08]].
 
-**Perception-R1** (`2506.07218`): McNemar's test shows standard RLVR yields **no
+**Perception-R1** ([`2506.07218`](https://arxiv.org/abs/2506.07218)): McNemar's test shows standard RLVR yields **no
 statistically significant improvement in visual perception** (`p = 0.22-0.69`)
 despite rising headline accuracy — RL amplifies latent correctness rather than
-fixing perception. **PAPO** (`2507.06448`) confirms from the other side: **67% of
+fixing perception. **PAPO** ([`2507.06448`](https://arxiv.org/abs/2507.06448)) confirms from the other side: **67% of
 errors under standard GRPO are perception failures**; its fix cuts them 30.5%.
 
-Other numbered RL failure modes on record: VLM-R1's mAP-reward gaming (models
-spam redundant boxes); MM-Eureka's *"sudden training collapse"* at 32B with
+Other numbered RL failure modes on record: [VLM-R1](https://arxiv.org/abs/2504.07615)'s mAP-reward gaming (models
+spam redundant boxes); [MM-Eureka](https://arxiv.org/abs/2503.07365)'s *"sudden training collapse"* at 32B with
 reward reaching zero, and its finding that RL makes it *"difficult for the model
 to acquire new knowledge — improvements come from increasing the probability
 that the model generates correct answers."*
@@ -318,7 +318,7 @@ required is exactly what this program has spent months building. **~256 GPU-h.**
 > systematic study on filtering and mixing strategies in the VLM setting" (zero
 > surveys in its 347 references; 13 unresolved LaTeX labels including the
 > promised multi-axis mixture appendix — that analysis is unwritten). **Live
-> contradiction to adjudicate:** Shukor `2507.09404` (mixture scaling laws
+> contradiction to adjudicate:** Shukor [`2507.09404`](https://arxiv.org/abs/2507.09404) (mixture scaling laws
 > extrapolate) versus DataComp-VLM's measured rank inversion (caption-heavy wins
 > at 1B×6.25B, instruction-heavy at 2B/4B×25B+) — neither cites the other on it.
 > Public checkpoints at four scales turn a ~25,000 H100-h study into ~500.
@@ -327,39 +327,39 @@ required is exactly what this program has spent months building. **~256 GPU-h.**
 > small-proxy mixture search. Watch: the consortium runs this as a competition.
 > See [[Direction-Reevaluation-2026-08]].
 
-**Filtering is dead; mixing is alive.** DataComp-VLM (`2606.28551`) verbatim:
+**Filtering is dead; mixing is alive.** DataComp-VLM ([`2606.28551`](https://arxiv.org/abs/2606.28551)) verbatim:
 *"no quality filter we tested produces a robust and significant improvement"* —
 the best filter gives `+0.8pp`. But **mixture** at 70% instruction-tuning : 10%
 caption gives **`+5.4pp`**, and *"a 4B model trained for 100B tokens beats an 8B
-model trained on FineVision for 200B tokens."*
+model trained on [FineVision](https://arxiv.org/abs/2510.17269) for 200B tokens."*
 
-**20/20 VLM** (`2605.11405`): curation alone **at constant compute** (25B tokens,
+**20/20 VLM** ([`2605.11405`](https://arxiv.org/abs/2605.11405)): curation alone **at constant compute** (25B tokens,
 2B params, single stage) gives **`+11.7pp`** on a 20-benchmark suite and
-**`+57.1pp` on grounding** — parity with InternVL3.5-2B at ~17x less compute.
+**`+57.1pp` on grounding** — parity with [InternVL3.5-2B](https://arxiv.org/abs/2508.18265) at ~17x less compute.
 
-Corroborating nulls: MM1.5 *"did not find conclusive evidence that high-quality
+Corroborating nulls: [MM1.5](https://arxiv.org/abs/2409.20566) *"did not find conclusive evidence that high-quality
 synthetic captions improved performance over the arguably simpler OCR data"*;
-and `2405.11850` reports SEED-Bench **dropping 3.3 points** as pretraining data
+and [`2405.11850`](https://arxiv.org/abs/2405.11850) reports [SEED-Bench](https://arxiv.org/abs/2307.16125) **dropping 3.3 points** as pretraining data
 scales 20M to 100M. Constant-compute mixture design at 2-4B: **~400 GPU-h.**
 
 ## Also surfaced
 
 **Connector design is a near non-factor** — MM1: *"the vision-language connector
-design is of comparatively negligible importance"*; Eagle finds plain channel
+design is of comparatively negligible importance"*; [Eagle](https://arxiv.org/abs/2408.15998) finds plain channel
 concatenation (`690.4`) beats deformable attention (`674.3`). One sharp
-exception: Cambrian-1's Perceiver-resampler collapse on OCR&Chart, `27.1` vs
+exception: [Cambrian-1](https://arxiv.org/abs/2406.16860)'s Perceiver-resampler collapse on OCR&Chart, `27.1` vs
 `55.5`. **But none of those ablations measured compositional transfer**, and
 C2LIP's `+6.8` encoder gain shrinking to `+0.4` through the connector, plus
-CLIC's verbatim *"a detailed study of this is left for future work"*, remain
+[CLIC](https://arxiv.org/abs/2505.24424)'s verbatim *"a detailed study of this is left for future work"*, remain
 open.
 
 **Verification item:** Prismatic's p-values sit in figure captions that do not
 render in the arXiv HTML; two independent reads returned `0.00381` and `0.00407`.
 **Confirm from the PDF before quoting.**
 
-**Competitors on the clock:** DINORankCLIP (May 2026, same hardware class,
-objective lane); Bottleneck Tokens and MoCa (embedding lane resets roughly every
-two months); CABS (CVPR 2026, holds the concept-annotation data).
+**Competitors on the clock:** [DINORankCLIP](https://arxiv.org/abs/2605.06592) (May 2026, same hardware class,
+objective lane); [Bottleneck Tokens](https://arxiv.org/abs/2604.11095) and [MoCa](https://arxiv.org/abs/2506.23115) (embedding lane resets roughly every
+two months); [CABS](https://arxiv.org/abs/2511.20643) (CVPR 2026, holds the concept-annotation data).
 
 ## T4 — anneal-window data allocation *(strongest paper; three sweeps converged)*
 
@@ -367,19 +367,19 @@ two months); CABS (CVPR 2026, holds the concept-annotation data).
 > preserved as record, but the central premise — "there is no method paper for
 > anneal-window data selection" — was **false when written**.
 > [[Direction-Reevaluation-2026-08]] found the lane scooped three times:
-> **DiReCT** (`2605.31175`, 29 May 2026) contains our exact motivation paragraph
+> **DiReCT** ([`2605.31175`](https://arxiv.org/abs/2605.31175), 29 May 2026) contains our exact motivation paragraph
 > ("effectively selecting training data during this phase remains a key
 > challenge... lack a principled grounding") at Llama-3-8B/300B with theory and
-> code; **QAFSL** (`2605.25698`) owns "decay reduces update intensity exactly
+> code; **QAFSL** ([`2605.25698`](https://arxiv.org/abs/2605.25698)) owns "decay reduces update intensity exactly
 > when high-quality data becomes available" with +1.70 over WSD at 15B-MoE; and
-> **MIRA** (`2605.30288`) owns mid-training-selection-is-distinct. DiReCT had
+> **MIRA** ([`2605.30288`](https://arxiv.org/abs/2605.30288)) owns mid-training-selection-is-distinct. DiReCT had
 > been public for ~8 weeks when the July sweep declared the lane empty.
 > Compounding it: the small-scale moat is now citable *against* us
-> (`2606.07597`: forked-decay extrapolation "frequently fails" when high-quality
+> ([`2606.07597`](https://arxiv.org/abs/2606.07597): forked-decay extrapolation "frequently fails" when high-quality
 > data repeats — our exact protocol); the object may dissolve entirely (WSM,
-> WSO and `2604.13627` independently converge on less or no decay); the
+> WSO and [`2604.13627`](https://arxiv.org/abs/2604.13627) independently converge on less or no decay); the
 > schedule-coupled subgenre has **zero top-venue acceptances**; and
-> Compute-Constrained Data Selection (ICLR'25) shows gradient-class selectors —
+> [Compute-Constrained Data Selection](https://arxiv.org/abs/2410.16208) (ICLR'25) shows gradient-class selectors —
 > T4's lever — are almost never compute-optimal, so any survivor must carry its
 > cost-aware baseline curve.
 >
@@ -395,14 +395,14 @@ two months); CABS (CVPR 2026, holds the concept-annotation data).
 
 **The hole.** arXiv sweeps for `"annealing data"`, `"decay phase"`,
 `"cooldown phase"`, `"annealing phase"` in cs.CL 2025-2026 return **essentially
-nothing** beyond OLMo 2's system report. **The optimizer side of the cooldown is
-studied** (`2508.01483`, WSM `2507.17634`, `2603.16127`); **the data side is
+nothing** beyond [OLMo 2](https://arxiv.org/abs/2501.00656)'s system report. **The optimizer side of the cooldown is
+studied** ([`2508.01483`](https://arxiv.org/abs/2508.01483), WSM [`2507.17634`](https://arxiv.org/abs/2507.17634), [`2603.16127`](https://arxiv.org/abs/2603.16127)); **the data side is
 not.** There is no method paper for anneal-window data selection.
 
-So the heuristic every frontier lab relies on — MiniCPM, OLMo 2 and Llama 3 all
+So the heuristic every frontier lab relies on — MiniCPM, OLMo 2 and [Llama 3](https://arxiv.org/abs/2407.21783) all
 dumping high-quality data into the decay phase — **has no method behind it.**
 
-**The effect size is the largest in either survey.** PRISM: mid-training data
+**The effect size is the largest in either survey.** [PRISM](https://arxiv.org/abs/2603.17074): mid-training data
 choice is worth **`+17` to `+28` GPQA-Diamond realized during RL**, while
 changing the RL mixture is worth **under 2 points**. Mid-training restructures
 over 90% of weights; RL touches about 5%. The field pours effort into RL recipes
@@ -412,21 +412,21 @@ while the data entering the anneal window matters an order of magnitude more.
 decay-phase value **at the decay-phase learning rate** rather than the peak LR.
 The LR enters the influence estimate linearly and everyone currently ignores it.
 
-**Baselines to beat** (Qwen2.5-1.5B arch, 30B DCLM-Baseline, core avg over
-MMLU/ARC/CSQA, from `2511.18903`): WSD+uniform `46.21`, WSD+ascending `45.45`,
+**Baselines to beat** (Qwen2.5-1.5B arch, 30B [DCLM-Baseline](https://arxiv.org/abs/2406.11794), core avg over
+MMLU/ARC/CSQA, from [`2511.18903`](https://arxiv.org/abs/2511.18903)): WSD+uniform `46.21`, WSD+ascending `45.45`,
 EMA+ascending `46.95`, ConstLR+ascending `47.02`. Note what they did — they
 **fixed the schedule to the data** (optimal curriculum end-LR `1e-3` versus
 `1e-5` for uniform). The opportunity is to **fix the data to the schedule**, and
 their own future work asks for exactly that: *"a more systematic recipe for the
 strategy combinations."*
 
-**A live contradiction resolved as a bonus axis.** `2603.16127`
+**A live contradiction resolved as a bonus axis.** [`2603.16127`](https://arxiv.org/abs/2603.16127)
 (Warmup-Stable-Only, 1B and 8B) finds **no-decay consistently beats decay after
 SFT**, even when decay wins on pretraining loss — decay drives sharper minima.
-That is in direct tension with `2511.18903`. Controlling *what data is in the
+That is in direct tension with [`2511.18903`](https://arxiv.org/abs/2511.18903). Controlling *what data is in the
 window* adjudicates it.
 
-**Timing is non-negotiable, and that is measured.** `2510.14865` (Pythia
+**Timing is non-negotiable, and that is measured.** [`2510.14865`](https://arxiv.org/abs/2510.14865) ([Pythia](https://arxiv.org/abs/2304.01373)
 70M-1B, 128B C4 tokens): code at **80% weight injected at 12B tokens is fine;
 the same 80% at 105B tokens degrades worse than 10%**. Late introduction outside
 the plasticity window cannot be compensated by more weight later.
@@ -436,7 +436,7 @@ trunk shareable: **train the stable phase once** (20B tokens at 1B is about 256
 H100-hours), **then fork K decay phases** (5B each, about 64 hours). Twelve arms
 is roughly **1,020 H100-hours**, and **every comparison is paired.** That is
 worth more than the method contribution itself — RegMix-D publicly concedes
-**single-seed target runs** as a limitation, and PolyPythias (45 runs, 9 seeds x
+**single-seed target runs** as a limitation, and [PolyPythias](https://arxiv.org/abs/2503.09543) (45 runs, 9 seeds x
 5 sizes) shows seed effects are real.
 
 ## Crowding verdicts from the same sweep
@@ -445,7 +445,7 @@ worth more than the method contribution itself — RegMix-D publicly concedes
 > selection criterion behind this list was corrected in
 > [[Direction-Reevaluation-2026-08]]: *a topic is not filtered out by being
 > hot — only by having fewer remaining opportunities.* The specific verdicts
-> below still carry their evidence (Aioli's null, the 22 mixers, the
+> below still carry their evidence ([Aioli](https://arxiv.org/abs/2411.05735)'s null, the 22 mixers, the
 > repeat-placement gap), but "SATURATED" and "cleanest hole" labels derived from
 > paper counts should not be trusted on their own. The anneal/decay entry in
 > particular was wrong; see the T4 downgrade above.
@@ -460,7 +460,7 @@ worth more than the method contribution itself — RegMix-D publicly concedes
 - **Anneal/decay window: the cleanest hole.** One eight-month-old single-lab
   neighbour.
 - **Repetition/replay: under-crowded**, and **nobody studies repeat *placement***.
-  `2605.12715` (over 2,000 runs) finds mixture training tolerates **15-20
+  [`2605.12715`](https://arxiv.org/abs/2605.12715) (over 2,000 runs) finds mixture training tolerates **15-20
   repetitions** of a scarce corpus, far above the 4-epoch single-source rule.
 - **Trap:** do not build on multi-token prediction at 1B — Meta's gains are
   `+12%` HumanEval at **13B**, explicitly *"increasingly useful for larger model
@@ -469,7 +469,7 @@ worth more than the method contribution itself — RegMix-D publicly concedes
 ## Two standing caveats for any training study here
 
 1. **Budget two scales in everything.** Ranking inversion is now documented in
-   post-training algorithms, optimizers **and** mixtures. DataDecide (1,050
+   post-training algorithms, optimizers **and** mixtures. [DataDecide](https://arxiv.org/abs/2504.11393) (1,050
    models, 25 corpora x 14 sizes x 3 seeds): ranking at 150M predicts the
    1B-best corpus in only **~80%** of pairwise comparisons, and **none of eight
    scaling-law baselines beats naive single-small-scale prediction.** Apple's

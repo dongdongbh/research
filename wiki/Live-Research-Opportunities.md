@@ -42,12 +42,12 @@ failure independent of the bar problem. It is now tested, and it holds up.
 **50+ distinct named benchmarks** enumerated. `"video generation"` +
 `"meta-evaluation"` returns **one** paper, and it is a hallucination detector,
 not a meta-evaluation. **No cross-benchmark convergent-validity study exists in
-video.** The machinery exists on the text side only — BenchBench (`2407.13696`),
-Benchmark-squared (`2601.03986`), *When Benchmarks are Targets* (`2402.01781`).
+video.** The machinery exists on the text side only — BenchBench ([`2407.13696`](https://arxiv.org/abs/2407.13696)),
+Benchmark-squared ([`2601.03986`](https://arxiv.org/abs/2601.03986)), *When Benchmarks are Targets* ([`2402.01781`](https://arxiv.org/abs/2402.01781)).
 
 **Three papers now assert the construct is broken; none measures it at scale.**
-`2601.15533` (visual conflation) and `2606.15032` (L0-L7 decision-centric
-hierarchy) are pure position papers with no experiments. `2607.07196`
+[`2601.15533`](https://arxiv.org/abs/2601.15533) (visual conflation) and [`2606.15032`](https://arxiv.org/abs/2606.15032) (L0-L7 decision-centric
+hierarchy) are pure position papers with no experiments. [`2607.07196`](https://arxiv.org/abs/2607.07196)
 (admissibility ladder) adds an **n=2 existence proof** — the model ranking higher
 on visual quality ranks lower on action-following.
 
@@ -59,7 +59,7 @@ on visual quality ranks lower on action-following.
 > the verifiers are unaudited" (Karpathy, Finn, Neubig, Wei, D. Zhou,
 > Sutskever, Bengio all point at it). At least five released judge/evaluator
 > systems have **zero independent validity audits** — world-model evaluators,
-> SC3-Eval, DreamGen Bench's VLM judge, DriveJudge, VLM reward judges — and the
+> [SC3-Eval](https://arxiv.org/abs/2606.18610), [DreamGen Bench](https://arxiv.org/abs/2505.12705)'s VLM judge, DriveJudge, VLM reward judges — and the
 > owning labs structurally cannot self-audit. **One pre-registered methodology
 > (confound battery, gameability, OOD policies, judge-swap reordering), many
 > targets: this is a program, not a paper**, and it is a new top-tier candidate
@@ -68,9 +68,9 @@ on visual quality ranks lower on action-following.
 > citations), and name at pre-registration time the **method** paper the
 > diagnosis unlocks.
 
-**The concrete finding, verifiable from the paper.** VBench-2.0's human-alignment
+**The concrete finding, verifiable from the paper.** [VBench-2.0](https://arxiv.org/abs/2503.21755)'s human-alignment
 claim is computed **at the model level over four models** (Sora, Kling 1.6,
-HunyuanVideo, CogVideoX-1.5). A Spearman correlation over `n=4` can only take
+[HunyuanVideo](https://arxiv.org/abs/2412.03603), [CogVideoX-1.5](https://arxiv.org/abs/2408.06072)). A Spearman correlation over `n=4` can only take
 values in `{0, ±0.4, ±0.8, ±1.0}`, and `rho = 1.0` carries `p = 0.083` — **not
 significant at α=0.05**. So on the natural reading, no dimension of the field's
 flagship video benchmark demonstrates statistically significant human alignment.
@@ -78,18 +78,18 @@ Worse, the reported values (99.31%, 95.46%, 81.70%) are **not in that discrete
 set**, so the aggregation is under-specified in the paper and cannot be
 reproduced from its description. Either way it is a finding.
 
-The pattern recurs: WorldJen reports `rho = 1.000` (a symptom of tiny `n`, not a
-good judge); MSVBench 94.4%, MSAVBench 91.5%, V2V-Bench 0.905, all model-level
-aggregates over small model sets; **WorldModelBench calls its judge
-"human-aligned" and reports no agreement statistic at all**; EWMBench and
-WorldScore report none.
+The pattern recurs: [WorldJen](https://arxiv.org/abs/2605.03475) reports `rho = 1.000` (a symptom of tiny `n`, not a
+good judge); [MSVBench](https://arxiv.org/abs/2602.23969) 94.4%, [MSAVBench](https://arxiv.org/abs/2605.20183) 91.5%, [V2V-Bench](https://arxiv.org/abs/2606.05665) 0.905, all model-level
+aggregates over small model sets; **[WorldModelBench](https://arxiv.org/abs/2502.20694) calls its judge
+"human-aligned" and reports no agreement statistic at all**; [EWMBench](https://arxiv.org/abs/2505.09694) and
+[WorldScore](https://arxiv.org/abs/2504.00983) report none.
 
 Meanwhile direct evidence says VLM judges are weak at exactly this task: TRAVL
-(`2510.07550`) finds they need trajectory-aware fine-tuning to judge physics
-implausibility; Physion-Eval (`2603.19607`) finds expert humans catch physics
+([`2510.07550`](https://arxiv.org/abs/2510.07550)) finds they need trajectory-aware fine-tuning to judge physics
+implausibility; Physion-Eval ([`2603.19607`](https://arxiv.org/abs/2603.19607)) finds expert humans catch physics
 glitches in **83.3-93.5%** of generated videos where VLMs do not.
 
-**Why it is cheap.** VideoPhy-2 released **~102,000 human annotations**, the
+**Why it is cheap.** [VideoPhy-2](https://arxiv.org/abs/2503.06800) released **~102,000 human annotations**, the
 per-sample auto-eval scores, and an **open-weight judge**. You can meta-evaluate
 a judge **without generating a single video**.
 
@@ -97,22 +97,22 @@ a judge **without generating a single video**.
 labels and report the gap against the published model-level correlations.
 (b) Power analysis — the `n` required for each published alignment claim to be
 significant, with every claim re-plotted with its real interval. (c) Judge-swap
-sensitivity — hold videos and prompts fixed, swap Qwen2.5-VL / InternVL /
+sensitivity — hold videos and prompts fixed, swap [Qwen2.5-VL](https://arxiv.org/abs/2502.13923) / InternVL /
 Cosmos-Reason2 / VideoCon-Physics / a closed API, and measure leaderboard
 movement. Add a closed-API drift check by rescoring the same videos months apart.
 
 **Borrowable machinery, unapplied to video:** MT and summarization
-meta-evaluation — *Guardians of the MT Meta-Evaluation* (`2408.13831`),
+meta-evaluation — *Guardians of the MT Meta-Evaluation* ([`2408.13831`](https://arxiv.org/abs/2408.13831)),
 system-level versus segment-level correlation, and *The Autocorrelation Blind
-Spot* (`2604.14414`), which found 42% of turn-level findings fail under
+Spot* ([`2604.14414`](https://arxiv.org/abs/2604.14414)), which found 42% of turn-level findings fail under
 cluster-robust correction.
 
 **Cost: 1-2 GPUs, a few days.**
 
 ## A2 — do world-model benchmarks measure the same thing?
 
-Run 6-8 **existing public** benchmarks (VBench-2.0, WorldScore, VideoPhy-2,
-WorldModelBench, EWMBench, PhyWorldBench, Physics-IQ-Verified) over **one shared
+Run 6-8 **existing public** benchmarks ([VBench-2.0](https://arxiv.org/abs/2503.21755), [WorldScore](https://arxiv.org/abs/2504.00983), [VideoPhy-2](https://arxiv.org/abs/2503.06800),
+[WorldModelBench](https://arxiv.org/abs/2502.20694), [EWMBench](https://arxiv.org/abs/2505.09694), [PhyWorldBench](https://arxiv.org/abs/2507.13428), [Physics-IQ-Verified](https://arxiv.org/abs/2606.18943)) over **one shared
 set of 10-15 open models under a single frozen generation protocol** — the thing
 no leaderboard controls, since each uses different resolutions, lengths, seeds
 and prompt upsampling. Report pairwise rank correlations with bootstrap
@@ -125,7 +125,7 @@ tau ~ 0.5, the field's aggregate ranking is noise.
 
 **Cost: 1-3 weeks on 8 GPUs**, generation-dominated.
 
-**Closest competitor, and it is beatable.** WorldArena (`2602.08971`) correlates
+**Closest competitor, and it is beatable.** WorldArena ([`2602.08971`](https://arxiv.org/abs/2602.08971)) correlates
 **its own new composite** against downstream utility at `n=14` models and **two**
 manipulation tasks, reporting `r = 0.360` for action planning without confidence
 intervals. At `n=14`, `r=0.36` has a 95% interval of roughly `[-0.21, 0.75]` —
@@ -134,7 +134,7 @@ shipped 2.0 three months after 1.0.
 
 ## A3 — how much of a closed-loop score is the extractor?
 
-KineBench (`2607.19876`) *asserts* that inverse-dynamics models are "brittle to
+KineBench ([`2607.19876`](https://arxiv.org/abs/2607.19876)) *asserts* that inverse-dynamics models are "brittle to
 data outside their training distribution," creating attribution ambiguity
 between world-model error and extractor error — then routes around it with
 IDM-free 6D-pose extraction. **It never quantifies the attribution.** Evaluate
@@ -148,8 +148,8 @@ OOD distance. Deliverable: an attribution-corrected protocol.
 evaluation platform with 30+ environments and planner baselines — the most
 useful single piece of infrastructure here. Open action-conditioned models:
 **Cosmos3-Edge** (4B, OpenMDW-1.1, ungated, 23.9 s per 480p/189-frame clip on
-one H100), **Matrix-Game-2.0** (1.8B, MIT, 25 FPS streaming), **V-JEPA 2-AC**
-(MIT). Avoid Wan 2.5 (API-only), Open-Sora-Plan v1.5 (NPU-only), and
+one H100), **[Matrix-Game-2.0](https://arxiv.org/abs/2508.13009)** (1.8B, MIT, 25 FPS streaming), **[V-JEPA 2-AC](https://arxiv.org/abs/2506.09985)**
+(MIT). Avoid Wan 2.5 (API-only), [Open-Sora-Plan v1.5](https://arxiv.org/abs/2412.00131) (NPU-only), and
 Cosmos-Predict2.5 (deprecated, gated, 870 s per video).
 
 ---
@@ -166,12 +166,12 @@ run**, or **a mechanism they observed but could not explain**.
 
 > **DOWNGRADED 2026-08-02: ★★★★ → ★★★.** Per
 > [[Direction-Reevaluation-2026-08]], the paper quoted below as the *opening*
-> is also the paper that **closes** it: `2604.16027` (Karouzos, Tan, Aletras,
+> is also the paper that **closes** it: [`2604.16027`](https://arxiv.org/abs/2604.16027) (Karouzos, Tan, Aletras,
 > 2026-04-17) already publishes the headline — "collapse is embedded in the
 > model weights by training data, not imposed by the generation format" — and
 > its authors **named the causal crossover as their own next step**, so the
 > interventional version below is claimed in intent by the group best positioned
-> to run it. Apple/CMU (`2605.09995`) added an untested scale axis ("worsens
+> to run it. Apple/CMU ([`2605.09995`](https://arxiv.org/abs/2605.09995)) added an untested scale axis ("worsens
 > with scale"). The compute estimate here was also low: a full SFT/DPO/RLVR
 > crossover with a scale arm **exceeds 400 GPU-h**, not "1-7B on 8 GPUs" as a
 > weekend job. The *area* remains opportunity-rich (~10 papers/month, no
@@ -180,10 +180,10 @@ run**, or **a mechanism they observed but could not explain**.
 > is open at every level"), but this **specific** question is closed and any
 > entry would now be adjudication-framed and contested.
 
-*Where does output diversity collapse in post-training?* (`2604.16027`, Apr 2026)
+*Where does output diversity collapse in post-training?* ([`2604.16027`](https://arxiv.org/abs/2604.16027), Apr 2026)
 states verbatim: *"No existing study isolates the role of the training method
 from the training data, or the generation format from the model weights."* Their
-own study was **observational** — read off released Olmo 3 checkpoints. Nobody
+own study was **observational** — read off released [Olmo 3](https://arxiv.org/abs/2512.13961) checkpoints. Nobody
 has run the interventional version.
 
 **Why it is unusually tractable:** Olmo 3 releases open weights **and open
@@ -194,7 +194,7 @@ from final-answer diversity. **1-7B on 8 GPUs.** Low-medium crowding.
 
 ## B2 — how do visual attention sinks emerge during training?
 
-*See What You Are Told* (`2503.03321`, ICLR 2025, 139 citations): *"how visual
+*See What You Are Told* ([`2503.03321`](https://arxiv.org/abs/2503.03321), ICLR 2025, 139 citations): *"how visual
 attention sinks emerge during the training process remain open questions."* The
 exploitation side exploded (~20 follow-ups); **no paper among 100 citing works
 addresses training-time emergence.**
@@ -206,7 +206,7 @@ them. **Either answer is publishable.** 7B on 8 GPUs.
 
 ## B3 — RLVR measurement controls the authors skipped for compute
 
-*Hidden Costs and Measurement Gaps of RLVR* (`2509.21882`) states they excluded
+*Hidden Costs and Measurement Gaps of RLVR* ([`2509.21882`](https://arxiv.org/abs/2509.21882)) states they excluded
 reward-component ablations *"because they require additional training runs"*.
 Take three celebrated RLVR gains, re-run with and without an
 abstention/calibration reward term under strict budget parity and multiple seeds,
@@ -215,12 +215,12 @@ on 8xH100. RLVR is crowded; the **measurement-controls** framing is not.
 
 ## Others worth knowing
 
-Speculative decoding with large-vocabulary drafters (`2502.05202`, ICML 2025 —
+Speculative decoding with large-vocabulary drafters ([`2502.05202`](https://arxiv.org/abs/2502.05202), ICML 2025 —
 the authors explicitly propose it as future work, and released a benchmark
-harness); in-domain versus open-domain SAE training data (`2501.06254`, ICLR
+harness); in-domain versus open-domain SAE training data ([`2501.06254`](https://arxiv.org/abs/2501.06254), ICLR
 2025, partially answered in their own Appendix B); harness-level metrics
-separating agent from scaffold (`2605.18747` has a literal "Open Problems"
-section); self-correction-aware long-horizon metrics (`2509.09677`).
+separating agent from scaffold ([`2605.18747`](https://arxiv.org/abs/2605.18747) has a literal "Open Problems"
+section); self-correction-aware long-horizon metrics ([`2509.09677`](https://arxiv.org/abs/2509.09677)).
 
 ---
 
@@ -236,7 +236,7 @@ constraints validated within 10% on real GPUs, plus the Ye/Jaillet/Simchi-Levi
 competitive-analysis line). And **design of experiments for prompt/scaffold
 search is NOT empty** — four adjacent papers landed in ten weeks, including a
 full `2^5` factorial over scaffold components with exact Shapley values
-(`2605.05716`) and **CAFE** (`2607.10380`, **11 July 2026**), which ships
+([`2605.05716`](https://arxiv.org/abs/2605.05716)) and **CAFE** ([`2607.10380`](https://arxiv.org/abs/2607.10380), **11 July 2026**), which ships
 factorial design plus mixed-effects variance attribution for compound-AI
 pipelines as a package.
 
@@ -275,7 +275,7 @@ change is plausible in a way "report error bars" is not.
 **Differentiation is the risk, and it is tight.** CAFE is two weeks old and uses
 mixed-effects models for **variance attribution**, not whole-plot **error
 structure**. That distinction is real but narrow; the intro must state it in one
-sentence and a reviewer will probe it. `2605.05716`'s own **183/325 submodularity
+sentence and a reviewer will probe it. [`2605.05716`](https://arxiv.org/abs/2605.05716)'s own **183/325 submodularity
 violations** are evidence that the field's universal one-factor-at-a-time
 protocol fails — which the paper never says.
 
@@ -287,7 +287,7 @@ paper discusses; and **fractionation at k >= 10**, where the one existing full
 factorial stops at k=5, exactly where fractionation becomes necessary and real
 scaffolds have 10-20 components.
 
-**Template to imitate:** Tang, Lin & Sahni, **KDD 2024** (`2311.14698`) —
+**Template to imitate:** Tang, Lin & Sahni, **KDD 2024** ([`2311.14698`](https://arxiv.org/abs/2311.14698)) —
 fractional factorial designs for DoorDash policy, 5% incremental profit at 67%
 lower cost. Same argument shape, different domain.
 
@@ -311,7 +311,7 @@ adjudicates a live ICLR 2026 disagreement.
 ## C4 — fork-join tail latency for agent fan-out
 
 Verified empty across four indexes (`fork-join` + LLM: 3 hits; OpenAlex 2022+
-fork-join/straggler: 0; OpenReview: 12, none LLM). **TraceLab** (`2606.30560`,
+fork-join/straggler: 0; OpenReview: 12, none LLM). **TraceLab** ([`2606.30560`](https://arxiv.org/abs/2606.30560),
 three weeks old, ~430k tool calls from ~4,300 coding-agent sessions) reports
 heavily-tailed tool calls and **explicitly recommends increasing fan-out
 parallelism with no model of what that does to the tail.**
@@ -325,7 +325,7 @@ twist: prefix-cache sharing makes a replica far cheaper than a classical
 datacenter replica, so the optimal redundancy level moves.
 
 **Avoid in this cluster:** stability/throughput queueing for serving (owned);
-per-query adaptive stopping (saturated and rigorous — ConSol is a literal Wald
+per-query adaptive stopping (saturated and rigorous — [ConSol](https://arxiv.org/abs/2503.17587) is a literal Wald
 SPRT, CITE uses e-processes with matching minimax lower bounds); plain IRT; PPI
 for LLM eval; signal detection theory for calibration.
 
@@ -400,7 +400,7 @@ alternative analysis rather than an exhortation.
 **SCOOPED 2026-07-26.** My "live contradiction" was already adjudicated in
 print — **by one of the two papers I named.**
 
-Biegert, Allen, Alber & Lerch (`2606.21170`, KIT/Lerch group — note Gneiting is
+Biegert, Allen, Alber & Lerch ([`2606.21170`](https://arxiv.org/abs/2606.21170), KIT/Lerch group — note Gneiting is
 *not* an author) explicitly cite Zhang et al., diagnose the discrepancy, and
 publish the mechanism, verbatim:
 
@@ -424,9 +424,9 @@ proper score by an outcome-dependent weight yields an improper score
 titled *"Forecaster's dilemma."* The study would rediscover a published theorem.
 
 Prior adjudication is also crowded and predates both: Olivetti & Messori (GMD
-2024) already used a weighted MSE; Loveday & Hertneky (`2510.25045`) do
+2024) already used a weighted MSE; Loveday & Hertneky ([`2510.25045`](https://arxiv.org/abs/2510.25045)) do
 threshold-weighted scoring independently; Pasche et al. (AIES 2025) is Engelke's
-*own* group; and **ExtremeWeatherBench** (McGovern et al., Brightband + NCAR +
+*own* group; and **[ExtremeWeatherBench](https://github.com/brightbandtech/ExtremeWeatherBench)** (McGovern et al., Brightband + NCAR +
 ECMWF, 329 cases, 724 commits) is in preparation.
 
 **My error, again the same one.** I called it a "live contradiction" without
@@ -434,7 +434,7 @@ checking whether the later paper addressed the earlier. Reading from framing
 rather than method sections — the third instance this session.
 
 **What survives, workshop-sized and solo-feasible:** (a) out-of-sample validity
-of twPCRPS at record thresholds — EasyUQ is fitted **in-sample** with `n = 702`
+of twPCRPS at record thresholds — [EasyUQ](https://arxiv.org/abs/2212.08376) is fitted **in-sample** with `n = 702`
 per grid point, so the tail at `q = 1` rests on a handful of observations, and
 nobody has done the stability or conformal-IDR check; (b) **ground truth as a
 first-class factor using METAR station observations**, which sit in the public
@@ -449,21 +449,21 @@ credible at more than workshop scale.
 > **UPGRADED 2026-08-02: ★★ → ★★★★, and the "mostly closed" headline is wrong.**
 > [[Direction-Reevaluation-2026-08]] re-ran this lane by remaining opportunity
 > rather than by control-paper count. The finding: the ~13 control papers in 24
-> months each closed **one sliver** (`2605.15221` is circle packing at n=26 only,
+> months each closed **one sliver** ([`2605.15221`](https://arxiv.org/abs/2605.15221) is circle packing at n=26 only,
 > and concedes it "lacks comparison to domain-specific classical optimization
 > methods") while ~20 new application domains opened in the same window —
 > "automated heuristic design" abstracts run 1 / 1 / 5 / **17** for
 > 2023 / 2024 / 2025 / Jan–Jul 2026, a **claims-to-controls ratio of ~10–15:1**.
 > The section below already identified the one load-bearing survivor and it is
 > the right one: **the cost-normalized LLM-versus-classical frontier does not
-> exist** (three targeted searches returned zero results; only LLaMEA, the
+> exist** (three targeted searches returned zero results; only [LLaMEA](https://arxiv.org/abs/2405.20132), the
 > proposer, ever ran against CMA-ES/DE). Two paper shapes now: **(a)** the
 > cost-crossover frontier — tokens plus CPU in one currency, testing whether
-> landscape ruggedness predicts the crossover, with CostAda (`2607.26828`) for
-> the cost formalism and BLADE for the harness; **(b)** a **novelty audit** —
+> landscape ruggedness predicts the crossover, with CostAda ([`2607.26828`](https://arxiv.org/abs/2607.26828)) for
+> the cost formalism and [BLADE](https://arxiv.org/abs/2504.20183) for the harness; **(b)** a **novelty audit** —
 > grading rediscovery versus recombination versus genuinely new, against the
-> 19× OOD degradation RAISE measured. **Zero papers exist on (b).** DeepMind's
-> own `2602.16928` supplies the motivating quote: after distillation "the true
+> 19× OOD degradation [RAISE](https://arxiv.org/abs/2606.31801) measured. **Zero papers exist on (b).** DeepMind's
+> own [`2602.16928`](https://arxiv.org/abs/2602.16928) supplies the motivating quote: after distillation "the true
 > driver of generalization lies in a minimal algorithmic core."
 > **Caveats before committing:** van Stein/Bäck and DeepMind are adjacent, and
 > the re-gate was arXiv-only — **check GECCO and PPSN proceedings**, which are
@@ -471,19 +471,19 @@ credible at more than workshop scale.
 
 **Three control papers landed between February and July 2026, one six days ago.**
 
-- **Gideoni, Risi & Gal** (`2602.16805`, Feb 2026), *Simple Baselines are
+- **Gideoni, Risi & Gal** ([`2602.16805`](https://arxiv.org/abs/2602.16805), Feb 2026), *Simple Baselines are
   Competitive with Code Evolution*: two nulls with *"no explicit fitness-based
   selection,"* budget-matched on API dollars, function evaluations **and**
   wall-clock. Result: sequential conditioned sampling *"matches or exceeds
-  AlphaEvolve on 4/9 problems."*
-- **Gupta et al.** (`2607.18235`, Berkeley/MIT, **posted six days ago**):
+  [AlphaEvolve](https://arxiv.org/abs/2506.13131) on 4/9 problems."*
+- **Gupta et al.** ([`2607.18235`](https://arxiv.org/abs/2607.18235), Berkeley/MIT, **posted six days ago**):
   *"more than 3.1 million LLM rollouts across 30 harnesses... All comparisons
   are budget matched by rollout counts,"* with bootstrap tests against a
   repeated Sequential BoN baseline and Holm correction. No harness beats the
   simple baseline; *"more complex OpenEvolve-style"* configurations do worst.
-- **Quan, Sun & López-Ibáñez** (`2509.02297`), 3D packing — **inside the AHD
+- **Quan, Sun & López-Ibáñez** ([`2509.02297`](https://arxiv.org/abs/2509.02297)), 3D packing — **inside the AHD
   lineage**, with a true null: *"the scoring function is replaced by a constant
-  value, making the selection purely random."* EoH scores `777.3 ± 4.2` against
+  value, making the selection purely random."* [EoH](https://arxiv.org/abs/2401.02051) scores `777.3 ± 4.2` against
   S-GRASP `762`, ZHU `691`, exact `689`. The LLM heuristic beats First-Fit and
   loses to everything else.
 
@@ -505,7 +505,7 @@ EoH/ReEvo TSP/BPP/CVRP benchmark set with a classical configurator.** Frame as
 3-6 months.**
 
 **One genuinely open alternative:** evaluation hacking in AHD has been measured
-**exactly once** — Vesper (`2605.15221`) reports an 8.2% hack rate on **two
+**exactly once** — Vesper ([`2605.15221`](https://arxiv.org/abs/2605.15221)) reports an 8.2% hack rate on **two
 runs**, with no non-LLM control and no taxonomy, plus the striking and wholly
 unreplicated claim that **more capable models hack more**. Cheap, uncontested.
 

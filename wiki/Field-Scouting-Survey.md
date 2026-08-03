@@ -60,14 +60,14 @@ plus meta-evaluation or metric validity. Roughly three hundred groups have
 built a world-model benchmark and essentially nobody has asked whether any of
 them agree with each other or predict anything downstream.
 
-Industry owns the models completely (NVIDIA Cosmos, DeepMind Genie, Tencent,
+Industry owns the models completely (NVIDIA Cosmos, DeepMind [Genie](https://arxiv.org/abs/2402.15391), Tencent,
 Skywork, plus a dense 2026 wave). **That is precisely why the measurement layer
 is vacant** — nobody holding a frontier world model is incentivised to publish
 that the metrics don't work. Evaluation needs inference on released
 checkpoints only, which is the right size for 4-16 GPUs.
 
-Two existing position papers (`2601.15533` naming "visual conflation";
-`2606.15032` naming a "claim/evidence mismatch") **assert** the problem without
+Two existing position papers ([`2601.15533`](https://arxiv.org/abs/2601.15533) naming "visual conflation";
+[`2606.15032`](https://arxiv.org/abs/2606.15032) naming a "claim/evidence mismatch") **assert** the problem without
 measuring it. Converting an asserted position into evidence is a clean,
 citable contribution.
 
@@ -93,7 +93,7 @@ meta-evaluation. Target the World Model workshops, TMLR, or D&B tracks.
 ### 2. Weather/climate ML — a live contradiction, near-zero compute
 
 > **SUPERSEDED 2026-07-26 — the contradiction was not live.** The gate found
-> that `2606.21170` explicitly cites the Science Advances paper, diagnoses the
+> that [`2606.21170`](https://arxiv.org/abs/2606.21170) explicitly cites the Science Advances paper, diagnoses the
 > discrepancy (twPCRPS measures information content, not deterministic
 > accuracy; the forecaster's dilemma makes conditioning on an extreme having
 > occurred an improper comparison) and publishes the mechanism. The factorial's
@@ -105,13 +105,13 @@ meta-evaluation. Target the World Model workshops, TMLR, or D&B tracks.
 > section "Gated and killed: the weather-extremes adjudication". Original text
 > below is kept as record.
 
-Two 2026 papers using **the same WeatherBench 2 data** reach opposite
+Two 2026 papers using **the same [WeatherBench 2](https://arxiv.org/abs/2308.15560) data** reach opposite
 conclusions:
 
 - *Physics-based models outperform AI weather forecasts of record-breaking
-  extremes* (**Science Advances 2026**, `2508.15724`): HRES beats GraphCast,
-  Pangu, FuXi on record-breaking events at nearly all lead times.
-- *Towards Fair Comparisons... via the Weighted Potential CRPS* (`2606.21170`,
+  extremes* (**Science Advances 2026**, [`2508.15724`](https://arxiv.org/abs/2508.15724)): HRES beats [GraphCast](https://arxiv.org/abs/2212.12794),
+  [Pangu](https://arxiv.org/abs/2211.02556), [FuXi](https://arxiv.org/abs/2306.12873) on record-breaking events at nearly all lead times.
+- *Towards Fair Comparisons... via the Weighted Potential CRPS* ([`2606.21170`](https://arxiv.org/abs/2606.21170),
   Gneiting group): after isotonic-distributional-regression post-processing and
   weighted CRPS, **FuXi gives the most informative extreme-event forecasts**.
 
@@ -127,7 +127,7 @@ Zarr on Google Cloud. This adjudicates claims that cost 10^5-10^6 GPU-hours to
 produce — the best verify-cost-to-claim-cost ratio found anywhere.
 
 Two companions: verification-target contamination (everything is scored against
-ERA5, which is itself a model product, and `2601.04701` shows GraphCast can
+ERA5, which is itself a model product, and [`2601.04701`](https://arxiv.org/abs/2601.04701) shows GraphCast can
 detect ERA5's own errors — so re-score against independent station
 observations); and initial-condition fairness (AI models initialise from ERA5,
 operational NWP from real-time analysis).
@@ -145,8 +145,8 @@ Budget ~3 weeks to learn proper scoring rules and the double-penalty problem.
 > "selection adds little" published three times — only the strict non-LLM
 > proposer arm is unrun, and that is a section, not a paper. Transfer
 > evaluation: scooped twice. Surviving item: classical configurators (irace,
-> SMAC) as a **rival designer at matched wall-clock and dollars** on the
-> standard EoH/ReEvo TSP/BPP/CVRP set, framed as "which tool per dollar," not
+> [SMAC](https://arxiv.org/abs/2109.09831)) as a **rival designer at matched wall-clock and dollars** on the
+> standard [EoH](https://arxiv.org/abs/2401.02051)/[ReEvo](https://arxiv.org/abs/2402.01145) TSP/BPP/CVRP set, framed as "which tool per dollar," not
 > as a takedown. Also open and uncontested: evaluation hacking, measured
 > exactly once. Detail: [[Live-Research-Opportunities]].
 >
@@ -159,7 +159,7 @@ Budget ~3 weeks to learn proper scoring rules and the double-penalty problem.
 > (2023/24/25/Jan–Jul 26). Caveat carried forward: coverage was arXiv-only,
 > so check GECCO/PPSN before committing. See [[Direction-Reevaluation-2026-08]].
 
-The FunSearch / EoH / ReEvo / AlphaEvolve lineage claims LLMs discover
+The FunSearch / EoH / ReEvo / [AlphaEvolve](https://arxiv.org/abs/2506.13131) lineage claims LLMs discover
 superhuman heuristics. Targeted critique queries return **1** result (a GECCO
 workshop suite); `"evolutionary" AND "LLM" AND "heuristic" AND "seed" AND
 "variance"` returns **0**.
@@ -171,7 +171,7 @@ seed-variance and best-of-N inflation (does the published number sit above the
 proposer with a random program mutator over the same skeleton — if that
 recovers the gain, the claim collapses from "LLM discovery" to "the harness did
 the work"); budget-normalised comparison against handing the same wall-clock and
-dollars to `irace`/SMAC tuning LKH-3 or HGS.
+dollars to `irace`/SMAC tuning LKH-3 or [HGS](https://arxiv.org/abs/2012.10384).
 
 **Pinning an open-weight proposer with provenance hashing is itself a
 methodological contribution here**, since every current AHD paper is
@@ -180,7 +180,7 @@ non-reproducible against vendor model drift.
 ### 4. PDE foundation models — the control nobody ran
 
 `abs:"pretraining" AND abs:"physics" AND abs:"compute-matched"` returns
-**literally 0** arXiv papers. Poseidon (NeurIPS 2024) and successors claim large
+**literally 0** arXiv papers. [Poseidon](https://arxiv.org/abs/2405.19101) (NeurIPS 2024) and successors claim large
 sample-efficiency gains from multi-physics pretraining across 15 downstream
 tasks; nobody has run the arms that would test it — random init at equal total
 FLOPs, pretraining on physics-scrambled corpora, pretraining on Gaussian random
@@ -193,13 +193,13 @@ training cost, or accuracy-matched solver comparison.
 
 This field has already institutionally endorsed the methodology: the *Common
 Task Framework for a Critical Evaluation of Scientific ML* (**NeurIPS D&B
-2025**, `2510.23166`) names weak baselines and inconsistent evaluation as the
+2025**, [`2510.23166`](https://arxiv.org/abs/2510.23166)) names weak baselines and inconsistent evaluation as the
 problem. Cite it as licence.
 
 ### 5. MLIP / materials — best verify-to-claim ratio, needs domain help
 
 `abs:"Matbench Discovery" AND (abs:"leakage" OR abs:"compliance")` → **0**,
-despite MLIP Arena naming leakage as a headline unresolved problem. Modern
+despite [MLIP Arena](https://arxiv.org/abs/2509.20630) naming leakage as a headline unresolved problem. Modern
 universal MLIPs train on corpora that overlap the WBM test set structurally,
 not just by formula. A leakage-stratified re-analysis is **inference-only over
 257k structures, hours on a few GPUs, against models costing 10^5 GPU-hours**.
@@ -213,10 +213,10 @@ diagnostics are solo-doable.
 | Area | Why |
 |---|---|
 | **Agent evaluation** | Genuinely broken but overrun: 370 agentic-benchmark abstracts, 10+ dedicated workshops in one cycle, a 27-author Princeton-led consortium running 21,730 rollouts, two competing "harness engineering" surveys, and a paper *auditing the auditors*. Also: SWE-Bench+ was withdrawn from ICLR 2026 and rejected from ICLR 2025 |
-| **AI for math / theorem proving** | Saturated (`abs:"miniF2F"` → 107), no GPU advantage since verification is token-bound, and the obvious audit play was just published (*Faults in Our Formal Benchmarking*, ICML 2026, 4,833 findings) |
+| **AI for math / theorem proving** | Saturated (`abs:"miniF2F"` → 107), no GPU advantage since verification is token-bound, and the obvious audit play was just published (*[Faults in Our Formal Benchmarking](https://arxiv.org/abs/2606.29493)*, ICML 2026, 4,833 findings) |
 | **Chip placement** | Litigated to death and reputationally radioactive; Nature issued an Addendum in 2024 |
 | **PINNs vs FEM** | Settled by Grossmann et al. 2024 |
-| **Neural CO vs classical solvers** | Settled by MaxCut-Bench and FrontierCO (ICLR 2026) |
+| **Neural CO vs classical solvers** | Settled by [MaxCut-Bench](https://arxiv.org/abs/2406.11897) and [FrontierCO](https://arxiv.org/abs/2505.16952) (ICLR 2026) |
 | **Multimodal benchmark blind-solvability** | The headline is a 2024 result and now table stakes. Only the nuisance-robustness flank (opened ~7 months ago) remains |
 
 ## Venues receptive to this work
@@ -224,12 +224,12 @@ diagnostics are solo-doable.
 **Tier A.** TMLR — scope *explicitly invites* reproducibility studies, accepts
 on evidence quality rather than significance, rolling deadlines, and has a
 Reproducibility Certification. NeurIPS D&B Track. ICML/ICLR main track do take
-critique papers and give them orals (*The dark side of the forces*, ICML 2025
-Oral; FrontierCO, ICLR 2026; *Faults in Our Formal Benchmarking*, ICML 2026) —
+critique papers and give them orals (*[The dark side of the forces](https://arxiv.org/abs/2412.11569)*, ICML 2025
+Oral; [FrontierCO](https://arxiv.org/abs/2505.16952), ICLR 2026; *[Faults in Our Formal Benchmarking](https://arxiv.org/abs/2606.29493)*, ICML 2026) —
 do not assume a method is required. ICML Position track for framing papers.
 
 **Tier B, domain venues with higher credibility for scientific claims.** Nature
-Machine Intelligence (took McGreivy & Hakim and Matbench Discovery), plus
+Machine Intelligence (took [McGreivy](https://arxiv.org/abs/2407.07218) & Hakim and [Matbench Discovery](https://arxiv.org/abs/2308.14920)), plus
 *Matters Arising* for direct rebuttals; Machine Learning: Science and Technology
 (explicitly welcomes negative results); npj Computational Materials; PRX Energy;
 npj Climate and Atmospheric Science; AIES (AMS); Science Advances.

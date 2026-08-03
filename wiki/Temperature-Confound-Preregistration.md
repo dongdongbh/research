@@ -8,7 +8,7 @@ result contradicts this protocol's primary hypothesis.
 
 ## Gate result — the premise was false
 
-**Asymmetric Temperature Scaling Makes Larger Networks Teach Well Again**
+**[Asymmetric Temperature Scaling](https://arxiv.org/abs/2210.04427) Makes Larger Networks Teach Well Again**
 (NeurIPS 2022) ran essentially this control, at larger scale:
 
 - **18 teachers** across three families (six ResNets, six WideResNets, six
@@ -33,16 +33,16 @@ Two claims in the draft below are therefore **false and must not be reused**:
 
 > "The contribution is the control none of them ran."
 
-**The rest of the mechanism is also well covered.** Spherical KD (2020) studies
+**The rest of the mechanism is also well covered.** [Spherical KD](https://arxiv.org/abs/2010.07485) (2020) studies
 the larger-teacher-to-larger-logit-magnitude mechanism and normalizes logits so
-the student learns direction rather than magnitude. Logit Standardization
+the student learns direction rather than magnitude. [Logit Standardization](https://arxiv.org/abs/2403.01427)
 (CVPR 2024) sets effective temperature from logit standard deviation — the
-logit-scale-mismatch account. DTKD (2024) computes sample-specific teacher and
+logit-scale-mismatch account. [DTKD](https://arxiv.org/abs/2404.12711) (2024) computes sample-specific teacher and
 student temperatures from prediction sharpness. *Exploring Dark Knowledge under
 Various Teacher Capacities* extends ATS to instance-specific ATS (ISATS) and
 **plots scalar, ATS and ISATS temperature policies across ResNet, WideResNet and
 ResNeXt capacity ladders** — nearly the exact scientific mechanism proposed
-here. CIST (May 2026) assigns sample-wise temperatures and theoretically links
+here. [CIST](https://arxiv.org/abs/2605.20357) (May 2026) assigns sample-wise temperatures and theoretically links
 teacher entropy to the max-logit-to-temperature ratio, which substantially
 covers the **entropy-matched arm (H5)**.
 
@@ -66,7 +66,7 @@ robust, not less — so the expected outcome of a clean replication is "ATS was
 right, and if anything understated it."
 
 **What remains, at section rather than paper scale:** per-teacher-tuned vanilla
-KD versus fixed-temperature DKD on one ladder (the draft's H3) does not appear
+KD versus fixed-temperature [DKD](https://arxiv.org/abs/2203.08679) on one ladder (the draft's H3) does not appear
 in the primary sources checked. Any writeup must be framed as an extension of
 ATS, Logit Standardization, ISATS and adaptive-temperature KD — never as a first
 temperature control.
@@ -85,12 +85,12 @@ temperature control.
 
 The literature's own stated mechanism predicts its own confound.
 
-- **Logit Standardization** (Sun et al., CVPR 2024) attributes the capacity gap
+- **[Logit Standardization](https://arxiv.org/abs/2403.01427)** (Sun et al., CVPR 2024) attributes the capacity gap
   to the shared-temperature exact-match constraint on teacher/student logit
   **range and variance**. Temperature is precisely the knob that controls that.
-- Fixed temperatures across the whole ladder: DKD `tau=4`, LS `tau=2`,
-  DIST `tau=4/1`.
-- The most systematic temperature study (Frank & Davis, `2603.02430`) crosses
+- Fixed temperatures across the whole ladder: [DKD](https://arxiv.org/abs/2203.08679) `tau=4`, LS `tau=2`,
+  [DIST](https://arxiv.org/abs/2205.10536) `tau=4/1`.
+- The most systematic temperature study (Frank & Davis, [`2603.02430`](https://arxiv.org/abs/2603.02430)) crosses
   `tau` against KD method, optimizer, batch size, epochs, initialization and
   dataset granularity — and **explicitly does not vary teacher capacity.**
 
@@ -109,9 +109,9 @@ That is a falsifiable mediation claim, not a rhetorical one.
 Cited as background, never as findings:
 
 - The crossed 6-teacher x 4-objective grid on CIFAR-100 (**LS, CVPR 2024,
-  Table 5**), showing vanilla KD flat/non-monotone while DKD rises monotonically.
-- The capacity gap itself (Cho & Hariharan; TAKD; Menon et al.).
-- DKD's `(1 - p_t)` suppression account and DIST's exact-match account.
+  Table 5**), showing vanilla KD flat/non-monotone while [DKD](https://arxiv.org/abs/2203.08679) rises monotonically.
+- The capacity gap itself ([Cho & Hariharan](https://arxiv.org/abs/1910.01348); [TAKD](https://arxiv.org/abs/1902.03393); [Menon et al.](https://arxiv.org/abs/2005.10419)).
+- DKD's `(1 - p_t)` suppression account and [DIST](https://arxiv.org/abs/2205.10536)'s exact-match account.
 - The U-shape theorem (Busbridge et al., ICML 2025, App. C.1.3).
 
 The contribution is **the control none of them ran.**
@@ -141,7 +141,7 @@ teacher.
 |---|---|
 | Teacher | the same `>= 10` ladder |
 | **Temperature policy** | **(a) fixed `tau=4`** (literature default) · **(b) tuned `tau*(t)`** from Stage 1 · **(c) entropy-matched `tau_H(t)`** |
-| Objective | vanilla KD, DKD |
+| Objective | vanilla KD, [DKD](https://arxiv.org/abs/2203.08679) |
 | Student | WRN-16-2, plus one smaller (ResNet-8 or MobileNetV2) |
 | Seeds | 5, disjoint from Stage 1 |
 
@@ -159,7 +159,7 @@ compute-insufficiency account at LLM scale, and it is not worth 3x the cells.
 
 **Primary.** Spearman `rho` between **teacher accuracy** and **student
 accuracy** across the ladder, computed per (objective, temperature policy,
-student). This is the statistic DKD reports (`rho ~ 0.26` for KD, `~0.94` for
+student). This is the statistic [DKD](https://arxiv.org/abs/2203.08679) reports (`rho ~ 0.26` for KD, `~0.94` for
 DKD), so it is directly comparable to published work.
 
 **Secondary, higher power.** OLS slope of student accuracy on teacher accuracy
@@ -185,7 +185,7 @@ magnitudes.
 
 **Statistics.** Seed bootstrap, 10,000 draws, seed `20260725`. All effects
 reported in units of **pooled seed standard deviation** as well as raw points —
-the literature reports bare point differences, and CRD's own Table 10 has a
+the literature reports bare point differences, and [CRD](https://arxiv.org/abs/1910.10699)'s own Table 10 has a
 4.7-point-better teacher moving the student by `-0.02` against `sigma = 0.32`.
 Fraction of ladder pairs whose difference is below the seed noise floor is a
 required reported quantity.
@@ -226,12 +226,12 @@ never faced. Worth less, still honest, still publishable as a short paper.
    validation-to-test gap.
 2. **Teacher accuracy and teacher capacity are different variables** and are not
    perfectly correlated on any real ladder. Both are reported; `rho` is defined
-   against accuracy for comparability with DKD.
+   against accuracy for comparability with [DKD](https://arxiv.org/abs/2203.08679).
 3. **`rho` over ~10 points remains noisy** — hence the slope as a co-primary.
 4. **CIFAR-100 may not transfer.** A robustness arm on Tiny-ImageNet with 4
    teachers x 2 policies x 1 objective is pre-declared as a check, not a
    primary endpoint.
-5. **Positioning.** This is a control, not a discovery. DKD, DIST and LS must be
+5. **Positioning.** This is a control, not a discovery. DKD, [DIST](https://arxiv.org/abs/2205.10536) and LS must be
    credited in the abstract. TMLR's scope invites exactly this; a main-track
    submission framed as discovery would be correctly rejected.
 
@@ -243,12 +243,12 @@ never faced. Worth less, still honest, still publishable as a short paper.
    proposed rule (check the calibration and label-smoothing literatures, where
    this idea would plausibly live under different words); and forward citations
    of LS and Frank & Davis through 2026.
-2. **Manually verify DKD's appendix teacher-ladder table** — it was extracted
+2. **Manually verify [DKD](https://arxiv.org/abs/2203.08679)'s appendix teacher-ladder table** — it was extracted
    via ar5iv and the CVPR OpenAccess PDF returned 403.
 3. Fix the exact teacher checkpoint set and confirm accuracies are ordered
    before any student training.
 4. Pre-declare the anchor-reproduction tolerance for the LS Table 5 check.
-5. Decide whether DIST joins the primary objectives or the robustness arm. Note
+5. Decide whether [DIST](https://arxiv.org/abs/2205.10536) joins the primary objectives or the robustness arm. Note
    the gate found **DIST versus DKD has never been run on one ladder** — a real
    but secondary benchmarking gap.
 6. Pre-declare the practically meaningful `Delta_rho`, so a statistically

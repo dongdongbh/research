@@ -20,32 +20,32 @@ pre-registration / mechanism arbitration / honest negatives / VLM eval infra.
 
 | Person | ★ | Current true focus (post-discount) | Best opening for us (cost) |
 |---|---|---|---|
-| Karpathy | **5** | nanochat speedruns; **autoresearch** (92.8k stars) | FDR of the single-run greedy accept rule (200–600 GPU-h) |
+| Karpathy | **5** | [nanochat](https://github.com/karpathy/nanochat) speedruns; [**autoresearch**](https://github.com/karpathy/autoresearch) (92.8k stars) | FDR of the single-run greedy accept rule (200–600 GPU-h) |
 | Finn | 4 | Verification as scaling axis; value-RL; world-models-as-evaluators | Verifier scaling-axis arbitration (150–400); evaluator validity audit |
-| Levine | 4 | Scalable off-policy RL w/ flow policies (sim, single-GPU) | 4-mechanism scaling arbitration on OGBench (200–500) |
+| Levine | 4 | Scalable off-policy RL w/ flow policies (sim, single-GPU) | 4-mechanism scaling arbitration on [OGBench](https://arxiv.org/abs/2410.20092) (200–500) |
 | He | 4 | One-step generative modeling + component removal | 1-NFE diversity collapse: averaging vs intrinsic, Drifting as falsifier (150–400) |
 | Abbeel | 4 | Fast/cheap RL + open sim substrate (not world models) | 5-ingredient parallel-RL factorial (300–800) |
 | Bengio | 4 | Scientist AI (position-stage, zero code) | Test epistemic contextualization w/ placebo arm (400–900); sparsity premise (100–300) |
-| Song | 4 | UMI franchise (hardware); 2-author robustness/RL-finetune core | GMP 3-mechanism arbitration (100–300); Cosmos Policy audit |
+| Song | 4 | [UMI](https://arxiv.org/abs/2402.10329) franchise (hardware); 2-author robustness/RL-finetune core | GMP 3-mechanism arbitration (100–300); Cosmos Policy audit |
 | Neubig | 4 | "Verification is the bottleneck"; agent training + eval | CAID budget-matched 2×2 (API-only); PACE temporal test (~0); critic transfer w/ our traces (100–500) |
 | Choi | 4 | Distribution collapse under optimization; RLVR limits; AI4Science | Hivemind mechanism decomposition (low); G-Vendi↔output-diversity axis (low) |
-| LeCun | 4 | LeJEPA theory + planning; AMI Labs (left Meta 11/2025) | Planning-success vs search-budget audit on public checkpoints (100–300) |
-| Liang | 4 | Data-limited "infinite-compute" science; memorization forensics; Marin | Replay-mechanism arbitration at 150M/4B (cheap); **Marin = compute channel** |
+| LeCun | 4 | [LeJEPA](https://arxiv.org/abs/2511.08544) theory + planning; AMI Labs (left Meta 11/2025) | Planning-success vs search-budget audit on public checkpoints (100–300) |
+| Liang | 4 | Data-limited "infinite-compute" science; memorization forensics; [Marin](https://github.com/marin-community/marin) | Replay-mechanism arbitration at 150M/4B (cheap); **Marin = compute channel** |
 | Arora | 4 | Dense-signal post-training; skill diagnostics; published negatives | Drag=fork-suppression arbitration (50–150); prefix-completion generalization (<50) |
 | Darrell | 4 | VLM perception bottleneck: 4 unarbitrated fixes | VPBench nuisance grid on compositional benchmarks (**~0, reuses SVIB infra**); locus arbitration |
 | D. Chen | 4 | Agentic context mgmt; post-training science; training-free | KV-footprint under agentic workloads (200–400) |
-| Isola | 4 | PRH → canonicalization (orthogonal map Q); emergent intelligence | Q failure boundary on compositional probes + data-overlap hypothesis (50–150) |
-| M. Li | 4 | Active-Passive Gap; RAGEN/VAGEN; spatial belief eval | AdaptVis mechanism on our battery (**<50**); static→active prediction (<100) |
+| Isola | 4 | [PRH](https://arxiv.org/abs/2405.07987) → canonicalization (orthogonal map Q); emergent intelligence | Q failure boundary on compositional probes + data-overlap hypothesis (50–150) |
+| M. Li | 4 | Active-Passive Gap; [RAGEN](https://arxiv.org/abs/2504.20073)/[VAGEN](https://arxiv.org/abs/2510.16907); spatial belief eval | AdaptVis mechanism on our battery (**<50**); static→active prediction (<100) |
 | B. Zhou | 4 | Sidewalk micromobility full-stack (interp is dead) | Blind-VLM control for VLM-augmented nav (150–300); VQA→closed-loop correlation |
-| Fan | 4 | World Action Models ("RIP VLA"); GR00T/DreamDojo | EgoScale via N1.6→N1.7 delta (50–150, inference); DreamGen judge audit (30–80) |
+| Fan | 4 | World Action Models ("RIP VLA"); [GR00T](https://arxiv.org/abs/2503.14734)/[DreamDojo](https://arxiv.org/abs/2602.06949) | EgoScale via N1.6→N1.7 delta (50–150, inference); DreamGen judge audit (30–80) |
 | Fidler | 2 follow / 4 audit | NVIDIA spatial-intelligence product stack | DriveJudge validity audit (20–100); long-CoT perception control (50–200) |
 | Shazeer | 4 | Silent; Hot Chips deck = agenda; **→ OpenAI 6/18/26** | KV-budget factorial: MQA-from-scratch at matched KV-bytes (~400) |
 | Wei | 4 idea / 1 person | Dark at Meta since mid-2025; verifier's rule untested | Ex-ante verifiability → benchmark saturation (<100); 5-properties-or-one (300–800) |
-| Beyer | 3 person / 4 questions | → Meta Zurich (7/2026); SigLIP 2 line frozen, ownerless | NaFlex asymmetry (50–150 L40S); binding locus arbitration (100–200) |
+| Beyer | 3 person / 4 questions | → Meta Zurich (7/2026); [SigLIP 2](https://arxiv.org/abs/2502.14786) line frozen, ownerless | NaFlex asymmetry (50–150 L40S); binding locus arbitration (100–200) |
 | Sutskever | 3 (2 follow / 4 claims) | SSI publishes nothing; Nov'25 interview = the artifact | Eval-derived RL-environment provenance study (200–600) |
 | D. Zhou | 3 | Paper channel dead; CS25 deck = 4 unscoped orderings | RL-vs-aggregation tension: consistency calibration after RLVR (100–300) |
 | Sadigh | 3 | Data composition for generalist policies (hardware); set-RL for LLMs | Temperature-matched polychromic audit (200–600) |
-| Malik | 3 (+5★ seam) | Tactile dexterity from human video (hardware) | **MOCHI/Bonnen 3D-perception claim: add VLM arm + mechanism (20–60)** |
+| Malik | 3 (+5★ seam) | Tactile dexterity from human video (hardware) | **[MOCHI/Bonnen](https://arxiv.org/abs/2409.05862) 3D-perception claim: add VLM arm + mechanism (20–60)** |
 
 ## Convergence map — where multiple top people point the same way
 
@@ -58,13 +58,13 @@ admission), D. Zhou ("a reliable verifier is the most crucial"), Sutskever
 (eval/reality gap via eval-inspired RL environments), Bengio (Scientist AI =
 calibrated verification, unbuilt), Google's Science One. Meanwhile at least
 five released judge/evaluator systems have zero independent validity audits:
-Finn's world-model evaluators, Levine's SC3-Eval, Fan's DreamGen Bench VLM
+Finn's world-model evaluators, Levine's [SC3-Eval](https://arxiv.org/abs/2606.18610), Fan's [DreamGen Bench](https://arxiv.org/abs/2505.12705) VLM
 judge, Fidler's DriveJudge, Abbeel-adjacent VLM reward judges, B. Zhou's
-MetaVQA→control assumption. **One audit methodology, many targets — this is a
+[MetaVQA](https://arxiv.org/abs/2501.09167)→control assumption. **One audit methodology, many targets — this is a
 program, not a paper.**
 
 **D. Diversity collapse under optimization pressure — 7+ independent sightings.**
-Choi (Artificial Hivemind, Invisible Leash — mechanism unclaimed), Sadigh
+Choi ([Artificial Hivemind](https://arxiv.org/abs/2510.22954), [Invisible Leash](https://arxiv.org/abs/2507.14843) — mechanism unclaimed), Sadigh
 (polychromic set-RL, confound control missing), Sutskever (diversity from
 post-training competition, not temperature — untested), D. Zhou (RL>SFT vs
 aggregation>single in unexamined tension), He (1-NFE diversity collapse),
@@ -100,7 +100,7 @@ compute for research"; Liang publishes 2-author papers at 150M/4B tokens.
    71k citations measure 2016; Bengio's hiring page revealed more than his
    papers; D. Zhou's bio commits dated a career change.)
 2. **Own the measuring stick before shipping the method** (D. Chen's
-   HELMET→ProLong; M. Li's benchmark franchise; Karpathy's leaderboards).
+   [HELMET](https://arxiv.org/abs/2410.02694)→[ProLong](https://arxiv.org/abs/2410.02660); M. Li's benchmark franchise; Karpathy's leaderboards).
 3. **Ship the artifact the same week; the artifact is the moat** (Song's
    day-one checkpoints, Abbeel's sim substrates, He's reduced-config repos,
    Liang's Marin).
@@ -136,7 +136,7 @@ compute for research"; Liang publishes 2-author papers at 150M/4B tokens.
 1. **Verifier/judge validity audit program** (convergence V): one pre-registered
    methodology (confound battery, gameability, OOD policies, judge-swap
    reordering) applied to DriveJudge (20–100), DreamGen Bench (30–80),
-   SC3-Eval / Ctrl-World (300–800 for the pair), RoboReward. Unclaimed at
+   [SC3-Eval](https://arxiv.org/abs/2606.18610) / [Ctrl-World](https://arxiv.org/abs/2510.10125) (300–800 for the pair), [RoboReward](https://arxiv.org/abs/2601.00675). Unclaimed at
    every target; NVIDIA/PI structurally cannot self-audit.
 2. **Karpathy autoresearch FDR study** (200–600) — 5/5 fit, 13.2k forks, move fast.
 3. **MOCHI/Bonnen 3D-perception arbitration** (20–60) — add the missing VLM arm.
@@ -144,7 +144,7 @@ compute for research"; Liang publishes 2-author papers at 150M/4B tokens.
 5. **SigLIP 2: NaFlex asymmetry (50–150 L40S) + binding-locus arbitration (100–200).**
 6. **Isola canonicalization failure boundary** (50–150) — data-convergence
    vs representation-convergence.
-7. **Neubig CAID budget-matched 2×2 (API-only) + PACE temporal-generalization test (~0).**
+7. **Neubig CAID budget-matched 2×2 (API-only) + [PACE](https://arxiv.org/abs/2606.08106) temporal-generalization test (~0).**
 
 **Tier 2 — medium (200–900 GPU-h):** Choi hivemind decomposition · Levine
 OGBench 4-mechanism arbitration · Abbeel parallel-RL factorial · Shazeer
@@ -174,7 +174,7 @@ autoresearch's 13k forks. Diagnosis funds the method; the method is the
 contribution.
 
 **M3 — Cross-scaffold agent critic (Neubig Q3).** Train the 8B rubric critic
-on OpenHands traces + our own Claude Code/Codex trace exhaust (a data asset
+on [OpenHands](https://arxiv.org/abs/2407.16741) traces + our own Claude Code/Codex trace exhaust (a data asset
 the original paper lacks); deliverable is a working reranker/early-stopping
 model with measured transfer. 100–500 GPU-h. Dual-use: paper + in-house tool.
 
@@ -187,7 +187,7 @@ science; the pipeline makes it a method. 400–900 GPU-h.
 **M5 — Diversity-preserving post-training (Choi/Sadigh/Sutskever space).** If
 the collapse-mechanism work (convergence D) identifies the causal channel,
 the follow-on is a training method that preserves distributional coverage at
-matched pass@1 — competing in the Spectrum-Tuning/polychromic lane with a
+matched pass@1 — competing in the [Spectrum-Tuning](https://arxiv.org/abs/2510.06084)/polychromic lane with a
 mechanism-grounded design instead of another heuristic. Gate on the
 diagnosis; budget 300–800 GPU-h.
 
@@ -216,15 +216,15 @@ at pre-registration time, the method paper it unlocks if the diagnosis lands
 - Tier-1 items 3, 4, 5 are bolt-ons to the existing compositional-eval
   infrastructure (harness and benchmark battery documented in the svib repo
   wiki) and can run alongside anything.
-- Marin contribution = potential compute channel (JAX/Levanter stack).
+- [Marin](https://github.com/marin-community/marin) contribution = potential compute channel (JAX/[Levanter](https://github.com/stanford-crfm/levanter) stack).
 - The July star table in [[Status-And-Survivors]] predates both this page and
   the re-evaluation; do not rank against it.
 
 ## Operational notes for the cluster
 
 - **Isaac Sim does not run on A100/H100/H200** (no RT cores; NVIDIA docs +
-  three confirmed bugs). Isaac work is L40S-only. MuJoCo/SAPIEN (LIBERO,
-  RoboCasa, SimplerEnv, MetaUrban at 3GB VRAM) runs everywhere.
+  three confirmed bugs). Isaac work is L40S-only. MuJoCo/SAPIEN ([LIBERO](https://arxiv.org/abs/2306.03310),
+  [RoboCasa](https://arxiv.org/abs/2406.02523), [SimplerEnv](https://arxiv.org/abs/2405.05941), MetaUrban at 3GB VRAM) runs everywhere.
 - GR00T weights: code Apache-2.0, weights carry a non-commercial license
   contradiction — papers fine, spinouts not.
 - Beyer's homepage contains a hidden prompt-injection block targeting LLM

@@ -44,32 +44,32 @@ behaviour, (2) scores it with some verifier, (3) commits an update. Papers
 differ almost entirely in **what gets committed**. That is the taxonomy both
 recent surveys converge on: Ren et al. define self-improvement as "a self-induced
 update operator that obtains and commits updates to model parameters or scaffold
-components" (arXiv 2607.13104), and Fang et al. organise the same space as System
-Inputs / Agent System / Environment / Optimisers (arXiv 2508.07407).
+components" ([arXiv 2607.13104](https://arxiv.org/abs/2607.13104)), and Fang et al. organise the same space as System
+Inputs / Agent System / Environment / Optimisers ([arXiv 2508.07407](https://arxiv.org/abs/2508.07407)).
 
 | Loop | What it commits | Representative work | Cost | Does it work? |
 |---|---|---|---|---|
-| **L1 Context** | prompt, playbook | ACE, Combee, SIPDO, GEPA | ~free | **Yes** |
-| **L2 Memory** | experience store | Evo-Memory, EvolveR, Contextual Experience Replay | cheap | Partly |
-| **L3 Weights, offline** | model params from self-generated data | STaR/ReST, Self-Rewarding LMs, R-Zero, Absolute Zero, SvS | moderate | **Contested** |
-| **L4 Weights, test-time** | params per instance | SEAL, TTT, SLOT | moderate | Narrowly |
-| **L5 Code** | the agent's own source | Gödel Agent, Darwin Gödel Machine, Huxley-Gödel, AlphaEvolve | very high | Yes, expensively |
+| **L1 Context** | prompt, playbook | ACE, [Combee](https://arxiv.org/abs/2604.04247), SIPDO, [GEPA](https://arxiv.org/abs/2507.19457) | ~free | **Yes** |
+| **L2 Memory** | experience store | Evo-Memory, [EvolveR](https://arxiv.org/abs/2510.16079), [Contextual Experience Replay](https://arxiv.org/abs/2506.06698) | cheap | Partly |
+| **L3 Weights, offline** | model params from self-generated data | STaR/ReST, [Self-Rewarding LMs](https://arxiv.org/abs/2401.10020), R-Zero, Absolute Zero, SvS | moderate | **Contested** |
+| **L4 Weights, test-time** | params per instance | [SEAL](https://arxiv.org/abs/2506.10943), TTT, SLOT | moderate | Narrowly |
+| **L5 Code** | the agent's own source | [Gödel Agent](https://arxiv.org/abs/2410.04444), [Darwin Gödel Machine](https://arxiv.org/abs/2505.22954), Huxley-Gödel, AlphaEvolve | very high | Yes, expensively |
 
 ## L1 — Context evolution works and is the best value in the field
 
-**Agentic Context Engineering** (Zhang et al., arXiv 2510.04618) is the standout:
+**Agentic Context Engineering** (Zhang et al., [arXiv 2510.04618](https://arxiv.org/abs/2510.04618)) is the standout:
 229 citations in under a year. It treats the context as an "evolving playbook"
 and fixes two named pathologies — *brevity bias* (systems drop domain insight
 while compressing) and *context collapse* (iterative rewriting erodes detail).
 Reported +10.6% on agent tasks and +8.6% on finance, matching a top production
-agent on AppWorld with a smaller open model, without labelled supervision.
+agent on [AppWorld](https://arxiv.org/abs/2407.18901) with a smaller open model, without labelled supervision.
 
 No weights move. This is the cheapest real self-improvement anyone has
 demonstrated, which is exactly why the lane filled up fast.
 
 ## L2 — Memory evolution has a benchmark but weak methods
 
-**Evo-Memory** (arXiv 2511.20857) is the useful artifact: 10 datasets, sequential
+**Evo-Memory** ([arXiv 2511.20857](https://arxiv.org/abs/2511.20857)) is the useful artifact: 10 datasets, sequential
 task streams, over ten memory modules reimplemented. Its framing is the finding —
 LLMs "are required to handle continuous task streams, yet often fail to learn
 from accumulated interactions, losing valuable contextual insights." Prior
@@ -79,25 +79,25 @@ benchmarks tested static conversational recall, which is not the same problem.
 
 Two camps, and this is the intellectual centre of the field.
 
-**The optimists.** Absolute Zero (arXiv 2505.03335) has one model propose and
+**The optimists.** Absolute Zero ([arXiv 2505.03335](https://arxiv.org/abs/2505.03335)) has one model propose and
 solve coding/math tasks with a code executor as verifier, reaching SOTA in the
 zero-data setting while beating models trained on tens of thousands of curated
-examples. R-Zero (arXiv 2508.05004) runs a Challenger rewarded "for proposing
+examples. R-Zero ([arXiv 2508.05004](https://arxiv.org/abs/2508.05004)) runs a Challenger rewarded "for proposing
 tasks near the edge of the Solver capability" against a Solver rewarded for
-solving them: +6.49 math, +7.54 general on Qwen3-4B-Base. Agent0, SPIRAL, SPELL,
-Vision-Zero, Multi-Agent Evolve extend the pattern.
+solving them: +6.49 math, +7.54 general on Qwen3-4B-Base. [Agent0](https://arxiv.org/abs/2511.16043), [SPIRAL](https://arxiv.org/abs/2506.24119), [SPELL](https://arxiv.org/abs/2509.23863),
+[Vision-Zero](https://arxiv.org/abs/2509.25541), [Multi-Agent Evolve](https://arxiv.org/abs/2510.23595) extend the pattern.
 
-**The skeptics.** Yue et al. (arXiv 2504.13837) measured pass@k rather than
+**The skeptics.** Yue et al. ([arXiv 2504.13837](https://arxiv.org/abs/2504.13837)) measured pass@k rather than
 pass@1 and found RLVR-trained models beat base models at small k but **lose at
 large k** — the gains come from better selection among things the base model
 could already do, not new reasoning. Their conclusion: capability is "bounded by
 the base model," and distillation, not RL, is what "genuinely expand[s] the
 model's reasoning capabilities."
 
-**The theory.** Song et al. (arXiv 2412.02674) identify the **generation-verification
+**The theory.** Song et al. ([arXiv 2412.02674](https://arxiv.org/abs/2412.02674)) identify the **generation-verification
 gap** as the governing quantity and find it "scales monotonically with the model
 pre-training flops" — bigger models have more room to self-improve. Sun et al.
-(arXiv 2507.00075) build a solver-verifier gap model that "quantif[ies] the
+([arXiv 2507.00075](https://arxiv.org/abs/2507.00075)) build a solver-verifier gap model that "quantif[ies] the
 capability limit of self-improvement by fitting the theoretical model to
 experiment results." Both say the same thing in different words: **self-improvement
 runs on the gap between what a model can do and what it can check, and it stops
@@ -105,13 +105,13 @@ when the gap closes.**
 
 ## L5 — Code evolution works, at a price
 
-AlphaEvolve (arXiv 2506.13131) found a 48-multiplication algorithm for 4×4
+AlphaEvolve ([arXiv 2506.13131](https://arxiv.org/abs/2506.13131)) found a 48-multiplication algorithm for 4×4
 complex matrix multiplication — "the first improvement, after 56 years, over
 Strassen's algorithm in this setting" — plus data-centre scheduling and circuit
-simplifications. Darwin Gödel Machine and the Huxley-Gödel Machine (ICLR 2026
+simplifications. [Darwin Gödel Machine](https://arxiv.org/abs/2505.22954) and the [Huxley-Gödel Machine](https://arxiv.org/abs/2510.21614) (ICLR 2026
 submission) do open-ended agent self-modification. This branch is real and
 genuinely impressive. It is also industrial-scale and, for algorithm discovery
-specifically, extremely crowded: FunSearch, LLaMEA, SeaEvo, OR-Agent, BLADE,
+specifically, extremely crowded: FunSearch, [LLaMEA](https://arxiv.org/abs/2405.20132), SeaEvo, [OR-Agent](https://arxiv.org/abs/2602.13769), [BLADE](https://arxiv.org/abs/2504.20183),
 Latent Heuristic Search, and a Zarankiewicz-number result all appeared in the
 same sweep.
 
@@ -123,13 +123,13 @@ Three failures are documented, recent, and explicitly unexplained.
 
 ## F1 — Rise-and-collapse of self-training
 
-The headline version: "Self-Improvement Can Self-Regress" (arXiv 2606.21090,
+The headline version: "Self-Improvement Can Self-Regress" ([arXiv 2606.21090](https://arxiv.org/abs/2606.21090),
 June 2026) reports that during REINFORCE post-training on competitive
 programming, "pass@1 shows a robust rise-then-collapse pattern: it peaks within
 tens of gradient steps and then falls back, **sometimes to near zero**."
 
 **But this is not new.** "Can Large Reasoning Models Self-Train?"
-(arXiv 2505.21444, May 2025) reported the same shape fourteen months earlier
+([arXiv 2505.21444](https://arxiv.org/abs/2505.21444), May 2025) reported the same shape fourteen months earlier
 under majority-vote self-feedback, and attributed it to "reward hacking where
 models learn to maximize training (pseudo-)reward, resulting in sudden and
 complete performance collapse." See O1 for why this matters.
@@ -153,27 +153,27 @@ What is still distinctive about the 2026 result:
 
 Adjacent and much more crowded. Entropy decreases monotonically during RL because
 "the covariance between action probability and the change in logits" stays
-positive (Cui et al., arXiv 2505.22617), yielding the empirical law
+positive (Cui et al., [arXiv 2505.22617](https://arxiv.org/abs/2505.22617)), yielding the empirical law
 `R = -a·e^H + b` and a hard ceiling at zero entropy, with Clip-Cov and KL-Cov as
-token-level fixes. The Reasoning Boundary Paradox (arXiv 2510.02230) adds two
+token-level fixes. The Reasoning Boundary Paradox ([arXiv 2510.02230](https://arxiv.org/abs/2510.02230)) adds two
 more mechanisms: **negative interference** (learning some problems actively
 reduces correctness on others) and a **winner-take-all** effect where RLVR
 reinforces already-likely solutions and suppresses initially-unlikely ones.
-SvS (arXiv 2508.14029) counters by synthesising variational problems with
+SvS ([arXiv 2508.14029](https://arxiv.org/abs/2508.14029)) counters by synthesising variational problems with
 identical reference answers, recovering +18.3/+22.8 absolute Pass@32 on
 AIME24/25 and scaling 3B→32B.
 
 ## F3 — Capability erosion over a lifetime
 
-"Do Self-Evolving Agents Forget?" (arXiv 2605.09315, May 2026) finds erosion
+"Do Self-Evolving Agents Forget?" ([arXiv 2605.09315](https://arxiv.org/abs/2605.09315), May 2026) finds erosion
 across all four evolution channels — workflow, skill, model, memory — and
 proposes Capability-Preserving Evolution. Two months old, flag already planted.
 
 ## F4 — Misevolution as a safety surface
 
-"Your Agent May Misevolve" (arXiv 2509.26354), "Zombie Agents: Persistent Control
-of Self-Evolving LLM Agents via Self-Reinforcing Injections" (arXiv 2602.15654),
-SAHOO, plus two dedicated safety surveys. Real, and moving fast.
+"Your Agent May Misevolve" ([arXiv 2509.26354](https://arxiv.org/abs/2509.26354)), "Zombie Agents: Persistent Control
+of Self-Evolving LLM Agents via Self-Reinforcing Injections" ([arXiv 2602.15654](https://arxiv.org/abs/2602.15654)),
+[SAHOO](https://arxiv.org/abs/2603.06333), plus two dedicated safety surveys. Real, and moving fast.
 
 ---
 
@@ -193,8 +193,8 @@ This is the part that should govern the decision.
 | Self-evolving agent safety | 5+ | Crowded, fast-moving |
 | Entropy / diversity collapse in RLVR | **11+ methods, 83 papers** | **Closed** — two ACL 2026 papers on preventing it |
 
-Two comprehensive surveys in twelve months (arXiv 2508.07407 in Aug 2025;
-arXiv 2607.13104, 97 pages, two weeks ago). A 97-page survey is the strongest
+Two comprehensive surveys in twelve months ([arXiv 2508.07407](https://arxiv.org/abs/2508.07407) in Aug 2025;
+[arXiv 2607.13104](https://arxiv.org/abs/2607.13104), 97 pages, two weeks ago). A 97-page survey is the strongest
 available signal that the easy entry points are gone.
 
 The sweep also surfaced an unusual volume of low-quality work — SSRN, Zenodo and
@@ -235,7 +235,7 @@ literatures, run it at 3B-7B for under 300 GPU-hours.
 **Two findings kill it.**
 
 *The phenomenon is neither new nor unexplained.* "Can Large Reasoning Models
-Self-Train?" (arXiv 2505.21444, May 2025 — **fourteen months before** F1) already
+Self-Train?" ([arXiv 2505.21444](https://arxiv.org/abs/2505.21444), May 2025 — **fourteen months before** F1) already
 runs self-training with majority-vote self-feedback and reports that it improves
 and then suffers "reward hacking where models learn to maximize training
 (pseudo-)reward, resulting in **sudden and complete performance collapse**." Same
@@ -243,15 +243,15 @@ rise-and-collapse shape, with an attributed cause, a year earlier.
 
 *The intervention lane is packed.* A targeted search returned **83 unique papers**
 on entropy collapse and diversity in RLVR from 2025-2026 alone, including at
-least eleven direct entropy-intervention methods: Clip-Cov/KL-Cov, CURE,
+least eleven direct entropy-intervention methods: Clip-Cov/KL-Cov, [CURE](https://arxiv.org/abs/2508.11016),
 "Rethinking Entropy Regularization in Large Reasoning Models", "Rethinking
 Entropy Interventions in RLVR" (ACL, 45 citations), "Understanding and Preventing
 Entropy Collapse in RLVR with On-Policy Entropy Flow Optimization" (ACL 2026),
 "HEALing Entropy Collapse" (ACL 2026), EP-GRPO, PAEC, "Flexible Entropy Control
 in RLVR", "Precise Entropy Curve Control", and "Understanding Diversity Collapse
 in RLVR via the Lens of Overtraining". Plus a diversity cluster (Uniform-Correct
-Policy Optimization, R-Diverse, UpSkill) and a pass@k-optimisation cluster
-(Pass@K Policy Optimization, max@k).
+Policy Optimization, [R-Diverse](https://arxiv.org/abs/2602.13103), UpSkill) and a pass@k-optimisation cluster
+(Pass@K Policy Optimization, [max@k](https://arxiv.org/abs/2510.23393)).
 
 Two ACL 2026 papers are literally titled *understanding and preventing entropy
 collapse*. There is no room here.
@@ -275,8 +275,8 @@ recommending, not after — exists for exactly this.
 Almost everything above is text math and code, for one reason: **a code executor
 is a perfect free verifier.** Self-improvement runs on the generation-verification
 gap, and outside code and math nobody has a cheap reliable verifier. The VLM
-entries are thin by comparison — Vision-Zero, Self-Rewarding VLM via Reasoning
-Decomposition, Calibrated Self-Rewarding VLMs, Pixel Reasoner, and one paper
+entries are thin by comparison — [Vision-Zero](https://arxiv.org/abs/2509.25541), Self-Rewarding VLM via Reasoning
+Decomposition, Calibrated Self-Rewarding VLMs, [Pixel Reasoner](https://arxiv.org/abs/2505.15966), and one paper
 asking whether RLVR extends VLM reasoning boundaries at all.
 
 The transfer idea: **compositional consistency is a free, label-free verifier for
