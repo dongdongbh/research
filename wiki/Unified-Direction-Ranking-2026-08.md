@@ -1,183 +1,100 @@
-# Unified Research-Direction Ranking — 2026-08-03
+# Unified Research-Direction Ranking — version 3, 2026-08-05
 
-## Direction re-evaluation, version 2
+**Status: THIS IS THE CURRENT RANKING — everything in one place.** It
+replaces version 2 (Aug 3, kept in git history) and folds in: the wave-2
+and wave-3 method gates, the role-decodability probe results, the TMLR
+decision for SVIB, the crop-project hold, and the Aug-5 scouts of three
+new areas (generative video, LLM/VLM robotics, AI-for-science) with their
+five formal checks.
 
-**Status: THIS IS THE CURRENT RANKING.** It replaces the older ranking in
-[[Direction-Reevaluation-2026-08]] and the opportunity lists in
-[[Top-Researcher-Scan-2026-08]]. We keep those pages as a record.
+**The one lesson to carry:** across 18 formally checked ideas this month,
+scout/first-look ratings dropped by 1–2 stars on average once a deep check
+ran, and the two worst kills were papers less than eight weeks old with
+zero citations. Nothing enters a pre-registration without the two-pass
+check, an OpenReview sweep, and a verified first-cheap-step.
 
-We checked ideas in eight research areas. For every idea, we:
+## Part 1 — Committed work (not ranked; already chosen)
 
-- searched the whole research area, not only one person's papers;
-- saved quotes that show whether the idea has already been claimed;
-- checked that the needed code, data, and model files actually exist;
-- checked whether the work fits our computers and time;
-- wrote a specific experiment plan before seeing results;
-- named the new method that a diagnostic result could lead to; and
-- checked whether the work could meet the ICLR 2027 abstract deadline on
-  September 18.
+| Deadline | Project | State |
+|---|---|---|
+| ICLR (Sep 18) | **RoboJudge audit** ★★★★½ — do robot-policy evaluators recover the human ranking | Week 1 done; ranking frozen; **ready to lock** at sign-off (4 pinned choices) |
+| ICLR (Sep 18) | **Crop-consistency distillation** | **ON HOLD** — insight published April ([2604.11496](https://arxiv.org/abs/2604.11496)); decide at sign-off: fold into the frontier paper (recommended) / standalone ★★ / bench |
+| CVPR (~Nov 13) | **1-NFE diversity** (one-step image generators) | Prereg drafted; unchanged |
+| CVPR (~Nov 13) | **Readout-budget vs binding frontier** ★★★½ (Cell A) | Method-slot candidate; 1-day pilot required before prereg; absorbs the crop machinery as its method arm |
+| ICML (~Jan 28) | **Epistemic contextualization** | Prereg drafted; citation corrected to [2606.29657](https://arxiv.org/abs/2606.29657); pipeline work can start |
+| TMLR (no deadline) | **SVIB audit paper** | Decided Aug 4: one paper — audit + locked protocol + grid+attention positive + released suite; writing task ~2–3 weeks |
+| Running | **Role-decodability program** | Powered result in hand (99.5% in patches → 50.1% at the score; readout inverted); owner labeling verb data; feeds Cell A and the algebraic-binding idea |
 
-Eight agents searched the research areas in parallel. One teammate checked
-the code, data, and model files.
+## Part 2 — The all-in-one ranking of available directions
 
-**Search limit:** WebSearch and OpenAlex ran out of budget, while arXiv and
-Semantic Scholar limited our request rate. The results therefore lean heavily
-on arXiv and Hugging Face. We did not search the native proceedings for CoRL,
-RSS, GECCO, and ICSE as fully. Each research area records its own missing
-coverage. Before choosing an abstract, run one more focused search.
+Stars are post-check where a check ran (marked ✓); pre-check otherwise.
+"First step" is the cheapest action that decides whether to continue.
 
-## Current ranking
+### ★★★★½–★★★★ — strongest available
 
-### Top group
+| Direction | ★ | Cost (GPU-h) | First step | Note |
+|---|---|---|---|---|
+| Abbeel parallel-RL factorial (which fast-RL ingredients matter) | ★★★★½ | 400–650, OrangeGrid | re-check the source group's latest releases | **Expiring** — the authors are working through the axes; swap-in for a slate slot or it dies |
+| Replay-mechanism arbitration ([Liang 2603.04964](https://arxiv.org/abs/2603.04964)) | ★★★★ | 250–400 | loss-spike detector pilot | Five candidate causes, each with a cheap falsifier |
+| RLVR vs self-consistency calibration | ★★★★ | 100–250 | verify OLMo-3 checkpoint availability | Could ship calibrated agreement aggregation |
+| KV-cache footprint under agentic workloads | ★★★★ | 200–400, eval only | confirm PruLong replacement plan | Turn-aware eviction is the unlocked method |
+| Bengio sparsity-premise test (Req. 5.23) | ★★★★ | ~250 | design the 300-model sweep | Decides whether contextualization gets its theory arm |
+| [MOCHI](https://arxiv.org/abs/2409.05862) VLM arm | ★★★★ | 20–60 | run it — it is nearly free | Cheapest real result on the board |
+| GMP three-mechanism arbitration (Song) | ★★★★ | 100–250 | **read the PDF first** — check self-ablation | Unchanged from v2 |
 
-The stars show our strength of recommendation. Five stars is the highest.
-“Method unlocked” means the new method we could build if the study finds the
-expected problem.
+### ★★★½–★★★ — real but narrowed (all ✓ checked)
 
-| # | Direction | ★ | Cost and cluster | ICLR? | Method unlocked |
-|---|---|---|---|---|---|
-| 1 | **Autoresearch false-discovery-rate (FDR) study plus a sound accept rule.** FDR is the share of accepted findings that are actually false. **The owner declined this as a paper on 2026-08-03** because a statistics-only contribution would look like engineering. The removed draft is in git history. Keep this only as an internal tool. | ~~★★★★★~~ | — | — | — |
-| 2 | **Check whether robot-policy judges and evaluators are valid.** Main target: [RoboReward](https://arxiv.org/abs/2601.00675). Also change judges on [DreamGen](https://arxiv.org/abs/2505.12705), test ready-made VLM judges, and compare them with human rankings from [RoboArena](https://arxiv.org/abs/2506.18123). | **★★★★½** | 250–500 GPU-h; inference only; OrangeGrid | **Yes** | Rank-calibrated evaluator plus an “evaluator report card” |
-| 3 | **Abbeel parallel-RL combination experiment.** Test combinations of the choices behind the disagreement between BRC and TD overfitting, using the authors' published setup. | **★★★★½** | 400–650 GPU-h; OrangeGrid; MuJoCo only | **Yes** | Minimal [FastTD3](https://arxiv.org/abs/2505.22642) recipe |
+| Direction | ★ | Cost | First step (all cheap and decisive) | What the check found |
+|---|---|---|---|---|
+| **Robot-evaluator uncertainty audit** ✓ (Aug 5) | ★★★ | 200–400 | **0 GPU, one afternoon**: Fisher-z intervals on the published n=4/5/8 correlation tables — if the n=4 interval spans ~[0,1], the headline exists | Survives narrowed: two papers DO report intervals, but never on the ranking statistic itself; sim-vs-sim instability floor is unclaimed; **must write the boundary vs RoboJudge first** (same data, same construct family); new best target: RoboDojo (30 policies) |
+| **Video role-direction test** ✓ (Aug 5) | ★★★ | 300–600 | **0 GPU**: score 3–4 generative judges on VELOCITI's human-labeled agent-swap pairs; no judge ≥85% → kill | Gap verified by cloning repos (video benchmarks dropped the swap idiom the image benchmark ships); the risk moved to the judge: video-LLMs score 44–49% vs 93% human on exactly this judgment |
+| Algebraic role-binding embeddings (probe-promoted) | ★★★ (cond.) | 130–250 | OpenReview re-check, then design | Crux cleared for spatial roles by the probe; verb case pending owner labels; [OC-CLIP](https://arxiv.org/abs/2502.14113) is the cross-encoder-shaped neighbor |
+| Anthropic VLA-supervision replication | ★★★½ (pre-check) | 100–200 + API | gate it if pursued; their repo is still unreleased | Their n=36 headline; discount expected on check |
+| Choi hivemind decomposition | ★★★½ | low | resolve the 404'd dataset | Blocked on data |
+| T1 narrowed interaction study | ★★★ | 150–250 | use PIVOT's harness | Mid-venue target |
+| KV three-way interaction | ★★★ | see v2 | pilot only | Port-and-scale, underpowered risk |
 
-### Strong group: ★★★★
+### ★★½ and below — bench (run only as cheap side arms)
 
-In this table, “direct comparison” means an experiment built to decide among
-competing explanations.
+| Direction | ★ | First step |
+|---|---|---|
+| Video coverage re-measurement ✓ (Aug 5) | ★★½ | ~15 GPU-h: score public few-step checkpoints with off-the-shelf STREAM-D/TopP&R; if coverage tracks dispersion (ρ>0.8), kill. Metric novelty is dead ([STREAM, ICLR 2024](https://arxiv.org/abs/2403.09669)); only the audit remnant lives; must solve "coverage of what?" (no real-video reference for T2V prompts) |
+| Fork-preserving context construction (wave-2 survivor) | ★★½ | 48-h re-check, then the operator pilot | Lane moves ~1 paper/month |
+| Cell B: per-item position split | ★★½ | 5 GPU-h pilot rides Cell A encodes | |
+| Spectral-band × knowledge injection (MiCA) | ★★ | 10 GPU-h repro gate — fails → dead | |
+| Accept-rule run-level residual | ★★ | ~20 GPU-h seed-variance check | PACE is the mandatory baseline |
+| V2A secondary analysis (salvage) | note-scale | days: bootstrap CIs + power curves on [SynthSync's released 306K ratings](https://arxiv.org/abs/2607.09091) | Not a paper; a methods note |
+| Wei verifier-rule Q1 · polychromic audit · Arora drag-fork addon · SigLIP-2 ladder (next-cycle, Delta) · environment-provenance study | ★★–★★★ | as in v2 | Environment-provenance decision window has lapsed — revisit or drop at sign-off |
 
-| Direction | Cost | ICLR? | Note |
-|---|---|---|---|
-| Direct comparison of replay explanations (Liang [2603.04964](https://arxiv.org/abs/2603.04964)); test five possible causes, including a test that detects loss spikes | 250–400; OrangeGrid | Yes | Could lead to a stage-change schedule that does not use replay. Use Marin in two ways: help with public infrastructure, but keep our hypotheses private. |
-| Tension between RLVR and self-consistency calibration (D. Zhou); DCPO misses all three needed parts | 100–250; OrangeGrid + Anvil | Yes | Could lead to calibrated agreement aggregation. OLMo-3 model families are free to use. |
-| Test whether a critic transfers across agent systems, with a future-time [PACE](https://arxiv.org/abs/2606.08106) test as the validity section | 100–500 plus API cost | Yes | Release 8B critic weights. Our traces with known outcomes are an advantage; [TraceLab](https://arxiv.org/abs/2606.30560) means they are not unique. |
-| One-step (1-NFE) generative diversity: is collapse caused by averaging, or is it built into the method? Drifting can disprove the claim, and recall can be computed now but has not been reported. | 150–350 | Likely | This belongs to a different venue and community from LLM collapse. Keep them as separate papers. |
-| Measure KV-cache use in agent workloads; the footprint metric has never been tested there, and the gap was named publicly on July 9 | 200–400; OrangeGrid; evaluation only | Yes | Could lead to eviction that understands turn boundaries. PruLong checkpoints are missing, so drop it or retrain it. |
-| Test Bengio's sparsity assumption from Requirement 5.23 using about 300 small prediction models | about 250; OrangeGrid | Yes | Decides whether to build the full contextualization method, M4. |
-| Add the missing VLM test to [MOCHI](https://arxiv.org/abs/2409.05862); human reaction times are already released, and no citing paper claims this test | 20–60; OrangeGrid L40S | Yes | Could provide a training signal that matches human perception. |
-| Bundle A, “the readout, not the representation”: test Isola's shared-Q idea on compositional tasks, compare map types, join COCO nuisance labels, and include binding location as one cited step | under 100; cached features | Yes, if gate passes | Could produce an alignment map that keeps compositional information. **First run the zero-GPU DataComp 7×7 Jaccard check.** |
-| Track where Sutskever's RL environments came from | 350–600 plus heavy environment authoring | No; target ICML | **Decide within two weeks.** Microsoft Echoverse already owns nearby tools. |
-| Compare three explanations for GMP (Song) | 100–250 | Yes | **First read the PDF and check whether the paper already removes each part itself.** |
-| Levine offline-RL comparison, reframed as a test of the three failure modes in [2601.00831](https://arxiv.org/abs/2601.00831) | about 840, previously thought to be 200–500 | Tight | **Expires around September 13.** An independent group ran our method on OGBench on July 29. |
-| Rank the useful parts of SigLIP-2 at different scales | 1,000–1,400 H100-h; **Delta 8×H200-long** | No; target ICML or CVPR | Three of five parts must be rebuilt in OpenCLIP because big_vision is frozen. |
-| Arora drag-versus-fork direct comparison, as a small add-on | 50–200 | Yes | Test an intervention that keeps forks while changing context. |
+## Part 3 — Killed, vetoed, or expired (consolidated — do not re-propose)
 
-### Ideas that moved down
+**Aug-5 checks:** language-necessity index (Level-1 kill — [2606.04233](https://arxiv.org/abs/2606.04233) published the cross-benchmark study in June; LIBERO-Plus ran real policies blind) · V2A metric validation (killed — [SynthSync 2607.09091](https://arxiv.org/abs/2607.09091), 306K annotations, plus Omni-Judge/PEAVS/AVBench) · **seed-noise/variance of agent leaderboards (OWNER VETO: not significant, no barrier, not novel — includes the design-layer arm)**.
 
-| Direction | Old rating | New rating | Why |
-|---|---|---|---|
-| **T1: frozen parts × training goal × training stage, as first designed** | ★★★★½, rank 1 | **★★★** | Three of its four combinations appeared at CVPR, ICLR, or ICML 2026: CoVFT; **PIVOT, titled “RL makes MLLMs see better than SFT”**; and From Seeing to Thinking. We watched the wrong group as the publication risk. Our cost estimate was also about five times too low compared with PIVOT's 144 H100-h per recipe. A smaller idea still rates ★★★★: test the interaction plus {tuned}×{extra training goal}, add a GRPO arm at 1.5–3B, use PIVOT's harness, spend 150–250 GPU-h, and target a mid-level venue. |
-| KV-cache combination study from scratch, M1 | ★★★★ in the researcher scan | **★★★** | Two later checks lowered it. [Cost-Optimal GQA (EMNLP 2025)](https://arxiv.org/abs/2503.09579) already tested the number of KV heads from scratch, including `n_kv=1`. [CLA](https://arxiv.org/abs/2405.12981) tested heads with layer sharing at equal memory. [MixAttention](https://arxiv.org/abs/2409.15012) tested layer sharing with attention windows. Only the three-way interaction remains. Run a pilot first. The LCKV repository already implements all three choices, so this is a port-and-scale study, not a new invention. |
-| Choi hivemind breakdown | ★★★★ in the researcher scan | ★★★½ | The “first breakdown” claim is no longer true. Three papers from April–May 2026 give competing causes, but nobody has tested them against each other. What remains is the between-model axis plus a direct test of all three accounts. **Blocker: the Infinity-Chat Hugging Face dataset returns 404.** |
-| Wei verifier-rule Q1 | ★★★★ in the researcher scan | ★★½ | An ICML 2026 study with 37 authors already owns the dataset and attention control. It does not test verifiability, but the missing part is easy for that group to add. |
-| CAID cost matching as a paper | Tier 1 in the scan | Internal only | Five papers answered the main question in eight months, ending with **Nature Machine Intelligence on 2026-07-24**. The honest cost is $2,000–$5,000. Run only the smaller edit-isolation check for internal use. |
-| Polychromic set-RL check | ★★★★ in the scan | ★★½ | The hidden factor is real, but none of the three targets has public code. A null result from our own reimplementation would not be convincing. |
-| M5 diversity-preserving method | Method direction | Benchmark only | At least 15 methods already exist. The useful opening is a fair test that compares them at the same pass@1. |
+**Waves 1–3 and earlier (see [[Method-Gates-Wave-2-2026-08]], [[Method-Gates-Wave-3-2026-08]], v2 in git history):** autoresearch accept rule (PACE) · cross-scaffold critic (source group published) · active-view spatial (World2VLM/SIMS-V) · compositional merging (AlignMerge) · frozen-VLM binding heads (DCSM/Q-Former) · KV from-scratch factorial (CLA/MixAttention) · late-interaction distillation (ComAlign) · spectral-PEFT LR-artifact question (answered 4×) · verifier hardening · safety-aware KV · Hyperball · CAID · multi-agent budget-matching · LPT control · PULSE · BPP (LIBERO-Gen does not exist) · DriveJudge (labels unreleased; watchlist) · weather · novelty forensics (biology-side owned) · T4 anneal-window · B1 diversity attribution.
 
-### Ideas ruled out in this sweep
+## Part 4 — The cheap decisive steps, gathered in one list
 
-- **Hyperball combination study:** [2607.22444](https://arxiv.org/abs/2607.22444)
-  already did it; our design was also wrong, and the source group had already
-  disproved it.
-- **M7 verifier hardening:** two papers claimed it three days apart in June
-  2026.
-- **Safety-aware KV allocation:** [2606.09864](https://arxiv.org/abs/2606.09864)
-  ran the exact study on June 1 and found “no universal safe bit-width.” It
-  also published diverge. AnchorKV published the allocator on June 16. Both
-  papers appeared before our July check incorrectly called the idea open.
-- **Binding-location comparison as first planned:** LABCLIP from February
-  2025 and [DCSM, ICCV 2025](https://arxiv.org/abs/2503.08723) already cover it.
-- **VPBench grid as proposed:** it mixes unlike categories. The COCO
-  annotation join can still be used.
-- **LPT token-matched control:** ACL 2026 already published the conclusion,
-  and the original target is outdated.
-- **PULSE replication:** there is no path to real use.
-- **DriveJudge audit for now:** labels are not released. Put it on a watchlist
-  and check again in six weeks.
-- **BPP dose-response:** the public artifact called LIBERO-Gen does not exist.
-- **Cosmos Policy audit as planned:** Cosmos 3 replaced the target. A useful
-  piece remains: build and release the procedural-shift generator.
+1. Fisher-z afternoon (robot-evaluator audit) — 0 GPU.
+2. VELOCITI judge audit (video role direction) — 0 GPU, API only.
+3. Cell A dynamic-range pilot — 1 day.
+4. MOCHI — 20–60 GPU-h, run whenever.
+5. STREAM-D vs dispersion correlation (video coverage) — ~15 GPU-h.
+6. MiCA repro gate — 10 GPU-h.
+7. Owner: verb labeling sessions (powers the below-chance real-photo lead).
 
-## Suggested group of projects
+## Part 5 — Standing lessons (updated)
 
-### Start now for the September 18 ICLR deadline
-
-Draft pre-registrations already exist for
-[[Prereg-Crop-Consistency-Distillation]] and [[Prereg-RoboJudge-Audit]].
-
-1. **Crop-consistency distillation.** This is the main new-method project.
-   The owner chose it on 2026-08-04 after applying the rule that a method must
-   be more than a diagnostic test. See [[Method-Gates-2026-08]]. In week one,
-   test the CLIPSelf checkpoint on our task set and test the aggregation-fix
-   version.
-2. **First paper in the judge-audit program.** It reuses our VLM evaluation
-   tools, needs only inference, and does not compete with project 1 for the
-   same resources. In week one, check the RoboArena download size.
-3. **Run cheap add-ons at the same time:** [MOCHI](https://arxiv.org/abs/2409.05862)
-   for 20–60 GPU-h, the calibration-tension test for 100–250 GPU-h, and Bundle
-   A for under 100 GPU-h if its Jaccard check passes.
-
-### Chosen for the next cycle
-
-- One-step diversity → CVPR 2027; see [[Prereg-1NFE-Diversity]].
-- Epistemic contextualization → ICML 2027; see
-  [[Prereg-Epistemic-Contextualization]]. Start building the pipeline now.
-  The updated design trains OLMo-2-1B in the middle of training and costs
-  about 300–450 GPU-h. Training from scratch happens only if an earlier check
-  says it is needed.
-
-Keep these on the bench. Their older designs are in git history or the
-research-area reports: the parallel-RL combination study, SigLIP-2 ingredient
-ladder, replay comparison, and calibration-tension test. The parallel-RL idea
-will expire as the source group continues testing its choices one by one.
-
-Other reasonable next-cycle choices are the Abbeel combination study, the
-SigLIP-2 ingredient ranking, the replay study, and the environment-source
-study. The professor could replace the judge audit with Abbeel's project if a
-more method-like top project is preferred. Start OpenCLIP engineering now for
-SigLIP-2. Replay also fits ICLR. Decide on the environment-source study within
-two weeks.
-
-### Cheap checks to run this week
-
-- DataComp 7×7 Jaccard: 0 GPU.
-- RoboArena download-size check.
-- Read the GMP PDF.
-- Find or resolve the Infinity-Chat dataset.
-- Pre-register the autoresearch noise-floor test and run 30 repeats: about
-  10 GPU-h.
-
-## Decisions shared across research areas
-
-- Remove the collapse project's statistical stopping-rule track. It makes the
-  same claim for the same reviewers as former flagship 1.
-- Fit the 60,000-trajectory agent-variance study
-  ([2602.07150](https://arxiv.org/abs/2602.07150)) once. Use it as a shared
-  variance and power module for former flagships 1 and 2 and the critic paper.
-- Put the predictive-validity idea
-  ([2606.19704](https://arxiv.org/abs/2606.19704)) in the critic/PACE paper,
-  not the FDR paper.
-- Keep LLM collapse and one-step diversity as separate papers. They may share
-  one measurement tool that compares coverage at the same quality.
-
-## Lessons from this sweep
-
-1. **A fresh check must find today's competitors, not only repeat the old
-   claim search.** Three parts of T1 appeared at top venues while we watched
-   the wrong group.
-2. **Search the whole research area, not only one person's work.** Wide
-   searches disproved four scan ideas: CAID, hivemind decomposition, M7, and
-   safety-aware KV allocation.
-3. **Every search must include the newest eight weeks.** Our July KV search
-   found nothing but missed two June papers that had already closed the idea.
-4. **Check that code, data, and checkpoints truly exist and work.** A null
-   result using our copy of unreleased code is weak evidence, as in the
-   polychromic idea. A named benchmark may not exist, as with LIBERO-Gen.
-5. **Check quoted numbers in the original artifact.** We could not confirm the
-   “7-run 0.016 CORE spread” in our notes, so we replaced it with evidence
-   copied from the source.
+All of v2's lessons stand. Added from Aug 5: (6) **scout ratings are
+provisional by ~1.5–2 stars** — never cite a scout star in a decision
+document; (7) **zero-citation papers under eight weeks old are the main
+scoop source now** — recency-weighted search matters more than breadth;
+(8) two ideas this month died to papers that our own earlier sweeps had
+already surfaced for a different purpose — check our own wiki first.
 
 ## Related
 
-[[Direction-Reevaluation-2026-08]] (older ranking, kept as a record) ·
-[[Top-Researcher-Scan-2026-08]] · [[Self-Improving-AI-Survey]] ·
-[[Method-Opportunities]] · [[Live-Research-Opportunities]] · [[Home]]
+[[Direction-Scouts-2026-08-05]] · [[Method-Gates-Wave-3-2026-08]] ·
+[[Compositional-VLM-Survey]] · [[Binding-Root-Cause-Analysis]] ·
+[[Prereg-RoboJudge-Audit]] · [[Prereg-Crop-Consistency-Distillation]] ·
+[[Prereg-1NFE-Diversity]] · [[Prereg-Epistemic-Contextualization]] ·
+[[Top-Researcher-Scan-2026-08]] · [[Home]]
