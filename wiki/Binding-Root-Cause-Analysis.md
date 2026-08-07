@@ -393,6 +393,34 @@ not fixable by readout choice alone — whatever recovers the patch-level
 role signal must be *trained* (the algebraic-binding direction), not
 merely wired differently.
 
+## 10. The inversion in context (2026-08-07): known elsewhere as "opposite visualization"
+
+The final method attempt built on this page — a tiny learned correction
+of the sign-inverted region readout — was gate-checked and killed. The
+inversion phenomenon has been known in the model-explainability
+community since 2022 under different words: [ECLIP/RCLIP
+(2209.07046)](https://arxiv.org/abs/2209.07046) found that CLIP's
+region evidence points at the background ("opposite" regions), fixed it
+with a parameter-free flip AND a small trained linear layer, and [CLIP
+Surgery (2304.05653)](https://arxiv.org/abs/2304.05653) measures it as a
+metric that is negative on all twenty of its model×dataset cells.
+[LABCLIP (2502.03566)](https://arxiv.org/abs/2502.03566) — which §2B of
+this very page cites for its diagnosis — already ships a 262K-parameter
+frozen-CLIP linear correction that restores attribute binding. Our §6
+note "verify that earlier work before claiming it is new" was right and
+was not executed until now.
+
+What this page still contributes, folded into the TMLR paper: the first
+POWERED measurement of the phenomenon on the SigLIP2 attention-pool path
+against role-binding items (the prior work measured segmentation data on
+plain CLIP); the caption-length warning (a "flip" at benchmark scale can
+be pure length bias — a direct caution for anyone following DCSM's
+advice to "recognize inverted patterns" from scores); the honest
+29.8→44.8 self-correction; and the MOCHI specificity contrast. The
+search lesson (our words "inverted/anti-aligned/below chance" return
+zero hits; the field says "opposite visualization" / "prefers the
+background") is now part of the gate rules.
+
 ## Related
 
 [[Method-Gates-Wave-3-2026-08]] · [[Prereg-Crop-Consistency-Distillation]] ·
