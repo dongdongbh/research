@@ -1,7 +1,23 @@
-# Unified Research-Direction Ranking — version 3, updated 2026-08-07
+# Unified Research-Direction Ranking — version 4, 2026-08-07
 
-**Status: THIS IS THE CURRENT RANKING — everything in one place, and as
-of Aug 6 every row has a formal verdict.** On Aug 6 we ran a full
+**Status: THIS IS THE CURRENT RANKING — every row now has a formal
+verdict, including the Aug-7 gates.** Two more checks ran on Aug 7 at the
+owner's request: the proposed MERGE of crop-consistency distillation with
+the role-decodability evidence (one CVPR method paper) was killed at
+Level 2 — the crop teacher itself is a published standalone method
+([2506.09691](https://arxiv.org/abs/2506.09691)), the caption-free
+image-side axis is taken ([ATAS, ICCV 2025](https://arxiv.org/abs/2506.08678)),
+and frozen-tower relational alignment belongs to
+[ComAlign](https://arxiv.org/abs/2409.08206); and the Abbeel parallel-RL
+factorial died premise-wrong (details in its row). **The live slate is
+now exactly six items:** RoboJudge (ICLR, ready to lock) · 1-NFE
+diversity (CVPR, week-1 passed, ready to lock) · epistemic
+contextualization (ICML, pipeline ready, needs sign-off) · SVIB→TMLR
+(writing) · sparsity-premise test (design ready, OrangeGrid, standalone
+safety-empirics paper) · robot-evaluator uncertainty audit (headline
+proven, boundary note then design). The role-decodability evidence is a
+supporting asset for the TMLR/analysis line and a possible DisCoCLIP
+audit note — not a method paper. On Aug 6 we ran a full
 adjudication day on one held 2-GPU node: thirteen directions were killed
 by their own pre-stated rules or by verified prior work, one survived its
 check (the sparsity-premise test), two committed pre-registrations moved
@@ -22,7 +38,7 @@ check, an OpenReview sweep, and a verified first-cheap-step.
 | Deadline | Project | State |
 |---|---|---|
 | ICLR (Sep 18) | **RoboJudge audit** ★★★★½ — do robot-policy evaluators recover the human ranking | Week 1 done; ranking frozen; **ready to lock** at sign-off (4 pinned choices) |
-| ICLR (Sep 18) | **Crop-consistency distillation** | **BENCH** — insight published April ([2604.11496](https://arxiv.org/abs/2604.11496)); the fold target (Cell A) was killed Aug 6, so per the pre-stated rule the fold decision collapses to bench; standalone ★★ remains the only alternative at sign-off |
+| ICLR (Sep 18) | ~~**Crop-consistency distillation**~~ | **CLOSED Aug 7.** Bench (Aug 6) → the owner asked whether merging it with the role-decodability evidence rescues it as one CVPR method paper → the merge gate returned Level 2: the crop teacher is a published standalone method ([2506.09691](https://arxiv.org/abs/2506.09691), training-free, its ablation shows the crops carry the gain), [ATAS](https://arxiv.org/abs/2506.08678) owns caption-free image-side self-distillation, [ComAlign](https://arxiv.org/abs/2409.08206) owns frozen-tower relational alignment. Only a loss-function detail ("distill the teacher's inter-region attention pattern into a dual encoder") remains literally unclaimed — not a paper. Verdict: tier2gates `runs/bindfix-gate-20260807/` |
 | CVPR (~Nov 13) | **1-NFE diversity** (one-step image generators) | Prereg drafted; unchanged — now the only CVPR method-slot candidate |
 | CVPR (~Nov 13) | ~~Readout-budget vs binding frontier (Cell A)~~ | **KILLED Aug 6** by its own pre-stated pilot rule: best untrained readout minus R0 = **−21 points** on SugarCrepe++ (both backbones, CIs exclude zero the wrong way); the readout ladder is flat (2.6-point spread K=1→256), so there is no frontier to measure. Bug-hunted: retrieval control healthy, wiring checks exact, reruns bit-identical. Report: cropdistill `runs/cellA_pilot/20260806-report/` |
 | ICML (~Jan 28) | **Epistemic contextualization** | Prereg drafted; citation corrected to [2606.29657](https://arxiv.org/abs/2606.29657). **Pipeline BUILT and smoke-verified Aug 6** (1.2 GPU-h): full train→checkpoint→resume→eval loop proven on H100; 2B-token mixture staged, contamination-clean; six pre-study bugs fixed. Owner decisions before the study: budget re-estimate (165 GPU-h for the eight runs vs the prereg's 100, + 85–190 h rewriting), rewriter yield strategy (42–46% pass rate — align vs loosen), and the H1 headroom problem (the 1B base is at chance on ConflictBank; a probability-mass metric was added). Readiness note: `code/ctxprereg/READINESS.md` |
@@ -38,7 +54,7 @@ Stars are post-check where a check ran (marked ✓); pre-check otherwise.
 
 | Direction | ★ | Cost (GPU-h) | First step | Note |
 |---|---|---|---|---|
-| Abbeel parallel-RL factorial (which fast-RL ingredients matter) | ★★★★½ | 400–650, OrangeGrid | re-check the source group's latest releases | **Expiring** — the authors are working through the axes; swap-in for a slate slot or it dies |
+| ~~Abbeel parallel-RL factorial~~ | **KILLED Aug 7 — premise wrong + Level 1** | The row's headline "BRC-vs-TD-overfitting contradiction" does not exist: BRC is a multi-task paper, [Compute-Optimal Scaling (2508.14881, NeurIPS 2025)](https://arxiv.org/abs/2508.14881) is a single-task scaling paper, they share three authors and agree. That same paper already ran our proposed capacity×batch×UTD grid ON OUR EVAL SUITE with a fitted law; every one of the five "ingredients" has a published one-at-a-time curve (FastTD3 §2.1, [FastSAC](https://arxiv.org/abs/2512.01996), [FlashSAC RSS26](https://arxiv.org/abs/2604.04539), [2605.10236](https://arxiv.org/abs/2605.10236)); only interaction terms remain, which the method definition excludes (same reason T1 died). Real cost was ~850 GPU-h, not 400–650. Zero-cost keeper: FastTD3's shipped batch of 32,768 sits 1.5–58× above the published compute-optimal prescription while its successors moved inside it — one citable paragraph, not a paper. Verdict: tier2gates `runs/parallelrl-gate-20260807/` |
 | ~~Replay-mechanism arbitration~~ | **KILLED Aug 6 — false premise + Level 1** | Embarrassing double failure caught at the gate for 0 GPU-h. (1) The row misstated its source: [2603.04964](https://arxiv.org/abs/2603.04964) is about replay improving FINE-TUNING data efficiency (1.9–2.1×), not pretraining stability — loss spikes appear only in its Appendix B.1, where the authors call the spike explanation "one relatively vague hypothesis" and have not shown spikes are harmful. The "five candidate causes with cheap falsifiers" exist in no wiki record — the claim was unsourced. (2) The corrected question is fully published: [2605.26097](https://arxiv.org/abs/2605.26097) runs the capacity-vs-optimization-vs-replay arbitration; [2607.00634](https://arxiv.org/abs/2607.00634) owns the transition-transient arm (our own wave-2 record had already flagged it); [2506.04805](https://arxiv.org/abs/2506.04805) publishes the spike-detection instrument. The fast-moving cluster here is Raghunathan/Springer + Wilson (four mechanism papers Mar–May), not the source authors, who moved to synthetic data in March. Verdict: replayarb `runs/20260806-stage1/stage1_verdict.json` |
 | ~~RLVR vs self-consistency calibration~~ | **DIED at its pilot, Aug 6** | Gate PASSED (Level 3; six OLMo-3 pairs isolate the RLVR stage; gate record [[RLVR-Calibration-Gate]]), and the pre-registered pilot then answered the question honestly: RLVR does NOT break the calibration of self-consistency agreement — the pre/post ECE difference excludes zero on neither dataset (Holm p 0.77 / 0.15), and the agreement signal is already well-calibrated on BOTH checkpoints (ECE 0.06–0.13). The named secondary even moved the other way: post-RLVR agreement became MORE informative on MMLU-Pro (slope +0.95 [+0.23, +1.74]). A calibrated-aggregation method has nothing to fix, so the row closes. This is a clean, well-powered negative worth one paragraph in any future aggregation paper. ~12 GPU-h. Report: cropdistill `runs/rlvr_calib/20260806/` |
 | ~~KV-cache footprint under agentic workloads~~ | **SCOOPED Aug 6 — Level 1** | The gate found BOTH halves published: [MemDecay (2607.10582)](https://arxiv.org/abs/2607.10582) fits attention half-lives on agent traces (with CIs) and ships a turn/region-aware eviction policy; [IntentKV (2606.09916)](https://arxiv.org/abs/2606.09916) publishes our exact diagnosis plus a cross-turn policy at 8–14B; [TraceLab (2606.30560)](https://arxiv.org/abs/2606.30560) released 4,300 real agent sessions and names agent-aware eviction as its own next step; an SGLang RFC is building it in production. Worse for any revival: MemDecay's data suggests our premise was backwards — accumulated-attention retention (H2O) STRENGTHENS with scale; only the recency family is mistuned. The neighborhood publishes ~one agent-KV paper per week. Retire; do not re-propose (third KV-family death this cycle). 0 GPU-h spent. Verdict: kvagent `runs/20260806-stage1/stage1_verdict.json` |
