@@ -15,9 +15,9 @@ diversity (CVPR, week-1 passed, ready to lock) · epistemic
 contextualization (ICML, pipeline ready, needs sign-off) · SVIB→TMLR
 (writing) · sparsity-premise test (design ready, OrangeGrid, standalone
 safety-empirics paper) · robot-evaluator uncertainty audit (headline
-proven, boundary note then design). The role-decodability evidence is a
-supporting asset for the TMLR/analysis line and a possible DisCoCLIP
-audit note — not a method paper. On Aug 6 we ran a full
+proven, boundary note then design). **Owner decision Aug 7: the role-decodability evidence JOINS the
+SVIB→TMLR paper as its analysis backbone**; the DisCoCLIP audit note
+(subsection vs separate note) stays a meeting item. On Aug 6 we ran a full
 adjudication day on one held 2-GPU node: thirteen directions were killed
 by their own pre-stated rules or by verified prior work, one survived its
 check (the sparsity-premise test), two committed pre-registrations moved
