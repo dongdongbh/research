@@ -4,6 +4,35 @@ Status: **DRAFT v1, 2026-08-03 — for professor sign-off.** This plan locks
 after the week-1 check in §8. Target venue: **CVPR 2027**. The deadline is
 around Nov 13, 2026 in our deadlines table; confirm the exact date before lock.
 
+**Week-1 check RESULT (2026-08-06; §8 steps 1–4 done, step 5 = owner):**
+
+1. **The pipeline is ours.** We ran both families end-to-end on our own
+   H100 (10,000 samples each, identical class labels and real reference).
+   **Drifting's recall — never published anywhere — is 0.72 (latent L) /
+   0.69 (pixel L) at 1 step.** Shortcut recall rises with step count
+   (0.48 → 0.53 → 0.62 at 1/4/128), the direction H1 predicts. These rows
+   are NOT precision-matched, so they say nothing about H2 yet.
+2. **JAX works on our H100** (741 TFLOP/s, real GPU compute). Still open:
+   A100 on OrangeGrid, H200 on Delta. **Correction to §6: Anvil's A100
+   partition is not available to our account at all** — the from-scratch
+   pair must use the H100 partition or Delta. Note both repos are JAX.
+3. **Novelty holds** (8-week window searched; SubFlow still has no code;
+   nobody has measured Drifting's diversity). One softening: ROMS-IMLE
+   ([2607.19332](https://arxiv.org/abs/2607.19332)) publishes recall for a
+   non-averaging one-step model — "nobody has measured this" must become
+   "no one has measured it across objective families." It is also a
+   candidate second non-averaging model for H2.
+4. **The CVPR 2027 deadline is not yet published** (site 404s; CVPR 2027
+   is Jun 20–24, Seattle). Treat as Nov 2026 ± 2 weeks; re-check in Sept.
+5. ⚠ **Open anomaly before trusting high-step numbers:** our Shortcut
+   128-step FID is 40.1 vs the repo's published 15.5 (reference-stats and
+   CFG explanations ruled out; the released checkpoint may not be the one
+   behind the README table). Recall comparisons are unaffected. Also: the
+   §4 claim that MeanFlow/iMF/pMF weights are "on HF" did not survive a
+   first search — verify before weeks 2–4 depend on it.
+
+   Full record: `code/nfe1/runs/week1_check/20260806/`.
+
 Paper type: **a study that decides between two explanations, with a named
 method it could make possible** (standing rules 5–6). Related plans:
 [[Prereg-RoboJudge-Audit]] · [[Prereg-Crop-Consistency-Distillation]] ·

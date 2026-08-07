@@ -211,3 +211,67 @@ References:
 - https://docs.nvidia.com/deploy/cuda-compatibility/forward-compatibility.html
 - https://anaconda.org/conda-forge/cuda-compat
 - https://docs.vllm.ai/en/latest/getting_started/installation/gpu/
+
+## Anvil H100 (`h002`), vLLM 0.26.0, 2026-08-06 — vLLM did not run at all
+
+A separate, unrelated failure mode, recorded so the next person does not repeat
+the six startup attempts it cost (about 0.4 GPU-hours).
+
+The node has driver `580.105.08`, so none of the `cuda-compat` work above is
+needed there. The problem was the wheel set, not the driver.
+
+**Why a new vLLM was needed at all.** OLMo-3 checkpoints declare
+`Olmo3ForCausalLM`. Only vLLM 0.26.0 ships `olmo3.py`; vLLM 0.21.0 has
+`olmo2.py` and cannot load them.
+
+**Three install traps, in the order they appear:**
+
+1. `llguidance` at version 1.7.0 or newer publishes only `manylinux_2_31`
+   wheels. Anvil compute nodes are glibc 2.28, so `uv` falls back to building
+   from source, which needs Rust, which is not installed. Work around it with
+   an override file pinning `llguidance==1.6.1` (a `manylinux_2_28` wheel)
+   while still asking for `vllm==0.26.0`:
+
+   ```bash
+   echo "llguidance==1.6.1" > overrides.txt
+   uv pip install --python <venv>/bin/python \
+       --override overrides.txt --only-binary llguidance "vllm==0.26.0"
+   ```
+
+2. Triton looks for a compiler named `clang`. The node has only gcc, so vLLM
+   dies with `FileNotFoundError: [Errno 2] No such file or directory: 'clang'`.
+   A one-line shim that forwards `clang` to the Spack gcc fixes it; put its
+   directory first on `PATH`.
+
+3. `flashinfer-python 0.6.14` refuses to start against `flashinfer-cubin
+   0.6.8.post1`, and **no matching `flashinfer-cubin 0.6.14` exists on PyPI**
+   (0.6.9 is the newest). Its own error message names the bypass:
+   `FLASHINFER_DISABLE_VERSION_CHECK=1`. Use the bypass. Do **not** downgrade
+   `flashinfer-python` to match the cubin package — that swaps a cosmetic
+   mismatch for a real one.
+
+**The trap that has no workaround yet.** After all three fixes, the engine
+still dies during startup with:
+
+```text
+AttributeError: module 'cutlass.cute.core' has no attribute 'ThrMma'
+```
+
+vLLM 0.26.0 pins `nvidia-cutlass-dsl==4.6.0` and that is exactly what is
+installed, so the two are simply out of step in this build. None of the
+following avoided it:
+
+- `enforce_eager=True` (the failure happens before compilation is skipped);
+- `VLLM_ATTENTION_BACKEND=TRITON_ATTN` — **vLLM 0.26.0 removed this environment
+  variable**; it warns "Unknown vLLM environment variable detected" and ignores
+  it. The option is now the `attention_backend` engine argument;
+- `attention_backend="TRITON_ATTN"` passed correctly as an engine argument;
+- restoring `flashinfer-python==0.6.14`.
+
+**What to do instead.** For sampling workloads, plain `transformers` generate
+works on this node with the same checkpoints. It is slower, but for a
+fixed-size sampling job it is predictable and it starts. Budget your
+environment debugging (about half an hour is plenty) and switch.
+
+Open question for whoever picks this up: try an older vLLM that still has
+`olmo3.py`, or a newer `nvidia-cutlass-dsl` than the pin allows.

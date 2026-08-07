@@ -149,6 +149,21 @@ readout methods.
 
 ## 5. Gate result on 2026-08-03: SURVIVES, BUT NARROWER — ★★½
 
+**CORRECTION, 2026-08-06.** This section's survival claim was wrong when
+written. A deeper check found [DisCoCLIP (2509.21287)](https://arxiv.org/abs/2509.21287)
+(Sept 2025): a fixed-algebra trained composition head on a frozen CLIP
+that keeps one vector per side and one dot product — the exact cell this
+section declared empty. Our search was keyed to the HRR/VSA/TPR
+vocabulary; DisCoCLIP calls the same mathematics a "tensor network."
+Additionally, [2608.00726](https://arxiv.org/abs/2608.00726) (Aug 2026)
+now publishes the patch-tokens-retain-binding finding of §6–8, and
+[2510.24709](https://arxiv.org/abs/2510.24709) reports object binding
+emerging in pretrained ViTs. The method direction built on this section
+was killed on 2026-08-06 (Level 1 overlap); what remains uniquely ours
+is the powered two-strata evidence, the inversion, and the cross-task
+specificity result of §9. The original section is kept below as the
+honest record of what we believed on Aug 3.
+
 The closest work is
 [OC-CLIP (Meta FAIR/Mila, 2502.14113)](https://arxiv.org/abs/2502.14113).
 OC-CLIP parses captions into scene graphs, turns ViT patches into object slots,
@@ -301,6 +316,82 @@ systematicity-tested fact for spatial roles, holds directionally on real
 photos with verbs, and the inversion is confirmed at scale. The verb arm
 needs more labeled data (the owner's blind UI over the 401-row pool is the
 path) before its numbers carry weight on their own.
+
+## 8. Verb stratum at full power on 2026-08-06: one claim corrected, one confirmed
+
+The owner finished labeling all 401 verb candidates. After removing rejects
+(71 wrong-both, 21 wrong-neither, 2 unclear) and 28 items where the box
+could point to more than one person, **279 usable items** remained — six
+times the pilot. Predicates now span 8 verbs (watching 155, looking at 63,
+holding 29, and five more) instead of the pilot's 3. We reran the full
+probe with a fresh GPU encode. A holdout check (a second, independent
+program recomputing the numbers) matched exactly, and the spatial numbers
+reproduced bit-for-bit across two different GPU nodes. Full tables:
+cropdistill `runs/role_probe/20260805-verb/report/`.
+
+One honesty note first: the 47 pilot items are contained inside the 279,
+so comparing pilot to full is a precision gain, not an independent test.
+The independent test is the **232 items the pilot never saw**.
+
+**Corrected: the "below chance at the score" claim.** The pilot's most
+dramatic number — the model's own scoring axis at 29.8%, seemingly
+*preferring the wrong caption* — does not hold up. At n=279 it is 44.8%
+[39.1, 50.9], and on the 232 unseen items alone it is 47.8% [41.4, 54.3],
+p=0.56 — indistinguishable from a coin flip. The 29.8% was small-sample
+noise. The score axis is *blind* to verb roles, not reversed.
+
+**Confirmed: the inversion one level down.** Matching a region's features
+directly to text with no training scores clearly BELOW chance on the
+unseen items at every layer tested — 38.8% (layer 6), 33.2% (layer 9),
+34.9% (layer 12), every interval fully under 50%. Anti-correlated role
+information in the raw region-to-text readout is now an independently
+replicated fact on real photos, and it gets worse in deeper layers.
+
+**The rest of the picture at n=279 (pair split):** trained probes read
+roles from patches at 64→70→74% (layers 6/9/12, all decodable), from text
+embeddings at 74%, while the pooled image vector sits at 52–57% — below
+the 0.55 bar on both split types. The region-identity control is healthy
+(89–92%), and both scrambled controls sit at chance (leak check clean).
+The pilot's scary entity-split collapse of the pooled vector was itself a
+small-n artifact: with 23 entity kinds instead of 6, the split barely
+moves anything.
+
+**Bottom line, updated:** both strata — synthetic spatial (n=6,868) and
+real-photo verbs (n=279) — now land in the SAME verdict cell:
+role information is present in the patches, present in the text, and
+destroyed at the pooled readout. The behavioral score is blind (50%), not
+anti-aligned; the anti-alignment lives in the raw region readouts. This
+is the cleanest version of the suppression story yet, and it is exactly
+the situation the Cell A readout-budget experiment is built to exploit.
+
+## 9. A cross-task contrast on 2026-08-06: suppression is specific, not universal
+
+Two same-day results sharpen what the suppression story does and does not
+claim.
+
+**MOCHI (3D view consistency) shows the opposite pattern.** We ran our
+probe design on [MOCHI](https://arxiv.org/abs/2409.05862), a benchmark
+asking whether two images show the same object from different viewpoints.
+There, nothing is suppressed: the model's own similarity score is the
+*best* readout (SigLIP2: 70.0% vs patches 68.3%), pooling costs 3–5
+points instead of 47, and no readout at any layer of any of three model
+families is inverted. View identity is *never built* by these models —
+there is no hidden signal for a better readout to recover. Role binding
+is different in kind: the signal exists (99.5% / 74% in patches) and is
+destroyed on the way out.
+
+**The Cell A pilot killed the naive repair.** Simply reading the patches
+with an untrained rich readout does NOT recover binding on the benchmarks:
+it scores 21 points *below* the model's own pooled score, and more patches
+help retrieval monotonically while never helping binding. It also showed
+that an apparent sign inversion at battery scale was a caption-length
+artifact of the scoring rule; the real inversion is confined to
+unprojected token space, as §8 found.
+
+**Together:** the suppression cell is real, specific to role binding, and
+not fixable by readout choice alone — whatever recovers the patch-level
+role signal must be *trained* (the algebraic-binding direction), not
+merely wired differently.
 
 ## Related
 

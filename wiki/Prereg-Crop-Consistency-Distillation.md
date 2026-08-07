@@ -20,7 +20,16 @@ Terms used below:
 - **Distillation** trains a smaller or cheaper student to copy a stronger
   teacher.
 
-Status: **LOCK HOLD, 2026-08-02.** The final literature check found
+Status: **BENCH (pending sign-off), 2026-08-06.** The recommended path —
+fold this machinery into the Cell A readout-frontier paper as its method
+arm — died when Cell A was killed by its own pilot rule on Aug 6 (best
+untrained rich readout −21 points vs the pooled score on SugarCrepe++,
+both backbones; see [[Method-Gates-Wave-3-2026-08]]). Per the pre-stated
+consequence, the fold decision collapses to bench. The standalone ★★
+option remains available at sign-off, but nothing here should start
+without an owner decision. Original hold note follows.
+
+Previous status: **LOCK HOLD, 2026-08-02.** The final literature check found
 **[arXiv 2604.11496](https://arxiv.org/abs/2604.11496)** from Apr 2026, with a 3.5/4-part match. Its TF_Local
 method already publishes the main insight: fine-grained alignment of FROZEN
 patch/token features gives large gains in compositional understanding while

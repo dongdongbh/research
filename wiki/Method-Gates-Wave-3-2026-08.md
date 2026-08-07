@@ -36,7 +36,7 @@ this missing step.
 | **Cell A** | **How binding changes as the readout budget changes** ("compositional supervision does not survive multi-vector compression") | **SURVIVES, AMBER** — the compression work was checked and studies retrieval only. [Tübingen theory (2602.24264, ICML26)](https://arxiv.org/abs/2602.24264) predicts NO breakpoint when d≥k, with k≈3–5, so either result teaches us something. [CIE (1911.05248)](https://arxiv.org/abs/1911.05248) gives the per-item framing we should use | **★★★½** | **Possible CVPR method slot** |
 | Cell B | Split compositional benchmarks by whether each item depends on position | SURVIVES — unanswered, but its overall design has two clear examples: [temporal twin 2607.12304](https://arxiv.org/abs/2607.12304), 3 weeks old, and CompLearn's split+rerank design. [2503.17349](https://arxiv.org/abs/2503.17349)'s 0.2–2.7% total drops predict a small split | ★★½ | Idea bench; 5 GPU-h pilot decides |
 | O1 | Test spectral bands together with knowledge injection to decide between explanations (Raschka/MiCA) | SURVIVES-NARROWED — four studies already answer the learning-rate-artifact question for task adaptation. Only the knowledge-injection setting + TOST + released benchmark remain | ★★ | Idea bench; K1 = 10 GPU-h MiCA reproduction is required before entry |
-| RB | Algebraic role-binding embeddings (HRR/TPR in frozen towers) | SURVIVES-NARROWED — [OC-CLIP (2502.14113)](https://arxiv.org/abs/2502.14113) owns parse+non-commutative score+algebraic swap negatives, but its shape is text-conditioned and cross-encoder-like. The HRR×ITM question is empty: 43 papers, 0 CLIP. **Probe update 2026-08-03: kill-arm A CLEARED for spatial roles**: 99.9% linear decodability in frozen ROI features; a parameter-free sign flip gives 100%; pooled embedding and scoring axis stay at chance. See [[Binding-Root-Cause-Analysis]] §6. The verb-argument case stays open until VisMin is unblocked | **★★★ (cond.)** | Promoted; rate again after verb-swap data |
+| RB | Algebraic role-binding embeddings (HRR/TPR in frozen towers) — **RE-GATED 2026-08-06: KILLED, Level 1 full overlap.** [DisCoCLIP (2509.21287)](https://arxiv.org/abs/2509.21287) (Sept 2025) already trains a small tensor-product composition head on a frozen CLIP, one cacheable vector per side, plain cosine, evaluated on role swaps with a commutative control; [2605.31503](https://arxiv.org/abs/2605.31503) (ICML 2026) publishes the diagnosis and the multiplicative-mechanism thesis. The 2026-08-03 emptiness finding below was vocabulary-keyed and wrong in effect — DisCoCLIP never uses the words HRR/VSA/TPR. Verdict record with verified quotes: cropdistill `.orchestrator/tasks/rb-design-20260806-01/stage1_verdict.json`. Original record follows. | SURVIVES-NARROWED — [OC-CLIP (2502.14113)](https://arxiv.org/abs/2502.14113) owns parse+non-commutative score+algebraic swap negatives, but its shape is text-conditioned and cross-encoder-like. The HRR×ITM question is empty: 43 papers, 0 CLIP. **Probe update 2026-08-03: kill-arm A CLEARED for spatial roles**: 99.9% linear decodability in frozen ROI features; a parameter-free sign flip gives 100%; pooled embedding and scoring axis stay at chance. See [[Binding-Root-Cause-Analysis]] §6. The verb-argument case stays open until VisMin is unblocked | **★★★ (cond.)** | Promoted; rate again after verb-swap data |
 
 ## Cell A — the most important idea (full record)
 
@@ -76,6 +76,20 @@ and Oh already have three binding-geometry papers in 2026. Testing the
 compression axis is an obvious next step for them. Speed matters.
 
 **Venue:** CVPR, around Nov 13. This fills the plan's empty CVPR method slot.
+
+**PILOT OUTCOME (2026-08-06): KILLED.** Kill-arm 2 fired exactly as
+pre-stated. On SugarCrepe++ the best untrained rich readout scored **21
+points BELOW** the model's own pooled score on both backbones (SigLIP2
+−21.4 [−23.1, −19.7]; CLIP B/32 −20.6 [−22.4, −18.8]), and the whole
+K=1→256 ladder spans only 2.6 points — there is no frontier to measure.
+The null survived a deliberate bug hunt: the MaxSim readout retrieves at
+8–31× chance (so it is not broken, just weak), wiring checks are exact,
+and two independent runs are bit-identical. Two by-products carry to
+Cell B: the retrieval-vs-binding dissociation, and the finding that the
+battery-scale "inversion" is a caption-length artifact of MaxSim (the
+real inversion is confined to unprojected trunk tokens, consistent with
+[[Binding-Root-Cause-Analysis]] §8). Full report: cropdistill
+`runs/cellA_pilot/20260806-report/`.
 
 ## Cell B — full record
 
