@@ -20,9 +20,20 @@ spending Anvil credits on everything:
 **Verification gates (cheap, run first):** (V1) JAX on OrangeGrid
 cards — pass ⇒ 1-NFE sweeps may overflow to OG free; (V2) VLM-judge
 throughput on one L40S — confirms RoboJudge's home (fallback: Anvil
-tranche); (V3) Delta H200 environment (torch + data staging via
-Globus) — **needs the owner once** (password+Duo SSH). Until V3 passes,
-Delta is fallback-only and training runs stay on Anvil.
+tranche); (V3) Delta environment — **PASSED Aug 8** (owner-run probe:
+torch 2.8.0+cu128 on A100, driver 570.x). Delta facts that bind the
+plan: account `bhvn-delta-gpu`, 1,999 of 2,000 hours unused; **pin
+torch to cu128 wheels** until nodes migrate to the 595 driver (the
+CUDA-13 default build fails on 570.x; re-test unpinned after
+migration); **the A100s are 40 GB** — the contextualization training
+config (54.7 GB measured) does NOT fit them, so the Delta target is a
+**full gpuH200x8 node (8×141 GB): all eight training runs in parallel
+in one ≤48 h allocation** (~120–160 account-hours; the 8 H200 nodes
+were fully busy at check time — submit early and let it pend); the
+wiki's old claim of 30-day "-long" partitions is stale — Delta GPU
+walls are 2 days now. A100-40GB remains useful overflow for the
+rewriting pass (the 7B rewriter fits) if Anvil queues badly. Data
+staging (26 GB mixture) via Globus when the campaign is scheduled.
 
 Original single-cluster rationale kept below for the record.
 
