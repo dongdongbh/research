@@ -71,6 +71,7 @@ Stars are post-check where a check ran (marked ✓); pre-check otherwise.
 | ~~Algebraic role-binding embeddings~~ | **SCOOPED Aug 6 — Level 1 (full overlap)** | The pre-design re-check found [DisCoCLIP (2509.21287)](https://arxiv.org/abs/2509.21287) (Sept 2025): a frozen CLIP tower + a small trained tensor-product composition head + one vector per side scored by plain cosine, evaluated on subject–object swaps with a commutative control — our claim on all four axes, in the cacheable dual-encoder regime. Second blocker: [2605.31503](https://arxiv.org/abs/2605.31503) (ICML 2026) publishes our diagnosis AND the multiplicative-mechanism thesis, with evidence against the frozen-CLIP route. Also [2608.00726](https://arxiv.org/abs/2608.00726) (Aug 1) publishes the probe program's core finding (patch tokens retain binding; the global embedding is the bottleneck). Why our earlier check missed it: the "43 HRR papers, 0 on CLIP" emptiness was VOCABULARY-keyed — DisCoCLIP does the same algebra under "tensor network" and never says HRR. Honest residue (diagnostic, not a method): DisCoCLIP's 93.68% is on 95 pairs with no text-prior control, and our probe says the pooled vector it scores is role-blind — auditing that number is cheap and would be a real correction. Owner decision needed on the probe→method-paper plan. Verdict record: cropdistill `.orchestrator/tasks/rb-design-20260806-01/stage1_verdict.json` |
 | ~~Anthropic VLA-supervision replication~~ | **KILLED Aug 6 — false premise** | The [post](https://www.anthropic.com/research/claude-plays-robotics) finds the OPPOSITE of our row: "every tested model still performs substantially worse than MolmoAct does on its own" — supervision *hurts* (headline cell n=200, not 36; the n=36 cell is the one place the authors DID report confidence intervals, by their own choice). A replication is not a method under our definition; the missing repo is a corrected fact, not the reason. Residue: a zero-cost binomial-interval comment |
 | Choi hivemind decomposition | ★★★½ | low | resolve the 404'd dataset | Blocked on data (unchanged) |
+| **NEW candidate (ungated): distractor geometry as a benchmark leak class** | pre-gate, unrated | first step 0 GPU | Census: how many benchmarks release numeric option sets? Below ~5 it is a note, not a paper | Born from the [[Spatial-IQ-Audit-2026-08]] (verified: symmetric numeric distractors give a blind median-picker 27.9% vs 20% chance, and interact with per-model rank biases). Method route 3 if it generalizes. MMStar/Cambrian-1 audit blindness but never distractor construction. Mandatory full gate before any commitment |
 | ~~T1 narrowed interaction study~~ | **KILLED Aug 6** | [PIVOT](https://arxiv.org/abs/2510.16333) (ICLR 2026 — our records missed the acceptance) itself publishes the GRPO arm our row claimed as its delta (§5), plus PPO/MPO; its own Table B shows every {freeze, update}×{GRPO, PPO} cell has a running repo. The only unpublished piece is an interaction term — statistics, excluded by the method definition — at ~860 H100-h true cost (the paper's own 18 h × 8 H100 per recipe), 3.5–6× the row's budget |
 | ~~KV three-way interaction~~ | **KILLED Aug 6 — unaffordable, not unoriginal** | The three-way heads×tying×window factorial at matched KV bytes is genuinely unclaimed (verified across three vocabularies; the agentic-KV blockers do NOT cover it) — but it means something only at ~1,000 H100-h, and [2606.15378](https://arxiv.org/abs/2606.15378) shows small-scale versions measure emergence *speed*, not converged quality. The Tsinghua group behind Cost-Optimal GQA is systematically walking the axes. Revival test (0 GPU): check whether their convergence curves leave any three-way interaction at the converged point |
 
@@ -136,7 +137,13 @@ funded task while misstating what its source paper claims; ten minutes
 with the abstract would have caught it; (11, Aug 6) **pull the source
 paper's citing papers as a required gate pass** — twice today the
 citation graph, not keyword search, found the blocking work (papers
-indexed under "forgetting"/"overtraining", not "replay").
+indexed under "forgetting"/"overtraining", not "replay"). (12, Aug 7)
+**read the released artifacts first** — four times in one week (MiCA,
+Fisher-z, VELOCITI, Spatial-IQ) the decisive finding came from code,
+prompt files, or per-item outputs rather than the paper, in hours at
+near-zero cost; and single confident passes are not trustworthy —
+adversarial peer-checking corrected four framings before they reached
+the owner.
 
 ## Related
 
