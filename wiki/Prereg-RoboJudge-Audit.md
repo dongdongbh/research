@@ -1,5 +1,22 @@
 # Pre-registration: Do Robot Policy Evaluators Recover the Human Ranking?
 
+**Judge-arm bring-up RESULT (2026-08-08; read before locking):** the
+harness is built, dry-run-verified, and runs the moment a GPU appears
+(measured costs: ~46 L40S-hours on OrangeGrid + ~12 H100-hours for the
+72B judge, which fits only on Anvil). The aggregation layer reproduces
+the frozen human ranking to 5e-07 when fed the human preferences, and
+blind arms structurally cannot open video files. **Material finding:
+RoboReward was trained on 25.9% of our audit episodes** (1,322 of
+5,106, from its own paper's data recipe; per-policy rates 20–31%, uneven
+enough to move a ranking) — every RoboReward number will be reported
+twice, full and contamination-clean (the clean list is computed).
+**Correction needed at lock: H5 names the wrong statistic** — the
+RoboRewardBench metric is MAE (lower is better), not accuracy, and two
+of our judges are not on that leaderboard, so H5 must be restated for
+four judges. Eight open lock questions with recommendations:
+`robojudge/SMOKE_PLAN.md` + the 2026-08-08 worker report
+(`runs/judge/2026-08-08/`).
+
 Status: **DRAFT v1, 2026-08-03 — for professor sign-off.** Lock after the
 week-1 go/no-go check in §8. After lock, do not change the predictions,
 experimental arms, measurements, or decision rules. Report any later change as
