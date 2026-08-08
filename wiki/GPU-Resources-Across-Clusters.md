@@ -108,3 +108,22 @@ month walls that exceed Anvil's limits.
 [[Anvil-vs-Delta]] · [[Data-Transfer-Between-Clusters]] ·
 [[Anvil-Interactive-GPU-Workflow]] · [[Delta-Setup-and-Parallel-Workflow]] ·
 [[CUDA-Compatibility-and-vLLM]]
+
+
+## OrangeGrid: how we actually hold GPU nodes (added 2026-08-08)
+
+OrangeGrid has no wall-clock limits, so the working practice is to CLAIM
+a whole GPU node and keep it. The submit files live in
+`/home/dli160/submits/` on the OG login node (`ssh og_cluster`):
+`L40S_1_start.sub`, `L40S_2_start.sub`, `A100_1_start.sub` ... each runs
+a `dummy_run.sh` holder (2 GPUs, 8 CPU, 64 GB requested) that occupies
+the node indefinitely. Work then happens INSIDE the claim — through the
+owner's tmux session, or `condor_ssh_to_job <jobid>`.
+
+Rules of use:
+1. `condor_q dli160` first — if a holder job is already running, use
+   that node instead of submitting probe jobs into the queue.
+2. Agents never type into the owner's tmux windows; make your own
+   windows/sessions, check `nvidia-smi` before taking a GPU, clean up.
+3. One holder job per node type is normally enough; release (condor_rm)
+   only when the owner says the OG queue of work is empty.
