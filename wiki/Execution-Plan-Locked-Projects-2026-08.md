@@ -6,9 +6,27 @@ machine, what resources, and the week-by-week plan. Companion items
 the end. Total GPU need across the three: **~550–650 H100-hours**, which
 under the card-scaling rule means multi-card allocations from the start.
 
-## Machines — the placement decision
+## Machines — the BALANCED placement decision (revised Aug 8, owner request)
 
-- **Anvil H100 (ai partition) is the primary machine for all three.**
+Assign each project to the cluster whose shape fits it, instead of
+spending Anvil credits on everything:
+
+| Project | Cluster | Why |
+|---|---|---|
+| RoboJudge | **OrangeGrid** (free) | Judge inference is one independent job per episode batch — HTCondor's exact profile; 7–8B judges fit L40S 48 GB; no wall limits; saves ~150 h of credits. Data: one 28 GB transfer. |
+| 1-NFE | **Anvil H100** (credits) | Both codebases are JAX; JAX is verified ONLY on H100. The right place to spend credits because there is no alternative yet. |
+| Contextualization | **Anvil (rewriting) + Delta H200 (the eight training runs), if Delta verifies** | Rewriting needs the vLLM recipe proven on Anvil; the training campaign hates 48-h walls and fits Delta's 30-day wall in one allocation. |
+
+**Verification gates (cheap, run first):** (V1) JAX on OrangeGrid
+cards — pass ⇒ 1-NFE sweeps may overflow to OG free; (V2) VLM-judge
+throughput on one L40S — confirms RoboJudge's home (fallback: Anvil
+tranche); (V3) Delta H200 environment (torch + data staging via
+Globus) — **needs the owner once** (password+Duo SSH). Until V3 passes,
+Delta is fallback-only and training runs stay on Anvil.
+
+Original single-cluster rationale kept below for the record.
+
+- **Anvil H100 (ai partition) — original primary rationale.**
   Reasons: all staged data lives on Anvil (`/anvil/projects/.../datasets`:
   RoboArena 28 GB, the 2B-token contextualization mixture, ImageNet
   reference stats, all checkpoints and caches); JAX is verified on H100
