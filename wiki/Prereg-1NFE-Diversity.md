@@ -33,6 +33,37 @@ around Nov 13, 2026 in our deadlines table; confirm the exact date before lock.
 
    Full record: `code/nfe1/runs/week1_check/20260806/`.
 
+**Week-2 preparation RESULT (2026-08-08; lock-relevant — read before locking):**
+
+1. **The 128-step FID anomaly is RESOLVED, and our number was right.**
+   The repo's 15.5 is a GUIDED figure — the paper states CFG is used
+   only at the smallest step size — while our 40.1 is unguided (DiT-B
+   unguided baselines land exactly there; an independent paper reruns
+   the same checkpoint guided and gets 15.0). High-step numbers are
+   un-quarantined pending one 10-minute regression run.
+   **Consequence for H1:** the week-1 recall rise with steps is
+   guidance-confounded (guidance is baked into the low-step weights and
+   absent at 128); H1 must be read at matched precision only, and its
+   wording should say so at lock.
+2. **Model roster corrections:** MeanFlow's flagship ImageNet weights
+   were never released (§4 must drop that claim); **iMF and pMF weights
+   DO exist** ([iMF](https://huggingface.co/Lyy0725/iMF),
+   [pMF](https://huggingface.co/Lyy0725/pMF)); Drifting/iMF/pMF share a
+   byte-identical FID reference file — the JAX path gives cross-family
+   comparability for free. **ROMS-IMLE is out** (no code or weights,
+   and its published recall of 0.50 is LOWER than its baselines — the
+   week-1 note treating it as a helpful second non-averaging model was
+   backwards). **Verified replacements:** [IMM](https://huggingface.co/lumaai/imm)
+   (samples at 1/2/4/8 steps from ONE checkpoint — exactly the H2
+   control; and its averaging-vs-distributional loss is a single knob,
+   a cleaner H3 than training from scratch) and AFM (ByteDance, ships
+   50k sample packs so recall costs nothing).
+3. Reference-feature caching and the parallel loader are implemented
+   and must reproduce week-1 metrics bit-for-bit before any sweep uses
+   them (a 15-minute GPU check).
+
+   Ten open lock questions: `code/nfe1/runs/week2_prep/20260808/`.
+
 Paper type: **a study that decides between two explanations, with a named
 method it could make possible** (standing rules 5–6). Related plans:
 [[Prereg-RoboJudge-Audit]] · [[Prereg-Crop-Consistency-Distillation]] ·
