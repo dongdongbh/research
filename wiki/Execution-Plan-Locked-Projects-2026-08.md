@@ -123,6 +123,32 @@ at the meeting; only #2 blocks the rewriting pass):**
 - **Sep 15 – Oct 24:** the eight training runs + eval; analysis and
   writing with a wide margin before the January deadline.
 
+## Cross-cluster onboarding (for an agent starting on another cluster)
+
+Everything needed is in git. Pull these (all under github.com/dongdongbh,
+private unless noted):
+
+| Repo | What it holds | Needed for |
+|---|---|---|
+| `research` (this wiki) | THIS PLAN, all preregs, gate records, cluster wikis | everything — read this page first |
+| `robojudge` | frozen human ranking, judge-arm harness + configs, tests | RoboJudge on OrangeGrid |
+| `nfe1` | recall pipeline (JAX), week-1 runs + manifests | 1-NFE on Anvil (or OG if V1 passes) |
+| `ctxprereg` | full train/rewrite/eval pipeline, READINESS.md, tests | contextualization |
+| `cropdistill` | probe machinery, battery loaders, locked SigLIP2 wiring | reference only |
+
+NOT in git (transfer or re-stage; manifests in each dataset dir):
+RoboArena dump 28 GB (transfer to OG in progress), the 2B-token
+contextualization mixture (26 GB, Anvil `datasets/ctxprereg/`),
+model checkpoints (HF cache re-downloads by ID), ImageNet val tree +
+reference stats (Anvil `datasets/`). Weights re-fetch from HF by the
+IDs pinned in each repo's manifests — set HF_HUB_DISABLE_XET=1.
+
+Startup ritual for the remote agent: read this page top to bottom, then
+the project's prereg, then the repo's newest run manifest; obey the
+standing rules (own uv env per worker, manifests everywhere, append-only
+runs, no git commits unless the owner says, pre-stated rules before
+result-bearing runs).
+
 ## Immediate actions (today)
 
 1. Submit the Anvil allocation NOW and let it pend: **2×H100, 48 h**
