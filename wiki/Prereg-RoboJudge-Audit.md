@@ -20,6 +20,16 @@ agreement statistic, and a 64-episode pre-shard before its budget is
 final. The four week-1 pinned choices stand unchanged. Lock hash: `ad85987d4b5e13c2e59c2afd4aa557fc5178338a`. Changes after
 this point are deviations and must be logged as such.
 
+**Deviation 1 (2026-08-09, owner-ratified):** lock item 7's parse regex,
+applied literally, misclassified outputs that honour a judge's own
+published format (Cosmos's model-card `<answer>` tag with a bare digit;
+the "ANSWER:" prefix inside the tag was our harness's own addition, and
+100% of the "failures" carried valid scores in the correct tag). The
+widened rule — inside a declared answer tag, a bare 1–5 parses — is the
+headline for tag-declaring judges; BOTH parse rates are reported side by
+side; the >5% non-compliance threshold is unchanged. Owner ratification,
+verbatim: "widen the rule for tag-declaring judges, ratified".
+
 **Judge-arm bring-up RESULT (2026-08-08; read before locking):** the
 harness is built, dry-run-verified, and runs the moment a GPU appears
 (measured costs: ~46 L40S-hours on OrangeGrid + ~12 H100-hours for the
