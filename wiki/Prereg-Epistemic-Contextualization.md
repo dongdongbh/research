@@ -79,8 +79,14 @@ verified byte-identical (provenance in KEY_REGENERATED.json); the
 human still labels blind. DELTA_LAUNCH.md is complete to the extent
 possible and opens with a blocking notice: not to be followed until
 the owner rules on the gate. Both Anvil allocations released
-2026-08-10 (queue empty pending owner decisions; re-queue on decision
-is cheap).
+2026-08-10 (queue empty pending owner decisions). Restart-cost note
+for the decision, at the worker's correct insistence: releasing also
+surrendered the pending follow-on's queue position, so "continue
+rewriting" means request → queue wait (historically multi-hour to
+multi-day on this account) → resume from the finished shard. Nothing
+is lost but the wait; the campaign resumes cleanly whenever a card
+appears. All four run directories verified complete with manifests
+after the cancellation; nothing of record lived on scratch.
 
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
 pipeline after approval. Lock the design after the fact-accuracy check in §8.
