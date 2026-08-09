@@ -7,7 +7,9 @@ positive; +0.0917 at 50k) and NOT confirmed in iMF (+0.0004, comparable
 grid) — model-dependent within the averaging family, therefore not a
 property of the averaging objective. H2 true as an inequality
 (Drifting's 1-step recall EXCEEDS its matched 128-step reference by
-+0.2190, CI [+0.2086, +0.2294]) but its mechanism is unsupported: the
++0.2153 on the clean row of record — a crash-recovered twin row agrees
+to within 0.0044, validating feature salvage as a technique; CI
+recomputed on the primary row, ~[+0.205, +0.226]) but its mechanism is unsupported: the
 comparison class is incoherent (family shortfalls span 0.0004–0.0969)
 and an averaging and a non-averaging model are statistically
 indistinguishable at matched precision (+0.0053, CI [−0.0046, +0.0156]
