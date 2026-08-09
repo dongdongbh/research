@@ -1,5 +1,25 @@
 # Pre-registration: Do Robot Policy Evaluators Recover the Human Ranking?
 
+**STATUS: LOCKED 2026-08-08 (professor sign-off at the meeting; all
+recommended defaults adopted).** The locked answers to the nine open
+questions: (1) one exterior camera view (right→left→wrist priority);
+(2) Cosmos 32-frame cap kept, logged as our deviation from its card;
+(3) InternVL3 `-hf` conversion, with the 20-episode comparison smoke;
+(4) aggregation = induced-preference Bradley–Terry (the validated
+layer), never mean score; (5) H5 restated to RoboRewardBench's real
+statistic (MAE, lower better) and limited to the four judges on that
+leaderboard; (6) contamination: every RoboReward number reported twice
+— full and clean — stated in the abstract; (7) parse-failure rule: an
+arm with >5% unparseable replies is reported non-compliant and excluded
+from the headline; (8) the 72B judge is DROPPED from the headline
+roster (family covered by the 7B; optional appendix arm only if spare
+Anvil time exists); (9) environment pinned — torch 2.11.0+cu128,
+transformers 4.57.1, PyAV/decord — and Cosmos gets a stated
+reproducibility caveat, a measured kernel-noise floor beside its
+agreement statistic, and a 64-episode pre-shard before its budget is
+final. The four week-1 pinned choices stand unchanged. Changes after
+this point are deviations and must be logged as such.
+
 **Judge-arm bring-up RESULT (2026-08-08; read before locking):** the
 harness is built, dry-run-verified, and runs the moment a GPU appears
 (measured costs: ~46 L40S-hours on OrangeGrid + ~12 H100-hours for the

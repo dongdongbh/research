@@ -1,6 +1,22 @@
 # Pre-registration: Is One-Step Generative Diversity Collapse Intrinsic, or an Averaging Artifact?
 
-Status: **DRAFT v1, 2026-08-03 — for professor sign-off.** This plan locks
+Status: **LOCKED 2026-08-08 (professor sign-off; recommended defaults
+adopted).** Locked amendments from the week-1/week-2 blocks below:
+H1 is restated to matched-precision-only comparisons (the step-count
+trend is guidance-confounded, so raw step slopes carry no evidential
+weight); the model roster drops the unreleased MeanFlow flagship and
+ROMS-IMLE, adds iMF, pMF, IMM and AFM; H2's within-checkpoint control
+is IMM's 1/2/4/8-step sampling; **H3 is primarily IMM's single-knob
+averaging-vs-distributional contrast (M=1 vs M=4), with the
+from-scratch matched pair as the fallback if the knob proves
+confounded**; the JAX measurement path is canonical (byte-identical
+FID references across families); the caching/loader speedups may be
+used only after the bit-for-bit regression check passes; the CVPR
+deadline is treated as Nov 2026 ± 2 weeks with a September re-check.
+Changes after this point are deviations and must be logged. Original
+draft header follows.
+
+Previous status: DRAFT v1, 2026-08-03. This plan locks
 after the week-1 check in §8. Target venue: **CVPR 2027**. The deadline is
 around Nov 13, 2026 in our deadlines table; confirm the exact date before lock.
 
