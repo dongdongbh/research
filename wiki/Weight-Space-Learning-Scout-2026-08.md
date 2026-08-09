@@ -492,6 +492,8 @@ every recommendation below. Reading models' weights to decide whether they are
 | [Has This Checkpoint Been Abliterated? (arXiv 2607.01854)](https://arxiv.org/abs/2607.01854) | Jul 2026 | activation refusal-gap **plus** weight-recovery energy of `θ_candidate − θ_base` | **AUROC 0.95** over a 273-checkpoint registry (57 stripped-safety models vs 37 benign) across Qwen, DeepSeek-distilled Qwen, Llama, Gemma |
 | [Detecting CSAM Text-to-Image LoRAs From Weights (arXiv 2607.25750)](https://arxiv.org/abs/2607.25750) | Jul 2026 | the single top singular vector of the LoRA update | inference-free fingerprint of training content, robust to noise, rescaling and precision reduction |
 | [Evaluation without Generation (arXiv 2604.25119)](https://arxiv.org/abs/2604.25119) | Apr 2026 | internal activations under Gaussian probes | separates benign from harmful specialization without generating |
+| **[PEFTGuard (arXiv 2411.17453)](https://arxiv.org/abs/2411.17453), IEEE S&P 2025 — added 2026-08-09, see §3.6** | Nov 2024 | raw query and value LoRA updates, stacked across layers, read by a convolutional meta-classifier | near-perfect in-domain; **releases PADBench, 13,300 LoRA adapters** over 5 base models, 5 datasets, 6 attacks, 5 PEFT methods, ranks 8–2048. **This is by far the largest registry in this table and it is public** |
+| **[Z-PEFT (arXiv 2608.02271)](https://arxiv.org/abs/2608.02271) — see the failure list below and §3.6** | Aug 2026 | 16 spectral numbers per attention **head**, per projection, per layer | beats both above on every out-of-distribution axis it tests; **inverts to AUROC .2628 on held-out AdaLoRA and does not fix it** |
 
 **And what is being found to fail — this is the load-bearing part:**
 
@@ -501,7 +503,12 @@ every recommendation below. Reading models' weights to decide whether they are
   necessarily translate to high accuracy in zero-shot backdoor detection."* It
   evaluates on **previously unseen attacks and datasets** and proposes a
   lightweight meta-classifier built only on layer-wise spectral measures, which
-  degrades least.
+  degrades least. **Corrected 2026-08-09 after reading the full text (§3.6):
+  the abstract undersells it. It also tests unseen adapter ranks and unseen
+  PEFT methods, on the public 13,300-adapter PADBench, and its own detector
+  inverts to AUROC .2628 on held-out AdaLoRA — a second published inversion,
+  also unfixed.** What it does *not* vary is the training objective: every
+  PADBench adapter is supervised fine-tuning on poisoned data.
 - [Spectral Geometry (arXiv 2604.08844)](https://arxiv.org/abs/2604.08844):
   a detector trained on preference-training adapters scores **every**
   activation-steering adapter as safer than **every** preference adapter —
@@ -567,7 +574,7 @@ numbers on small self-made registries, and nobody has stress-tested them.* They
 could be gated separately or run as one paper — audit plus the readout that
 survives. I list them separately so each can be killed separately.
 
-### D1. Make weight-only adapter screening survive a change of fine-tuning recipe ★★★ pre-gate (downgraded from ★★★½ on 2026-08-09 by a six-day-old paper)
+### D1. Make weight-only adapter screening survive a change of fine-tuning recipe ★★½ pre-gate (★★★½ → ★★★ → ★★½, all on 2026-08-09; the reading check in §3.6 re-scopes this candidate and everything below must be read against it)
 
 **The claim.** People are starting to screen LoRA adapters for safety by reading
 their weights, without running the model. Two 2026 papers do exactly this, and
@@ -686,7 +693,14 @@ written. The closest work, with links:**
   is the authority on what weight-analysis detectors can do, and
   [On Trojan Signatures in LLMs of Code (arXiv 2402.16896)](https://arxiv.org/abs/2402.16896)
   is the clearest published failure of the approach at language-model scale.
-- [arXiv 2602.15195](https://arxiv.org/abs/2602.15195) is the detector to beat.
+- ~~[arXiv 2602.15195](https://arxiv.org/abs/2602.15195) is the detector to
+  beat.~~ **Struck 2026-08-09 (§3.6). It has been beaten, and its 100% was a
+  closed-world number: out of distribution it scores .4792 and .4683, at or
+  below guessing. The detector to beat is
+  [Z-PEFT](https://arxiv.org/abs/2608.02271); the baseline of record is
+  [PEFTGuard (IEEE S&P 2025)](https://arxiv.org/abs/2411.17453), whose
+  **public 13,300-adapter PADBench** removes most of the cost of the first
+  experiment.**
 - [Learning on LoRAs (arXiv 2410.04207)](https://arxiv.org/abs/2410.04207) —
   Maron's group already does attribute detection and membership inference from
   LoRA weights with GL-invariant encoders. **They are the group most likely to
@@ -828,7 +842,7 @@ plain neuron permutation, and measure the drop. **Pre-stated kill rule: if the
 drop under plain permutation is under 10 points, the premise is wrong and the
 direction dies that afternoon.**
 
-### D3. Do Hub-scale screening claims survive real, wild adapters? ★★★ pre-gate
+### D3. Do Hub-scale screening claims survive real, wild adapters? ★★★ pre-gate — **survived its reading check unchanged; now the top-ranked of the three. See §3.6.**
 
 **The claim.** Almost every "we can search or screen the model hub" result is
 validated on **self-trained** zoos. ProbeX's Model-J is 14,000 models the
@@ -903,7 +917,7 @@ in-distribution versus out-of-distribution gap. **If Borth's group already shows
 wild-model training closes the gap, this candidate is dead on arrival.** Only if
 their evaluation is itself in-distribution does the question survive.
 
-### D4. A model zoo whose safety label is exact, riding almost free on the sparsity study ★★★ pre-gate
+### D4. A model zoo whose safety label is exact, riding almost free on the sparsity study ★★★ pre-gate — **confirmed, but it is NOT free: the design saves no weights at all. See §3.6 and the drafted addendum.**
 
 **The claim.** Every existing model zoo labels its models with things that are
 easy to measure: accuracy, learning rate, seed, task. No zoo carries a label for
@@ -969,7 +983,9 @@ no answer, drop it.
 
 ### Ranking of the five, pre-gate
 
-**D1 ≈ D4 > D3 > D2 > D5.**
+**D1 ≈ D4 > D3 > D2 > D5.** ← **superseded on 2026-08-09. The reading checks in
+§3.6 revise this to D3 ≈ D1 > D4 > D2 > D5.** The three caveats below still
+stand and caveat 1 turned out to understate the problem.
 
 Three honest caveats on this ranking.
 
@@ -990,6 +1006,423 @@ Do the three zero-GPU-hour reading checks first — Z-PEFT's full text (D1),
 out-of-distribution gap (D3), and the sparsity design's checkpoint format (D4).
 Between them they can kill two candidates and confirm one, in one day, for
 nothing. D5 should not be gated at all.
+
+**The three checks were run on 2026-08-09. Their verdicts are §3.6, and they
+change the ranking above. Read §3.6 before acting on anything in §3.**
+
+### 3.6 Reading-check verdicts — 2026-08-09
+
+All three checks are done. Zero GPU-hours, zero credits, one day, as planned.
+Working notes, the cached PDFs, and the drafted design addendum are in
+`code/tier2gates/wsl-checks-20260809/`. **Nothing here is a decision to start
+work.** Every candidate below still needs the full two-pass gate.
+
+**The one-line summary. D1 survives, but only after being re-scoped: the axis it
+was built on turned out to be four-fifths covered, and what is left is a
+different, cheaper, sharper claim. D3 survives untouched and is now the
+strongest of the three. D4 is confirmed, but it is not free — the sparsity
+design saves no weights at all, so it costs a design change.**
+
+**Revised ranking: D3 ≈ D1 > D4 > D2 > D5.** D1 and D3 are close for different
+reasons — D1 is now almost free to test and has a sharp falsifiable mechanism,
+D3 is the least raced. Run D1's new free stage first, because it decides fastest.
+
+---
+
+#### Verdict 1 — D1: **ALIVE but re-scoped, ★★★ → ★★½, on a short clock**
+
+I read [Z-PEFT (arXiv 2608.02271)](https://arxiv.org/abs/2608.02271) in full.
+It is much wider than its abstract admits, and it changes three things.
+
+**First: the axis list. Z-PEFT tests five kinds of shift, not two.** The
+abstract only advertises "unseen attacks and datasets". The full text also
+tests unseen adapter ranks and unseen PEFT methods. All numbers are AUROC —
+area under the ROC curve, where 1.0 is perfect, 0.5 is guessing, and below 0.5
+means the detector is *backwards*.
+
+| Axis | How it is tested | Z-PEFT | PEFTGuard | WSD |
+|---|---|---|---|---|
+| Unseen **attack**, same dataset | train on 1 of 4 attacks, test on the other 3 (12 pairs) | **.8718** | .8153 | **.4792** |
+| Unseen **attack**, multi-attack training | leave-one-attack-out on AG News | **.9433** | .8395 | **.4683** |
+| Unseen **dataset** | pool of 4 datasets, 6 attacks, 5 PEFT methods, ranks 8–2048 | .878–.998, but **Alpaca .635** | — | — |
+| Unseen **rank** | leave-one-rank-out, 8 to 2048 | ≥ .9808 up to rank 1024; **.9600** at 2048 | — | — |
+| Unseen **PEFT method** | leave-one-adapter-out | DoRA 1.000, LoRA+ 1.000, LoRA .9956, QLoRA .9924, **AdaLoRA .2628** | — | — |
+| Architecture | Flan-T5-XL, Qwen1.5-7B, Llama-2-7B/13B, RoBERTa | .9908–1.0000 — but the paper says these are **in-domain**, not transfer | — | — |
+| In-domain | held-out samples from seen configurations | **.9986** pooled | — | — |
+
+**Second: it kills a claim we were relying on.** Our page called
+[arXiv 2602.15195](https://arxiv.org/abs/2602.15195) ("WSD" here) **"the
+detector to beat"**, on the strength of its 100%-accuracy headline. Z-PEFT
+beat it, and worse: WSD's off-diagonal AUROC is **.4792 and .4683 — at or
+below guessing**. WSD's 100% was a closed-world number. **Correct that line
+wherever it appears.**
+
+**Third: our page is missing the paper that actually owns this cell.** Z-PEFT
+does not build a zoo. It uses **PADBench**, released with
+[PEFTGuard (arXiv 2411.17453)](https://arxiv.org/abs/2411.17453) (Sun, Cong,
+Liu, Lin, He, Chen, Han, Huang), published at **IEEE Symposium on Security and
+Privacy 2025**. PADBench is **13,300 LoRA adapters** across five base models
+(Llama-2-7B, Llama-2-13B, Qwen1.5-7B, Flan-T5-XL, RoBERTa-base), five datasets,
+six attacks, five PEFT methods (LoRA, AdaLoRA, DoRA, LoRA+, QLoRA), and ranks
+from 8 to 2048. It ships only the query and value projection weights. **Neither
+PEFTGuard nor PADBench appears anywhere on this page. That was a real gap:
+PEFTGuard is the security-venue baseline of record, and PADBench is far larger
+than every registry in §2.6 put together.**
+
+**So does D1's axis survive?** This needs care, because the kill rule as
+written and the candidate as written do not use the word "recipe" the same way.
+
+- The **kill rule** said: *"if Z-PEFT's experiments already vary the
+  fine-tuning method, D1 is dead."* Z-PEFT does vary the fine-tuning method, in
+  the sense of the **adapter parameterization** — LoRA versus AdaLoRA versus
+  DoRA versus LoRA+ versus QLoRA. On a literal reading, D1 dies.
+- The **candidate** spelled out its own axis as *"supervised fine-tuning versus
+  preference training versus activation steering versus merging"* — the
+  training **objective**, not the parameterization. Every one of PADBench's
+  13,300 adapters is supervised fine-tuning on poisoned data. There is no
+  preference training, no activation steering, no merging, no continued
+  pretraining anywhere in it. On that reading the axis is untouched.
+
+**Both readings are honest, and the honest conclusion is that the kill rule was
+written against the wrong word.** Four of the five shifts D1 imagined are now
+done by somebody else, on a bigger and public benchmark. The training-objective
+shift is genuinely untouched, but it is one slice, not the whole idea.
+
+**What makes D1 worth keeping is not the leftover axis. It is what Z-PEFT
+found and did not fix.**
+
+Held-out AdaLoRA scores **AUROC .2628, accuracy .2880**. Their own words: *"The
+below-chance AUROC indicates that the learned scores largely reverse the
+ordering of clean and backdoored AdaLoRA adapters."* That is a **second
+independent inversion** of a spectral adapter detector, on a public
+13,300-adapter benchmark, four months after
+[arXiv 2604.08844](https://arxiv.org/abs/2604.08844) reported AUC ≈ 0.00 on the
+objective axis with 38 adapters. Two different shifts, two inversions, two
+groups, **and nobody has repaired either one.**
+
+And the inversion has a named cause that matches our own mechanism hypothesis
+almost exactly. Z-PEFT's SHAP analysis reports that **stable rank dominates the
+AdaLoRA cohort** — and AdaLoRA is precisely the one method in the list that
+*reallocates rank by construction*. So the feature that inverts is a
+rank-family feature, and it is reading the parameterization rather than the
+backdoor. That is the same shape as the "magnitude leaks in from the recipe"
+argument in the D1 section above, one level down.
+
+**The re-scoped D1, in one sentence: a spectral adapter-screening readout whose
+rank-family and scale features are normalised against a benign reference bank
+*of the same parameterization and the same objective*, so that it does not
+invert — with the pre-stated target of lifting held-out AdaLoRA from .2628 to
+above .5 without losing the other four methods.** That is Route 2, an
+improvement on a current method, and it is a fix rather than a diagnosis.
+
+**Three things got much better.**
+
+1. **The cost collapsed.** PADBench is public, and Z-PEFT's whole feature
+   extraction runs on **CPU** — 26.8 minutes for 850 adapters on 56 cores. The
+   first decisive experiment no longer needs us to build 400 adapters. It needs
+   a download and a laptop. Building adapters is only required later, for the
+   objective axis that PADBench lacks.
+2. **The premise is now confirmed for free.** D1's old stage 1 was "fit the
+   published 20-number signature on one recipe, test on another, kill if AUC
+   stays above 0.75". Z-PEFT already ran that on the attack axis and got
+   .4792. We do not have to spend 6–10 GPU-hours to learn it.
+3. **The mechanism claim is falsifiable without training anything.** If the
+   inversion is a rank-family artifact, then removing or renormalising stable
+   rank, effective rank, spectral entropy and concentration should move
+   held-out AdaLoRA above 0.5. If it does not, the mechanism hypothesis is
+   wrong and D1 dies that afternoon.
+
+**Three things got worse.**
+
+1. **The competitor is strong and close.** Pisa published this six days ago and
+   says code comes "upon acceptance". They can see their own AdaLoRA hole. The
+   obvious camera-ready revision is exactly our re-scoped claim.
+   **This is a weeks-long clock, not a months-long one.**
+2. **A security venue owns the cell.** PEFTGuard is IEEE S&P. That is a
+   different reviewer pool with different standards from the weight-space
+   crowd in §1.
+3. **What is left is narrower than the section above describes.** Everything in
+   the D1 text before this verdict was written against a five-axis opening.
+   Four of those axes are gone.
+
+**What Z-PEFT still does not do, verified from the full text**, and any of these
+could carry a contribution: the training-objective axis (no DPO, no steering,
+no merging); any harm label other than triggered backdoor versus clean;
+projections beyond query and value, because PADBench ships only those; an
+adaptive adversary that optimises an adapter to look benign, which its
+limitations name as future work and which is **D2's premise stated by the
+competitor**; naturally occurring backdoors, which its limitations also name
+and which is **D3's premise stated by the competitor**; deployment-time
+threshold calibration, since its accuracy numbers use the known number of
+positives; and **any statistics at all — there is not one confidence interval,
+seed, or bootstrap in the paper, and thirteen of its twenty-three in-domain
+cells are exactly 1.000000.** That last one is our instrument.
+
+**Citation pull, both ways.** Z-PEFT has **0 forward citations** (six days
+old); so do
+[2604.08844](https://arxiv.org/abs/2604.08844),
+[2602.15195](https://arxiv.org/abs/2602.15195) and
+[2607.01854](https://arxiv.org/abs/2607.01854). The productive pull was
+backwards: PEFTGuard has **36 forward citations**, all screened. Four are new
+to this page and none is a scoop:
+[DFBScanner (arXiv 2605.18907)](https://arxiv.org/abs/2605.18907) — static
+inspection of the **final classification layer** of vision networks,
+attack-agnostic, over 5,000 backdoored models, 12 architectures, 20 attack
+types; the classic-vision analogue of this cell, and a baseline shape we should
+know about;
+[Fine-Tuning Integrity (arXiv 2604.04738)](https://arxiv.org/abs/2604.04738) —
+zero-knowledge cryptographic proofs that a released model's drift lies in a
+declared class of norm-bounded, low-rank or sparse updates; a completely
+different answer to the same supply-chain worry, worth citing rather than
+competing with;
+[LoRA as Oracle (arXiv 2601.11207)](https://arxiv.org/abs/2601.11207) — attaches
+a probe adapter and reads its optimisation dynamics, so it needs data and
+training and is not weights-only;
+[a fine-tuning-security survey (arXiv 2605.25073)](https://arxiv.org/abs/2605.25073),
+whose own re-evaluation finds that cross-lingual backdoor transfer *"reported
+as near-perfect at larger scales, fails entirely on tested 1B–4B models"* — a
+second, independent instance of this literature's headline numbers not
+surviving a change of setting. Ten mechanism-shape searches in adjacent
+vocabulary (fine-tuning recipe, preference optimization, training objective,
+harmful + spectral, AdaLoRA + detection, aspect ratio + singular value,
+third-party adapters + supply chain, community-contributed adapters, model hub
++ safety + weights, recipe + invariant) returned **nothing new**.
+
+**New cheapest decisive step, replacing the old two-stage plan. Stage 0.5,
+about zero GPU-hours and a few CPU-hours.** Download PADBench. Reproduce
+Z-PEFT's leave-one-adapter-out AdaLoRA cell and confirm the .2628. Then drop or
+renormalise the rank-family features and re-fit. **Pre-stated kill rule, to be
+written down before the run: if held-out AdaLoRA does not clear 0.55 under any
+of the three normalisations we name in advance, the mechanism hypothesis is
+wrong and D1 dies that week.** Report a paired bootstrap interval on the
+difference — nobody in this literature reports one, so that alone is a
+contribution to the write-up. Re-check for a Z-PEFT camera-ready or code
+release the same week, and again the week of any gate.
+
+---
+
+#### Verdict 2 — D3: **SURVIVES CLEANLY, ★★★ held, and now the strongest of the three**
+
+I read
+[Learning Model Representations Using Publicly Available Model Hubs
+(arXiv 2510.02096)](https://arxiv.org/abs/2510.02096) in full. The kill rule
+was: *"if Borth's group already shows wild-model training closes the gap, this
+candidate is dead on arrival. Only if their evaluation is itself
+in-distribution does the question survive."* **Their evaluation is entirely on
+curated targets. The question survives.**
+
+**What the paper actually is.** They collect Hugging Face models under four
+vision tags — 22,055 available — keep only those that instantiate through the
+auto-classes without remote code and tokenize successfully, and stop at **2,000
+training plus 200 validation** models, **171 billion parameters**, individual
+models up to 1.3 B. The mix is 42.0% transformer, 21.8% convnet, 5% hybrid, and
+**31.4% whose architecture cannot even be told from the name**. They then adapt
+the SANE encoder-decoder with three changes — per-token loss normalisation at
+runtime, dense tokenization, and sinusoidal position encodings — and train one
+backbone (450 M or 900 M parameters) for everything.
+
+**What tasks it demonstrates.** The main body is **entirely weight
+generation**: produce ResNet-18 weights for five image datasets; produce 25
+different timm architectures for ImageNet-1K, scored after one to five epochs
+of fine-tuning; produce a GPT-2 initialisation for OpenWebText. The
+discriminative side is **one appendix table** predicting three ordinary
+properties: **test accuracy, generalization gap, and training epoch**.
+
+**Safety or property screening: none.** The words safety, backdoor, harm,
+poison and malicious do not occur in the paper.
+
+**Does it report an in-distribution versus out-of-distribution gap? Not the one
+D3 asks about — and the one it does report points against its own headline.**
+
+The wild-versus-lab contrast is about the **training** set. Every **evaluation**
+target is curated: the Schürholt ResNet-18 zoo, five fixed image datasets, 25
+timm architectures, GPT-2. **They never evaluate any downstream task on wild
+Hugging Face models**, for the obvious reason that wild models carry no labels.
+That is exactly D3's gap, and the paper walks straight past it.
+
+Their Table 9 is the closest thing to an OOD number. It is the explained
+variance (R², where 1.0 is perfect) of a linear probe on the *lab* ResNet-18
+zoo:
+
+| Backbone trained on | Test accuracy (C10 / C100 / TIN) | Generalization gap | Epoch |
+|---|---|---|---|
+| CIFAR10 zoo | 91.69 / 95.60 / 94.99 | 75.93 / 91.94 / 88.81 | 99.67 / 99.34 / 99.11 |
+| CIFAR100 zoo | 92.70 / 96.22 / 95.73 | 77.56 / 92.21 / 88.90 | 99.65 / 99.54 / 99.30 |
+| **Hugging Face (wild)** | **69.44** / 91.58 / 90.29 | **53.75** / 87.39 / 85.05 | 94.78 / 96.86 / 90.39 |
+
+The wild-trained backbone is **worse in all nine cells** — about 4–5 points on
+CIFAR100 and TinyImageNet, but **about 23 points on CIFAR10 accuracy and 24 on
+CIFAR10 generalization gap**. Their own sentence: *"We observe a performance
+drop compared to previous work in all cases."* So **"beats zoo-trained
+backbones" is a claim about weight generation, not about reading properties out
+of weights** — and even on generation they lose on CIFAR10 in every comparison,
+and generated weights are *"slightly above or at random guessing"* until
+fine-tuned.
+
+**Our exact delta, in one sentence.** They vary the **training** population and
+evaluate on **curated** targets, on **whole vision models**, for **generation**
+plus three benign properties. D3 holds the readout fixed and varies the
+**evaluation** population, on **adapters**, for **screening** claims. Those are
+orthogonal questions and this paper answers only theirs.
+
+**Three things that strengthen D3.**
+
+1. **The competitor states our premise as its own open problem.** Z-PEFT's
+   limitations say PADBench *"cannot capture the full variability of adapters
+   encountered in practice… performance may differ for **naturally occurring
+   backdoors**."* Six days old. That is the best motivation citation we could
+   ask for — and simultaneously a warning that Pisa may do it next.
+2. **Their download protocol is a reusable template**, and their
+   selection-bias limitation is a caveat we can quote rather than invent:
+   *"we have not applied manual curation beyond basic feasibility checks…
+   This raises the possibility of selection bias."* Note how severe the filter
+   is: 22,055 candidates down to 2,200 kept. Even the "wild" collection in the
+   literature is heavily screened, which cuts both ways.
+3. **A leakage question worth one sentence in our write-up.** Table 9 says
+   *"100 models are split into train/test/validation with proportions 70/15/15
+   using checkpoints from epochs 1, 3, 5, 10, 15, 20, and 25"* and never says
+   whether the split is over models or over checkpoints. If over checkpoints,
+   the same model sits in train and test — the pattern our run-provenance rules
+   exist to catch. There are also no intervals on that table.
+
+**Citation pull.** 2510.02096 has **4 forward citations**: WeightCLIP, GeoSANE
+and Hidden Gems, all already on this page, plus one new one —
+[ModelLens (arXiv 2605.07075)](https://arxiv.org/abs/2605.07075), which learns
+to rank unseen models on unseen datasets from **1.62 million public leaderboard
+records over 47,000 models and 9,600 datasets**. It never reads a weight. It is
+not a scoop of D3, but it is the largest in-the-wild model-selection result we
+have found and it is a competing answer to "how do you know what a stranger's
+model can do". **Any D3 write-up must say why reading weights beats reading
+leaderboard records** — which for safety screening has a good answer, since a
+malicious uploader will not publish an honest evaluation, but the answer has to
+be written down.
+
+**Unchanged from the section above:** the deliverable must be the readout, not
+the benchmark; the labelling pass is the real cost; and Hoshen's and Borth's
+groups are both better placed than we are. The decisive step is unchanged too,
+except that it should now use adapters rather than whole models, since that is
+where the screening claims live.
+
+---
+
+#### Verdict 3 — D4: **CONFIRMED, but it costs a design change, not nothing. ★★★ held.**
+
+The check was: *"check that the design keeps full weights for all 1,800
+checkpoints, not just summary statistics."*
+
+**It does not. The sparsity sweep currently saves no weights at all.**
+
+Searching the whole `sparsityprem` repository for `torch.save`, `safetensors`
+and `state_dict` returns **zero hits**. The word "checkpoint" in the design
+document means "a step at which we measure something", not "a saved file". In
+`src/sparsityprem/harness.py`, `train_one` probes at six steps and appends a
+**dictionary of scalars** — loss, marginal miss rate, the harm-coordination
+scores, and the dangerous flag — to a trace. It then hands back the live model
+object, the driver keeps it in a Python list, and only a JSON file is written.
+Every model is destroyed when the process exits. The band-sampling routine does
+the same. All nineteen recorded run directories together total **14 MB** of
+JSON and no binary artifacts.
+
+So D4 is real, its label is real, and it is still the one candidate whose
+novelty does not depend on winning a race — **but the scout page's claim that
+it is nearly free was wrong by one code path.** It is free in GPU-hours and
+cheap in disk; it is not free in design approval.
+
+**The addendum is written and ready for the owner.** Full text:
+`code/tier2gates/wsl-checks-20260809/sparsity-design-addendum.md`, drafted to
+drop into `sparsityprem/DESIGN.md` between §7 and §8. Its substance:
+
+- **Save `.safetensors` in float32**, one per model per probe step, plus a JSON
+  sidecar carrying the full architecture config, the arm, the seed, the step,
+  the loss, the whole hazard-world definition, and the git commit. Float32
+  rather than bfloat16 because weight-space methods read singular values, and
+  halving the precision changes them.
+- **Save the raw per-query scores, not the verdict.** The dangerous/not-dangerous
+  flag depends on four settings the design deliberately leaves free. Saving the
+  model's log P(HAZARD) on each of the 256 critical queries — **1 KB** — makes
+  every label at every setting recomputable offline, forever, on a laptop. Save
+  the query pool and the pattern index sets once, at the top level.
+- **Do not save optimizer state.** AdamW's moments would triple the disk cost
+  and nothing needs them.
+- **Save the SGLD band samples at the two smallest widths only.** This is the
+  genuinely new artifact. Every published zoo is a collection of *converged*
+  models; a population drawn from *inside one loss band*, each with an exactly
+  computed harm score, does not exist anywhere. 20 chains × 100 samples at
+  widths 64 and 128 is 4,000 weight vectors for 3.8 GB. At widths 256 and 512
+  the same rate would cost about 250 GB, so do not.
+
+**Disk cost, computed from the parameter counts already recorded in
+`runs/20260806-scale-*`, at 4 bytes per parameter:**
+
+| width / layers | parameters | MB each | ×75 models, finals | ×75, all six steps |
+|---|---|---|---|---|
+| 64 / 2 | 104,867 | 0.40 | 0.03 GB | 0.18 GB |
+| 128 / 2 | 406,307 | 1.55 | 0.11 GB | 0.68 GB |
+| 256 / 4 | 3,178,531 | 12.13 | 0.89 GB | 5.33 GB |
+| 512 / 8 | 25,258,019 | 96.35 | 7.06 GB | 42.34 GB |
+| **total** | 28,947,724 | | **8.09 GB** | **48.53 GB** |
+
+Sizes here are binary — 1 MB is 2²⁰ bytes. In the decimal units disk quotas are
+usually quoted in, the same two totals are 8.68 GB and 52.11 GB.
+
+Plus 3.81 GB of band samples. **About 52 GB for everything; about 8 GB for
+final weights only.** OrangeGrid is at 13.5 of a 14.7 TB soft quota, so roughly
+1.2 TB is free and 52 GB is about 4% of the headroom. If it gets tight, drop the
+four intermediate steps at width 512 first — that alone saves 28 GB and leaves
+full trajectories at the three smaller widths.
+
+**Effect on the ~70 GPU-hour budget: none.** Writing weights is disk work off
+the GPU critical path; 48.5 GB spread over the 9.7 GPU-hour training block
+averages about 1.4 MB per second. The only thing to get right is HTCondor
+output staging — write to node-local scratch and stage once at job end, or a
+width-512 job ships up to 578 MB back per model. Any residual sits inside the
+35 GPU-hour contingency already in §7.
+
+**One risk the addendum raises that the scout page did not.** The zoo may be
+**label-degenerate**: in the smoke run, 0 of 8 models were dangerous at
+`m_H = 8`. If almost every model lands on one side of the line there is nothing
+to classify. The fix is already implied by the design — make the **continuous**
+harm-coordination score the primary weight-space target, not the binary flag,
+so it is a regression problem that needs no rare positives; and rely on Arms B
+and C, which manufacture danger on purpose, as the positive controls. The
+addendum proposes this as a new sanity invariant.
+
+**The argument for approving it, in one sentence:** keeping the weights costs
+about 52 GB and no GPU time, and recovering them later would cost the whole
+9.7 GPU-hour training block plus the SGLD block over again.
+
+**Unchanged:** the claim would be the exactly computed safety label, never the
+collection. Our own §5 item 4 says building a zoo is a service, not a claim,
+and 75 models per architecture is small by this field's standards — Borth's
+vision-transformer zoo is 250, SANE trains on 140 per zoo, WeightCLIP's are
+1,000 to 10,000. The band samples are what make it a population worth reading.
+
+---
+
+#### What these three checks changed on this page
+
+1. **§2.6 and D1: [arXiv 2602.15195](https://arxiv.org/abs/2602.15195) is no
+   longer "the detector to beat."** Its 100% accuracy was closed-world; out of
+   distribution it scores .4792 and .4683, at or below guessing. The detector to
+   beat is Z-PEFT, and the baseline of record is PEFTGuard.
+2. **§2.6 was missing its biggest entry.**
+   [PEFTGuard (arXiv 2411.17453, IEEE S&P 2025)](https://arxiv.org/abs/2411.17453)
+   and its **13,300-adapter public PADBench** belong in that table. Every
+   registry currently listed there — 38 adapters, 273 checkpoints, 15 Hub
+   models — is small partly because I was looking in the weight-space venues
+   and this work lives in the security venues. **That is house lesson 9 biting
+   again: the emptiness was a vocabulary artifact.**
+3. **The "small self-made registry" critique is now half wrong and half
+   stronger.** Half wrong, because PADBench is neither small nor unavailable.
+   Half stronger, because PADBench is still entirely self-manufactured, and
+   Z-PEFT says so in its own limitations.
+4. **The count of published inversions went from one to two.** AUC ≈ 0.00
+   across training objectives at n = 38, and AUROC .2628 across adapter
+   parameterizations at 13,300. Neither is fixed. That is the single most
+   load-bearing fact for D1.
+5. **D2's and D3's premises are now stated by the competitor**, in Z-PEFT's own
+   limitations section — adaptive detector-aware adversaries, and naturally
+   occurring backdoors. Good for motivation, bad for the clock.
 
 ---
 
@@ -1190,6 +1623,22 @@ day, no credits.** Z-PEFT's full text (can kill D1 outright), Borth's
 out-of-distribution gap (can kill D3 outright), and the sparsity design's
 checkpoint format (confirms D4, which costs almost nothing and does not depend
 on winning a race). Only then gate whatever survives.
+
+**Update, 2026-08-09: all three checks were run. The verdicts are in §3.6 and
+they revise the paragraphs above.** In short: no candidate died, but D1 was
+re-scoped and lost half a star, D3 survived untouched and is now the strongest
+of the three, and D4 turned out not to be free — the sparsity design saves no
+weights at all, so it needs a design change (drafted, awaiting owner approval).
+Two corrections to this page fall out of the checks. First,
+[arXiv 2602.15195](https://arxiv.org/abs/2602.15195) is **not** "the detector to
+beat": out of distribution it scores at or below guessing. Second, §2.6 is
+missing this cell's largest entry —
+[PEFTGuard (arXiv 2411.17453, IEEE S&P 2025)](https://arxiv.org/abs/2411.17453)
+and its **public 13,300-adapter PADBench** — because I searched the
+weight-space vocabulary and this work lives in the security vocabulary. The
+"every registry here is tiny and self-made" line in the paragraph above is
+therefore half wrong: PADBench is neither tiny nor unavailable, though it is
+still entirely self-manufactured, which Z-PEFT states in its own limitations.
 
 ## Related
 

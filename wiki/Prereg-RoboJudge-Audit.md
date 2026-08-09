@@ -29,6 +29,15 @@ widened rule — inside a declared answer tag, a bare 1–5 parses — is the
 headline for tag-declaring judges; BOTH parse rates are reported side by
 side; the >5% non-compliance threshold is unchanged. Owner ratification,
 verbatim: "widen the rule for tag-declaring judges, ratified".
+Timing note for auditors: the ratification reached the running worker
+through the coordinator session before the campaign submission; this
+ledger entry was committed about seven minutes after the submission.
+**Ledger addendum (2026-08-09):** the coordinator's ratification of the
+three environment fixes as lock-item-9 implementation (PyAV decoder
+override, PATH in the submit template, env.sh pins) is hereby given its
+durable ledger line — ratified 2026-08-09, rationale: the lock pins the
+environment and these are the code changes required to honour the pin,
+validated by the full test suite.
 
 **Judge-arm bring-up RESULT (2026-08-08; read before locking):** the
 harness is built, dry-run-verified, and runs the moment a GPU appears
