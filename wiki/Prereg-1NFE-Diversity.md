@@ -48,7 +48,17 @@ with-replacement bootstrap on generated samples is structurally biased
 for k-NN recall (measured −0.0895); intervals use reference-side and
 paired-difference resampling instead, with the biased variant retained
 only as a labeled diagnostic and the finite-generated-sample limitation
-stated. Changes after this point are deviations and must be logged. Original
+stated. Second amendment, same day: one of the two "noise-immune exact
+tests" was itself overstated — the reference-feature computation is
+subject to the same kernel nondeterminism, so cache-vs-recompute cannot
+be bitwise (measured ≤0.0042, no larger than recompute-vs-recompute);
+the honest statement is that the cache PINS the reference side, which
+improves between-row comparability (shared-seed logic), and the
+decision-relevant test is the cached-vs-fresh effect on
+precision/recall (G0b, reported whatever it shows). Noise floors are
+per-path: the Shortcut measurement path is unimodal (recall floor
+0.0004, on which H1's evidence rests at 70–370×); the Drifting path is
+bimodal (0.0014). Changes after this point are deviations and must be logged. Original
 draft header follows.
 
 Previous status: DRAFT v1, 2026-08-03. This plan locks
