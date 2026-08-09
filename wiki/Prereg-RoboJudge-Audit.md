@@ -17,7 +17,7 @@ Anvil time exists); (9) environment pinned — torch 2.11.0+cu128,
 transformers 4.57.1, PyAV/decord — and Cosmos gets a stated
 reproducibility caveat, a measured kernel-noise floor beside its
 agreement statistic, and a 64-episode pre-shard before its budget is
-final. The four week-1 pinned choices stand unchanged. Changes after
+final. The four week-1 pinned choices stand unchanged. Lock hash: `ad85987d4b5e13c2e59c2afd4aa557fc5178338a`. Changes after
 this point are deviations and must be logged as such.
 
 **Judge-arm bring-up RESULT (2026-08-08; read before locking):** the

@@ -13,7 +13,7 @@ confounded**; the JAX measurement path is canonical (byte-identical
 FID references across families); the caching/loader speedups may be
 used only after the bit-for-bit regression check passes; the CVPR
 deadline is treated as Nov 2026 ± 2 weeks with a September re-check.
-Changes after this point are deviations and must be logged. Original
+Lock hash: `ad85987d4b5e13c2e59c2afd4aa557fc5178338a`. Changes after this point are deviations and must be logged. Original
 draft header follows.
 
 Previous status: DRAFT v1, 2026-08-03. This plan locks
