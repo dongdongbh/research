@@ -33,10 +33,12 @@ twice, full and contamination-clean (the clean list is computed).
 **Correction needed at lock: H5 names the wrong statistic** — the
 RoboRewardBench metric is MAE (lower is better), not accuracy, and two
 of our judges are not on that leaderboard, so H5 must be restated for
-four judges. **Owner authorization (2026-08-08):** `trust_remote_code=True` is
-approved for the PINNED RoboReward revisions only (RoboReward-4B @
-4dec8af8, RoboReward-8B @ 3a185b4f) — the code at those commits, never a
-floating revision. **Throughput measurement RESULT (2026-08-08 late; supersedes the cost
+four judges. **Owner authorizations (2026-08-08):** `trust_remote_code=True` is
+approved for exactly three pinned revisions, never floating:
+RoboReward-4B @ 4dec8af8, RoboReward-8B @ 3a185b4f (later found
+unnecessary — the snapshots ship no custom code), and
+OpenGVLab/InternVL3-8B @ 853e3a79 (for the locked Q3 conversion
+comparison only). **Throughput measurement RESULT (2026-08-08 late; supersedes the cost
 guesses above):** the full OrangeGrid judge campaign is **23.7
 L40S-hours** on torch 2.11 (it would be 112 on the older torch 2.9.1
 pin, whose conv3d kernel is pathologically slow AND provably the
