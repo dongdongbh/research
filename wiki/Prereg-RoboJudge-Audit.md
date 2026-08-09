@@ -52,8 +52,9 @@ headline for tag-declaring judges; BOTH parse rates are reported side by
 side; the >5% non-compliance threshold is unchanged. Owner ratification,
 verbatim: "widen the rule for tag-declaring judges, ratified".
 
-**Deviation 2 (2026-08-09, coordinator-approved; OWNER RATIFICATION
-PENDING):** the pre-registered language-only blind floor is structurally
+**Deviation 2 (2026-08-09, coordinator-approved; OWNER-RATIFIED
+2026-08-10, verbatim: "Deviation-2 ratification, and follow the best
+practice for those decisions"):** the pre-registered language-only blind floor is structurally
 uninformative on this dataset — both compared policies share the task
 instruction, so blind prompts are byte-identical and every session ties
 by construction (verified by digest over all 2,552/2,553 sessions; H2
