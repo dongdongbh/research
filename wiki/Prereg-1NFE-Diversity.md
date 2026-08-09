@@ -58,7 +58,15 @@ decision-relevant test is the cached-vs-fresh effect on
 precision/recall (G0b, reported whatever it shows). Noise floors are
 per-path: the Shortcut measurement path is unimodal (recall floor
 0.0004, on which H1's evidence rests at 70–370×); the Drifting path is
-bimodal (0.0014). Changes after this point are deviations and must be logged. Original
+bimodal (0.0014). Third amendment (2026-08-10): the week-1 claim
+that a 10k recall is a "lower bound" on the 50k value was BACKWARDS —
+recall FALLS as the generated sample count rises (k-nearest-neighbour
+radii shrink as points densify; measured −0.04 to −0.10, and the
+shrinkage is model-dependent, so no uniform correction exists). Rule
+now in force and enforced in code: every recall figure carries its
+sample count, and no two recalls are compared unless the counts match.
+No measured conclusion is affected — all reported contrasts were
+already same-count. Changes after this point are deviations and must be logged. Original
 draft header follows.
 
 Previous status: DRAFT v1, 2026-08-03. This plan locks
