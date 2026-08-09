@@ -13,7 +13,10 @@ twice, full and contamination-clean (the clean list is computed).
 **Correction needed at lock: H5 names the wrong statistic** — the
 RoboRewardBench metric is MAE (lower is better), not accuracy, and two
 of our judges are not on that leaderboard, so H5 must be restated for
-four judges. Eight open lock questions with recommendations:
+four judges. **Owner authorization (2026-08-08):** `trust_remote_code=True` is
+approved for the PINNED RoboReward revisions only (RoboReward-4B @
+4dec8af8, RoboReward-8B @ 3a185b4f) — the code at those commits, never a
+floating revision. Eight open lock questions with recommendations:
 `robojudge/SMOKE_PLAN.md` + the 2026-08-08 worker report
 (`runs/judge/2026-08-08/`).
 
