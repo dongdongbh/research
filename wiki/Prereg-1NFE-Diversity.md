@@ -29,7 +29,14 @@ Speedups passed and are cleared (6.18× faster; the sped-up run is
 CLOSER to week-1 than the un-sped-up rerun — the signature of noise,
 not bias). Also recorded at this gate: the guidance explanation for the
 128-step anomaly is CONFIRMED by direct measurement (guided FID 19.57
-vs pass rule ≤22); high-step numbers un-quarantined. Changes after this point are deviations and must be logged. Original
+vs pass rule ≤22); high-step numbers un-quarantined. Correction
+appended 2026-08-09: the same kernel-selection mechanism also appears
+WITHIN one node under GPU co-tenancy (a 12-second validation job sharing
+a card moved a result-of-record row by 145× the solo noise floor); the
+worker's earlier statement that sharing was numerically safe is
+corrected on the record, the one affected row is excluded (its clean
+twin measurement exists), and the standing rule is now:
+results-of-record runs get exclusive cards. Changes after this point are deviations and must be logged. Original
 draft header follows.
 
 Previous status: DRAFT v1, 2026-08-03. This plan locks
