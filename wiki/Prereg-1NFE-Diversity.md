@@ -1,5 +1,32 @@
 # Pre-registration: Is One-Step Generative Diversity Collapse Intrinsic, or an Averaging Artifact?
 
+**SWEEP RESULT (2026-08-10; full record in nfe1
+`runs/week2_check/20260809/RESULTS-week2-boundary.md` + 12 numbered
+notes):** **H1 confirmed in Shortcut (B: 6/6, XL: 7/7 matched contrasts
+positive; +0.0917 at 50k) and NOT confirmed in iMF (+0.0004, comparable
+grid) — model-dependent within the averaging family, therefore not a
+property of the averaging objective. H2 true as an inequality
+(Drifting's 1-step recall EXCEEDS its matched 128-step reference by
++0.2190, CI [+0.2086, +0.2294]) but its mechanism is unsupported: the
+comparison class is incoherent (family shortfalls span 0.0004–0.0969)
+and an averaging and a non-averaging model are statistically
+indistinguishable at matched precision (+0.0053, CI [−0.0046, +0.0156]
+— an informative null, 6.6× tighter than Drifting's advantage).**
+Central finding: step-count shortfalls do not group by objective
+family; individual training recipe dominates. What survives: collapse
+is NOT intrinsic to one step (Drifting +0.10–0.11 over every other
+1-NFE model at matched precision), but family does not predict which
+models escape it. Structural results: Drifting's precision has a
+minimum at cfg 1.0 (floor 0.785; no shared range with Shortcut-B at
+1-NFE — §7's risk, measured); recall falls with generated sample count
+(−0.04 to −0.10, model-dependent; same-count rule enforced).
+Cross-protocol comparability established (AFM/iMF/Drifting published
+numbers reproduced to ≤0.03). Statistics: paired bootstrap, 2,000
+replicates, Holm across hypotheses, both adjusted p<0.001. Four
+worker-corrected errors are logged in the ledger amendments above. H3
+(IMM M=1 vs M=4) requires training runs beyond this allocation; launch
+spec prepared.
+
 Status: **LOCKED 2026-08-08 (professor sign-off; recommended defaults
 adopted).** Locked amendments from the week-1/week-2 blocks below:
 H1 is restated to matched-precision-only comparisons (the step-count
