@@ -16,7 +16,21 @@ of our judges are not on that leaderboard, so H5 must be restated for
 four judges. **Owner authorization (2026-08-08):** `trust_remote_code=True` is
 approved for the PINNED RoboReward revisions only (RoboReward-4B @
 4dec8af8, RoboReward-8B @ 3a185b4f) — the code at those commits, never a
-floating revision. Eight open lock questions with recommendations:
+floating revision. **Throughput measurement RESULT (2026-08-08 late; supersedes the cost
+guesses above):** the full OrangeGrid judge campaign is **23.7
+L40S-hours** on torch 2.11 (it would be 112 on the older torch 2.9.1
+pin, whose conv3d kernel is pathologically slow AND provably the
+numerical outlier — torch 2.11 and an independent reimplementation
+agree byte-for-byte against it). **Pin at lock: torch 2.11.0+cu128,
+transformers 4.57.1, PyAV/decord decode (bit-identical pixels;
+torchvision 0.26 removed read_video).** New lock item: **Cosmos-Reason2
+scores are not reproducible across numerically-equivalent
+environments** — one bf16 rounding step amplified over ~200
+chain-of-thought tokens changes 4–7 of 20 scores (short-answer judges:
+19–20/20 stable; all blind arms 20/20) — so Cosmos needs a stated
+caveat and a measured kernel-noise floor reported next to its
+agreement statistic, and a 64-episode shard before its budget (82% of
+the campaign) is fixed. Eight open lock questions with recommendations:
 `robojudge/SMOKE_PLAN.md` + the 2026-08-08 worker report
 (`runs/judge/2026-08-08/`).
 
