@@ -603,7 +603,8 @@ across training methods it has never seen. The position paper already tells us
 the missing variable has a name — the `R` in `p(W | A, C, R)` — and says
 metadata about it *"should be used for filtering, stratification, or
 conditioning, rather than ignored"*. Nobody has done that on the discriminative
-side.
+side — **but read the scoop-risk paragraph below before believing that sentence**,
+because a paper posted on 3 August 2026 does something adjacent.
 
 **A concrete mechanism hypothesis, worth stating up front so it can be
 falsified.** Both detectors above read *spectral* features — statistics of the
