@@ -26,11 +26,18 @@ Cross-protocol comparability established (AFM/iMF/Drifting published
 numbers reproduced to ≤0.03). Statistics: paired bootstrap, 2,000
 replicates, Holm across hypotheses, both adjusted p<0.001. Four
 worker-corrected errors are logged in the ledger amendments above. Closing
-measurement: the properly matched 50k 128-vs-1 pair landed at +0.1699
-(8.5× the resolution limit; recorded as a point estimate WITHOUT its
-own CI — the earlier interval belonged to a pair 0.0006 outside
-tolerance and was not reused; the 2-minute bootstrap on the saved
-features is queued for the next idle card). All GPU work complete: 39
+measurement, now COMPLETE: the properly matched 50k 128-vs-1 pair is
+**+0.1705, CI95 [+0.1609, +0.1802]** (paired bootstrap, 2,000
+replicates; harness point estimate +0.1699 agrees within the documented
+reimplementation difference). This SUPERSEDES the earlier +0.1365
+interval, which belonged to a pair 0.0006 outside the pre-registered
+tolerance and is discarded, not averaged. H1 at 50k: 128-vs-1 +0.1705
+[+0.1609, +0.1802]; 4-vs-1 +0.0917 — both resolved, ordered as
+predicted. Process note: a stale cell reference nearly recomputed the
+WRONG (out-of-tolerance) pair as if it were the correction; the worker
+verified feature-file identity against the recorded rows before
+running, and the coordinator's garbled relay was refused by the sibling
+worker — both guards worked. All GPU work complete: 39
 cells, both cards handed to the contextualization campaign under the
 drain rule. H3 (IMM M=1 vs M=4) requires training runs beyond this
 allocation; launch spec in preparation.
