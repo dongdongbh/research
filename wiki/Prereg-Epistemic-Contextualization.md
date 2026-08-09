@@ -23,8 +23,10 @@ the proper-name recall floor and a detector bug fix), i.e. 4–6× short
 of the pre-registered 2 B per arm; closing the gap by rewriting more
 source would cost 340–510 GPU-h and exceeds the staged corpora anyway.
 Options: (A) equal-budget training at what the aligned corpus supports
-(~475 M/arm at a 0.60 floor with the detector fixed; training cost
-drops to ~41 GPU-h; smaller effects; "2 B each" changes) — worker and
+— now CORPUS-MEASURED on real shard-0 rewrites, scaled: ~351 M/arm at
+floor 0.80 (corrected detector) or ~529 M/arm at floor 0.60 (corrected
+detector; the recommendation) — about a quarter of the pre-registered
+2 B; training cost drops accordingly; "2 B each" changes — worker and
 coordinator RECOMMEND; (B) keep 2 B by ~4 passes over the aligned
 corpus (repeated data, normal for mid-training) — fallback if effects
 look too small; (C) drop align (reintroduces the composition confound
