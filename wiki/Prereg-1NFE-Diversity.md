@@ -29,14 +29,26 @@ Speedups passed and are cleared (6.18× faster; the sped-up run is
 CLOSER to week-1 than the un-sped-up rerun — the signature of noise,
 not bias). Also recorded at this gate: the guidance explanation for the
 128-step anomaly is CONFIRMED by direct measurement (guided FID 19.57
-vs pass rule ≤22); high-step numbers un-quarantined. Correction
-appended 2026-08-09: the same kernel-selection mechanism also appears
-WITHIN one node under GPU co-tenancy (a 12-second validation job sharing
-a card moved a result-of-record row by 145× the solo noise floor); the
-worker's earlier statement that sharing was numerically safe is
-corrected on the record, the one affected row is excluded (its clean
-twin measurement exists), and the standing rule is now:
-results-of-record runs get exclusive cards. Changes after this point are deviations and must be logged. Original
+vs pass rule ≤22); high-step numbers un-quarantined. Correction appended
+2026-08-09, superseded same day by isolation experiment X1: the drift
+first blamed on GPU co-tenancy is actually a BIMODAL XLA-autotuning
+flip — six measurements of one configuration fall into two tight
+clusters (within-cluster spread ≤5.4e-5 FID; between-cluster 7.3e-3),
+and a run executed ALONE landed in the second cluster, so co-tenancy is
+demonstrably not necessary. The noise floor a comparison must beat is
+therefore the BETWEEN-cluster figure: FID 7.3e-3, precision 0.0047,
+recall 0.0014 (ten times the within-cluster figure first reported). No
+conclusion changes: the binding constraint everywhere remains the 0.020
+reference-side resolution limit (14× the corrected recall floor), and
+H1's shortfalls run 29–106× the corrected floor. The feature-saving
+hook was exonerated by the same experiment and the held 50k rows
+released. The exclusive-card rule stays as hygiene but is explicitly
+NOT sufficient for reproducibility. Also recorded: the naive
+with-replacement bootstrap on generated samples is structurally biased
+for k-NN recall (measured −0.0895); intervals use reference-side and
+paired-difference resampling instead, with the biased variant retained
+only as a labeled diagnostic and the finite-generated-sample limitation
+stated. Changes after this point are deviations and must be logged. Original
 draft header follows.
 
 Previous status: DRAFT v1, 2026-08-03. This plan locks
