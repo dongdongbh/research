@@ -15,6 +15,31 @@ pin; mixture staged via Globus; Delta submission requires the owner's
 Duo login when reached). Hypothesis-bearing training does not start
 until rewriting completes and the pilot gates pass.
 
+**Deviation question 1 (2026-08-10, PENDING OWNER DECISION — campaign
+continues, nothing prejudged):** with the align step ON, the corpus all
+four arms can share is capped by the strict placebo arm at ~315–521 M
+tokens (measured on 623 held-out documents; the exact figure depends on
+the proper-name recall floor and a detector bug fix), i.e. 4–6× short
+of the pre-registered 2 B per arm; closing the gap by rewriting more
+source would cost 340–510 GPU-h and exceeds the staged corpora anyway.
+Options: (A) equal-budget training at what the aligned corpus supports
+(~475 M/arm at a 0.60 floor with the detector fixed; training cost
+drops to ~41 GPU-h; smaller effects; "2 B each" changes) — worker and
+coordinator RECOMMEND; (B) keep 2 B by ~4 passes over the aligned
+corpus (repeated data, normal for mid-training) — fallback if effects
+look too small; (C) drop align (reintroduces the composition confound
+— not recommended); (D) buy the tokens (breaks budget and mixture —
+not recommended). Already coordinator-ratified as a BUG FIX, not a
+loosening: the proper-name detector counting "Just"/"There"/"About" as
+names is corrected (standard same-passage lowercase test). To be
+stated in the paper regardless: the aligned corpus is biased toward
+short documents (all arms share it, so arm-vs-arm validity holds).
+The campaign separates generation from filtering, so every option
+above is producible from the same ~108 GPU-h of generation with no
+regeneration. Prompt-improvement rounds: both spent per §4 (v2 lost
+and was discarded; v3 won: C1 chunk pass 0.637→0.708, placebo
+unchanged).
+
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
 pipeline after approval. Lock the design after the fact-accuracy check in §8.
 Target venue: **ICML 2027**, around Jan 28; confirm the date before lock.
