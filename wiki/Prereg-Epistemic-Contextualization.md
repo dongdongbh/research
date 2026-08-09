@@ -69,7 +69,18 @@ generated one) as a logged deviation and re-run the gate. The
 corpus-size question above is downstream and moot unless (ii).
 Exposure before the stop: one 9-minute shard, nothing in any arm.
 Approved to run meanwhile (arm-blind, needed under every branch): the
-raw-text learning-rate check (~3 GPU-h).
+raw-text learning-rate check (~3 GPU-h). **LR check DONE and
+LOCKED** (1e-5; honest reading recorded: 1e-5 vs 2e-5 is not a real
+separation — only 5e-5 is clearly worse; the value of the lock is that
+the choice was fixed in advance on validation). Also fixed before
+handover: the human spot-check's de-blinding key could not attribute 17
+of 50 items to an arm — regenerated from the seed with the blind CSV
+verified byte-identical (provenance in KEY_REGENERATED.json); the
+human still labels blind. DELTA_LAUNCH.md is complete to the extent
+possible and opens with a blocking notice: not to be followed until
+the owner rules on the gate. Both Anvil allocations released
+2026-08-10 (queue empty pending owner decisions; re-queue on decision
+is cheap).
 
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
 pipeline after approval. Lock the design after the fact-accuracy check in §8.
