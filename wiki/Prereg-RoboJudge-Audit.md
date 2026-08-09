@@ -21,6 +21,19 @@ kernel-noise floor, and every floor is axis-named (InternVL3: 1.6%
 torch / 17.2% attention). One near-miss recorded: a metric bug would
 have reported the mute blind arms as "most over-confident" — caught by
 the worker, unit-tested, superseded values preserved.
+**A3 addendum (campaign closed):** frame-shuffling churns 18.2% of
+InternVL3's episode scores yet leaves its ranking IDENTICAL —
+evaluators judging task progress are indifferent to temporal order (a
+confound finding). The one-frame arms CONFIRM the SigLIP2 mechanism's
+prediction: one early frame (little outcome information) gives +0.524
+with an interval spanning zero and the correct top-1; three frames
+including the outcome give −0.714, significant — the anti-correlation
+lives in the outcome frames. Both one-frame sign flips have intervals
+crossing zero and are reported as "agreement lost," never "reversed";
+the only assertable reversal remains SigLIP2's video arm. All jobs
+finished with zero failures; archives manifest-count-verified on both
+clusters; the campaign manifest (§5b approval table with commit hashes)
+is the complete record for the writing phase.
 
 **STATUS: LOCKED 2026-08-08 (professor sign-off at the meeting; all
 recommended defaults adopted).** The locked answers to the nine open
@@ -53,7 +66,7 @@ side; the >5% non-compliance threshold is unchanged. Owner ratification,
 verbatim: "widen the rule for tag-declaring judges, ratified".
 
 **Deviation 2 (2026-08-09, coordinator-approved; OWNER-RATIFIED
-2026-08-10, verbatim: "Deviation-2 ratification, and follow the best
+2026-08-09 (prose date corrected to the commit date of 1cdd0d2), verbatim: "Deviation-2 ratification, and follow the best
 practice for those decisions"):** the pre-registered language-only blind floor is structurally
 uninformative on this dataset — both compared policies share the task
 instruction, so blind prompts are byte-identical and every session ties
