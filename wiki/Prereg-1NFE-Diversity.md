@@ -44,8 +44,9 @@ used only after the bit-for-bit regression check passes; the CVPR
 deadline is treated as Nov 2026 ± 2 weeks with a September re-check.
 Lock hash: `ad85987d4b5e13c2e59c2afd4aa557fc5178338a`.
 
-**Deviation 1 (2026-08-09, coordinator-approved; OWNER RATIFICATION
-PENDING):** the lock's "bit-for-bit" speedup regression requirement is
+**Deviation 1 (2026-08-09, coordinator-approved; OWNER-RATIFIED
+2026-08-10 together with all its amendments below, verbatim: "1-NFE
+deviations ratified"):** the lock's "bit-for-bit" speedup regression requirement is
 unattainable on this hardware for ANY run — unmodified week-1 code
 drifts by the same ~1e-4 in FID across repeats and machines (measured
 three-repeat noise floor: 1e-4–4e-4 FID, ~1e-3 recall — two orders of
