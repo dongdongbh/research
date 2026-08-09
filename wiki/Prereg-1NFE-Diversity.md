@@ -39,8 +39,19 @@ verified feature-file identity against the recorded rows before
 running, and the coordinator's garbled relay was refused by the sibling
 worker — both guards worked. All GPU work complete: 39
 cells, both cards handed to the contextualization campaign under the
-drain rule. H3 (IMM M=1 vs M=4) requires training runs beyond this
-allocation; launch spec in preparation.
+drain rule. H3 (IMM M=1 vs M=4): launch spec delivered
+(nfe1 `runs/week2_check/20260809/H3-LAUNCH-SPEC.md`) with a
+design-critical pre-declaration: the lock's "single knob" is CONFOUNDED
+— at fixed batch size, M also sets the number of distinct time tuples
+per step (batch/M), so a naive two-arm run differs in objective AND
+time-sampling density. The spec therefore prescribes THREE arms (M=4 @
+B; M=1 @ B; M=1 @ B/4 holding tuple count equal), CIFAR scale (inside
+the locked plan's reduced-scale clause), seeds fixed, equal-tick
+stopping, both guidance branches enumerated, CIFAR's own reference
+statistics and re-derived resolution limit, an explicit
+"uninterpretable" outcome, and a 20-tick pilot to MEASURE cost before
+any allocation request (no guessed throughput). Owner decision: the
+compute window.
 
 Status: **LOCKED 2026-08-08 (professor sign-off; recommended defaults
 adopted).** Locked amendments from the week-1/week-2 blocks below:
