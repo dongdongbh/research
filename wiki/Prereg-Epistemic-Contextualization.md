@@ -45,7 +45,31 @@ self-corrected): the rewriting campaign started before the
 pre-registered fact-accuracy gate had run; the worker halted at the
 next shard boundary, ran the audit first, and resumed only on a pass —
 exposure was one atomic shard (~8 GPU-minutes) and nothing entered any
-arm before the gate. Audit outcome recorded below when it lands.
+arm before the gate. **AUDIT OUTCOME (2026-08-10): THE PRE-REGISTERED GATE FAILED — §4's
+stopping rule is triggered and the study is STOPPED pending the
+owner/professor decision.** Threshold frozen at 0.97 before judging;
+C1 (treatment) passed 0.9119 (Wilson lower 0.8809) — FAIL; C3
+(placebo) 0.9714 (lower 0.9507) — misses the lower bound only. Both
+pre-registered prompt rounds were already spent. The finding inside
+the failure, treatment-specific at 3× the placebo's rate: the
+attribution mechanism itself INVENTS sources when document metadata is
+thin ("adds a source that was not present in the original") — the
+method's own fact-integrity cost, concentrated exactly in what the
+treatment does (worst group: academic, 0.833). Caveat: the LLM judge
+shares the rewriter's model family (leniency bias — the true C1 rate
+is more likely lower). **The prereg-required HUMAN spot-check awaits
+the owner: 50 blinded items at ctxprereg
+runs/2026-08-09/fact-audit-01/human_spotcheck.csv (key in the sibling
+json).** Decision branches for the owner: (i) stop and publish the
+short honest note §5 anticipated — and this is a sharper negative than
+"no effect": contextualization's data mechanism has a measured
+fact-integrity cost the placebo does not pay; or (ii) amend the method
+(stronger rewriter, or a retrieval-grounded source field instead of a
+generated one) as a logged deviation and re-run the gate. The
+corpus-size question above is downstream and moot unless (ii).
+Exposure before the stop: one 9-minute shard, nothing in any arm.
+Approved to run meanwhile (arm-blind, needed under every branch): the
+raw-text learning-rate check (~3 GPU-h).
 
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
 pipeline after approval. Lock the design after the fact-accuracy check in §8.
