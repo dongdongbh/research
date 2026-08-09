@@ -127,3 +127,24 @@ Rules of use:
    windows/sessions, check `nvidia-smi` before taking a GPU, clean up.
 3. One holder job per node type is normally enough; release (condor_rm)
    only when the owner says the OG queue of work is empty.
+
+## OrangeGrid verified numbers (2026-08-08 probes)
+
+- **JAX works on every reachable card with stock `jax[cuda12]` wheels**
+  (no compatibility hacks): A100-80GB 252 TF/s bf16, L40S 233, A40 119.
+  An OG A100/L40S is ~1/3 of an Anvil H100 per card, but free.
+- **Real GPU inventory** (more than the old "2 per node" note): 19 free
+  L40S (12 nodes ×2), 9 free A100-80GB PCIe, 15 free A40 (4/node), 84
+  free RTX 6000 (Turing — no bf16, do not use for judges). The idle
+  8×H100 node is RESTRICTED to two named users — do not plan around it.
+- **Queue latency is ~20–60 seconds** and wall time unlimited; per-user
+  caps do not bind. Fan out freely.
+- **Judge economics:** a 7–8B VLM judge uses ~16 GB of the L40S's 44
+  usable; ~1.9 s/episode → a full RoboJudge arm ≈ 5 GPU-hours; the bf16
+  ceiling on one L40S is ~18–20B parameters.
+- **The HF cache on OG already holds all our judges** (511 GB at
+  `~/.cache/huggingface`) — check it before downloading anything.
+- **Gotchas:** `$HOME` is UNSET inside condor jobs (set
+  `environment = "HOME=/home/dli160"` or use absolute paths);
+  **disk quota is nearly full** — 13.5 of 14.7 TB soft — plan output
+  space before large campaigns.
