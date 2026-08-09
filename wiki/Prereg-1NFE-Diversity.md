@@ -25,9 +25,15 @@ minimum at cfg 1.0 (floor 0.785; no shared range with Shortcut-B at
 Cross-protocol comparability established (AFM/iMF/Drifting published
 numbers reproduced to ≤0.03). Statistics: paired bootstrap, 2,000
 replicates, Holm across hypotheses, both adjusted p<0.001. Four
-worker-corrected errors are logged in the ledger amendments above. H3
-(IMM M=1 vs M=4) requires training runs beyond this allocation; launch
-spec prepared.
+worker-corrected errors are logged in the ledger amendments above. Closing
+measurement: the properly matched 50k 128-vs-1 pair landed at +0.1699
+(8.5× the resolution limit; recorded as a point estimate WITHOUT its
+own CI — the earlier interval belonged to a pair 0.0006 outside
+tolerance and was not reused; the 2-minute bootstrap on the saved
+features is queued for the next idle card). All GPU work complete: 39
+cells, both cards handed to the contextualization campaign under the
+drain rule. H3 (IMM M=1 vs M=4) requires training runs beyond this
+allocation; launch spec in preparation.
 
 Status: **LOCKED 2026-08-08 (professor sign-off; recommended defaults
 adopted).** Locked amendments from the week-1/week-2 blocks below:
