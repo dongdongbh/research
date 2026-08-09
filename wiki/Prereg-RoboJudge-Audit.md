@@ -1,5 +1,27 @@
 # Pre-registration: Do Robot Policy Evaluators Recover the Human Ranking?
 
+**CAMPAIGN RESULT (2026-08-10, full table in robojudge
+`runs/judge/full-2026-08.MANIFEST.md` §RESULTS):** H1 TRUE and not
+marginal — four of six evaluators put a different policy on top than
+humans do. Headline: **SigLIP2 frame-text similarity is significantly
+ANTI-correlated with human judgment** (τ −0.714, CI [−0.905, −0.238]) —
+it ranks the humans' last-place policy first. All six video-arm CIs
+exclude zero (five positive, one negative): these evaluators carry real
+signal, and one points backwards. Only the two RoboReward judges recover
+the human top-1; contamination inflated RoboReward-4B by ~0.10 τ
+(caught by the double-reporting rule). H5 strongest form: RoboRewardBench
+MAE varies 1.8× across judges whose ranking faithfulness is statistically
+indistinguishable — that benchmark number does not measure ranking
+validity. Judges confidently order 20–60% of the pairs humans cannot
+separate. Blind τ undefined structurally (§6b); the duration floor
+carries the no-pixel finding (CI spans zero). Caveats that travel with
+the table: intervals span ~0.24–0.91 (sign and top-1 are separated;
+judge-vs-judge ranking is NOT), Cosmos reads against its 32.8%
+kernel-noise floor, and every floor is axis-named (InternVL3: 1.6%
+torch / 17.2% attention). One near-miss recorded: a metric bug would
+have reported the mute blind arms as "most over-confident" — caught by
+the worker, unit-tested, superseded values preserved.
+
 **STATUS: LOCKED 2026-08-08 (professor sign-off at the meeting; all
 recommended defaults adopted).** The locked answers to the nine open
 questions: (1) one exterior camera view (right→left→wrist priority);
