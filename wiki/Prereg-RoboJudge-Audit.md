@@ -29,6 +29,28 @@ widened rule — inside a declared answer tag, a bare 1–5 parses — is the
 headline for tag-declaring judges; BOTH parse rates are reported side by
 side; the >5% non-compliance threshold is unchanged. Owner ratification,
 verbatim: "widen the rule for tag-declaring judges, ratified".
+
+**Deviation 2 (2026-08-09, coordinator-approved; OWNER RATIFICATION
+PENDING):** the pre-registered language-only blind floor is structurally
+uninformative on this dataset — both compared policies share the task
+instruction, so blind prompts are byte-identical and every session ties
+by construction (verified by digest over all 2,552/2,553 sessions; H2
+resolves trivially-false-by-design and will be reported as such, never
+as "language priors carry no signal"). Approved response, all within the
+prereg's own §4/A3 declarations: the four implementable confound cells
+(first_frame + shuffled for the two frames-judges), the duration-only
+regression (analysis-side; only 19.1% of sessions informative — interval
+printed beside it), and an EXTENSION of lock item 9: measured
+kernel-noise floors for every judge, not only Cosmos (a six-token judge
+moved 17.2% of scores under a pure attention swap, so short-answer
+stability cannot be assumed). NOT approved: swapped_instruction (needs
+an undesigned seeding/exclusion rule; named future work) and frame-fed
+variants of native-pipeline judges (that would audit a different judge;
+runs only if the owner explicitly asks, labeled as a modified judge).
+Process note: the coordinator's first A3 order was held by the worker
+because it would have produced corrupt evidence for the four
+native-pipeline judges, and was revised — the hold is part of this
+record.
 Timing note for auditors: the ratification reached the running worker
 through the coordinator session before the campaign submission; this
 ledger entry was committed about seven minutes after the submission.
