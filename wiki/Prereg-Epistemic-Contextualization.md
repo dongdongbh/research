@@ -38,7 +38,12 @@ The campaign separates generation from filtering, so every option
 above is producible from the same ~108 GPU-h of generation with no
 regeneration. Prompt-improvement rounds: both spent per §4 (v2 lost
 and was discarded; v3 won: C1 chunk pass 0.637→0.708, placebo
-unchanged).
+unchanged). Sequencing note (2026-08-10, worker self-reported and
+self-corrected): the rewriting campaign started before the
+pre-registered fact-accuracy gate had run; the worker halted at the
+next shard boundary, ran the audit first, and resumed only on a pass —
+exposure was one atomic shard (~8 GPU-minutes) and nothing entered any
+arm before the gate. Audit outcome recorded below when it lands.
 
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
 pipeline after approval. Lock the design after the fact-accuracy check in §8.
