@@ -1,5 +1,20 @@
 # Pre-registration: Epistemic Contextualization — the First Implementation
 
+**EXECUTION START (2026-08-10, owner-initiated: "we may run the basic
+part on anvil, then move to delta for full training").** The three
+readiness choices proceed on their recommended defaults unless the
+owner/professor overrides: (1) revised budget accepted (~165 GPU-h
+training + rewriting, measured); (2) rewriter yield handled by the
+built `align` repair step, with retained-and-aligned counts both
+reported; (3) the probability-mass secondary metric for H1 is in.
+Placement per the verified balanced plan: setup + pilots + the C1/C3
+REWRITING passes on Anvil (vLLM recipe proven there; the current h006
+allocation is drained for this as 1-NFE finishes); the EIGHT TRAINING
+RUNS on one Delta gpuH200x8 node in a single ≤48 h window (torch cu128
+pin; mixture staged via Globus; Delta submission requires the owner's
+Duo login when reached). Hypothesis-bearing training does not start
+until rewriting completes and the pilot gates pass.
+
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
 pipeline after approval. Lock the design after the fact-accuracy check in §8.
 Target venue: **ICML 2027**, around Jan 28; confirm the date before lock.
