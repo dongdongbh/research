@@ -91,11 +91,11 @@ comes from the same group and uses the same three-part split:
 
 ### 1.1 Damian Borth ([University of St. Gallen, HSG-AIML](https://ics.unisg.ch/chairs/damian-borth-artificial-intelligence-and-machine-learning/)) — hyper-representations and the zoos
 
-A note on the chair page the owner sent: it lists four research lines
-(representation learning, multimodal analysis, remote sensing, financial data)
-and **never mentions weight-space learning or hyper-representations at all**.
-The weight-space work is visible only through the group's papers and its
-[GitHub organisation](https://github.com/HSG-AIML), and through the current
+A note on the chair page the owner sent. It lists four research lines:
+representation learning, multimodal analysis, remote sensing, and financial
+data. It **never mentions weight-space learning or hyper-representations at
+all**. The weight-space work is visible in only two places: the group's papers
+and its [GitHub organisation](https://github.com/HSG-AIML), and the current
 team — Léo Meynent, Damian Falk, Konstantinos Tzevelekakis, Aron Asefaw — who
 are the authors on the papers below. Konstantin Schürholt, the line's main
 first author, is no longer listed on the team page.
@@ -117,10 +117,11 @@ just as importantly, **built most of the model zoos the whole field trains on.**
 - **The scaling move that matters:** [Learning Model Representations Using
   Publicly Available Model Hubs (arXiv 2510.02096)](https://arxiv.org/abs/2510.02096)
   (Falk, Schürholt, Tzevelekakis, Meynent, Borth, Oct 2025). They stop building
-  zoos and train the weight encoder on **2,000 training + 200 validation
-  Hugging Face models, 171 billion parameters in total, individual models up to
-  1.3B parameters** (42% transformers, 31.4% undocumented). Their backbones are
-  456M and 900M parameters. It beats zoo-trained backbones. **This is the single
+  zoos. Instead they train the weight encoder on real Hugging Face models:
+  **2,000 training + 200 validation Hugging Face models, 171 billion parameters
+  in total, individual models up to 1.3B parameters**. Of those models, 42% are
+  transformers and 31.4% are undocumented. Their own backbones are 456M and
+  900M parameters. This setup beats zoo-trained backbones. **It is the single
   most direct occupant of "classic WSL meets the real model hub".**
 - Newest: [WeightCLIP (ICML 2026, arXiv 2607.03551)](https://arxiv.org/abs/2607.03551)
   ([ICML poster page](https://icml.cc/virtual/2026/poster/61346))
@@ -153,10 +154,11 @@ symmetries so the learner is not fooled by them.
   reading adapters:** [Learning on LoRAs: GL-Equivariant Processing of Low-Rank
   Weight Spaces for Large Finetuned Models (arXiv 2410.04207)](https://arxiv.org/abs/2410.04207)
   (Putterman, Lim, Gelberg, Jegelka, Maron; Oct 2024; the OpenReview version
-  adds Bronstein). Defines the GL symmetry, builds invariant encoders, and
-  already applies them to **performance prediction, fine-tuning attribute
-  detection, membership inference, and downstream accuracy estimation** on
-  text-to-image diffusion and language-model LoRAs.
+  adds Bronstein). It defines the GL symmetry and builds invariant encoders. It
+  already applies them to four tasks: **performance prediction, fine-tuning
+  attribute detection, membership inference, and downstream accuracy
+  estimation**. It runs those tasks on text-to-image diffusion LoRAs and on
+  language-model LoRAs.
 - 2026: [On the Expressive Power of Permutation-Equivariant Weight-Space
   Networks (arXiv 2602.01083)](https://arxiv.org/abs/2602.01083) (Dayan, Eitan,
   Maron), **ICML 2026 spotlight** — shows the main equivariant weight-space
@@ -240,10 +242,11 @@ generalisation across fine-tuning recipes.
 
 - **Frederic Sala (Wisconsin)** — [WARP: Weight-Space Analysis for Recovering
   Training Data Portfolios, arXiv 2607.01686](https://arxiv.org/abs/2607.01686)
-  (Jul 2026, ICML 2026 Weight-Space Symmetries workshop). Recovers *what mixture
-  of data sources* a model was fine-tuned on, from released weights, by
-  interpolating base → fine-tuned to fake a training trajectory and reading its
-  geometry. BERT and GPT-2; mean absolute error 0.046 and 0.104.
+  (Jul 2026, ICML 2026 Weight-Space Symmetries workshop). It recovers *what
+  mixture of data sources* a model was fine-tuned on, using only the released
+  weights. The trick: interpolate from base to fine-tuned to fake a training
+  trajectory, then read that trajectory's geometry. Models: BERT and GPT-2.
+  Mean absolute error: 0.046 and 0.104.
 - **Giorgos Bouritsas / Yannis Panagakis (Athens)** — scale-equivariant graph
   metanetworks (NeurIPS 2024);
   [Metanetworks as Regulatory Operators (arXiv 2512.15469)](https://arxiv.org/abs/2512.15469).
@@ -259,19 +262,20 @@ generalisation across fine-tuning recipes.
   including on Stable Diffusion LoRAs. **It says plainly that "processing
   full-scale weights is computationally prohibitive" — that is why they probe.**
 - **Yaoqing Yang (Dartmouth) + Michael Mahoney (Berkeley/ICSI) + Shiwei Liu** —
-  the cheap-statistics school. They never touch raw tensors; they read the
-  *spectrum* (singular-value distribution) of each weight matrix, which is
+  the cheap-statistics school. They never touch raw tensors. They read the
+  *spectrum* — the singular-value distribution — of each weight matrix. That is
   data-free, permutation-blind, and cheap enough for a CPU.
   [Spectral Signatures of Large Language Models (arXiv 2607.03377, KDD 2026)](https://arxiv.org/abs/2607.03377)
   does lineage tracking, clustering, and performance prediction across **499
   models from 19M to 70B parameters**.
   [AlphaPruning (NeurIPS 2024, arXiv 2410.10912)](https://arxiv.org/abs/2410.10912)
   and [FARMS (ICML 2025, arXiv 2506.06280)](https://arxiv.org/abs/2506.06280)
-  are the same school. **FARMS matters for us specifically:** it shows a weight
-  matrix's *aspect ratio* (its shape) biases heavy-tail spectral estimates, and
-  fixes this by subsampling fixed-aspect-ratio submatrices. Any cross-layer or
-  cross-model spectral comparison that ignores this is measuring shape as much
-  as substance. This group also bridges to Borth's — they co-authored the
+  come from the same school. **FARMS matters for us specifically.** It shows
+  that a weight matrix's *aspect ratio* — its shape — biases heavy-tail
+  spectral estimates. It fixes that by subsampling submatrices with a fixed
+  aspect ratio. So any cross-layer or cross-model spectral comparison that
+  ignores shape is measuring shape as much as substance. This group also
+  bridges to Borth's: they co-authored the
   [phase-transition model zoo](https://arxiv.org/abs/2504.18072).
 - **Charles Martin (WeightWatcher)** — still active; his
   [anti-grokking detector (arXiv 2602.02859)](https://arxiv.org/abs/2602.02859)
@@ -370,15 +374,16 @@ Here the owner's intuition holds, but the shape of the gap is not what it looks
 like from outside.
 
 **Evidence the gap is real.** The survey's benchmark table (§6, Table 4) lists
-the zoos the field trains on: 3.8 million small 3-layer CNNs; 1.4 million SIREN
-implicit-representation MLPs; 1.7 million sparsified 3-layer CNNs; 60K–161K
-LoRAs for *image* diffusion models. **The entire "Transformers" subsection of
-that table contains one entry** — Falk et al. 2025, ten ViT-S pretraining seeds
-plus 240 fine-tuned heads. **No large language model zoo appears in the table at
-all.** The survey says so itself in §7.2: current WSL is *"validated mostly on
-small or medium-sized networks"*, and transformer-scale attempts *"typically
-explore partial weight spaces or undertrained checkpoints."* As late as ICML
-2026, WeightCLIP's zoos are 1.1-million-parameter CNNs.
+the zoos the field trains on. They are: 3.8 million small 3-layer CNNs; 1.4
+million SIREN implicit-representation MLPs; 1.7 million sparsified 3-layer
+CNNs; and 60K–161K LoRAs for *image* diffusion models. **The entire
+"Transformers" subsection of that table contains one entry** — Falk et al.
+2025, with ten ViT-S pretraining seeds plus 240 fine-tuned heads. **No large
+language model zoo appears in the table at all.** The survey says so itself in
+§7.2. Current WSL is *"validated mostly on small or medium-sized networks"*,
+and transformer-scale attempts *"typically explore partial weight spaces or
+undertrained checkpoints."* As late as ICML 2026, WeightCLIP's zoos are
+1.1-million-parameter CNNs.
 
 **But three different escapes are already in use, and each one is somebody's
 territory.**
@@ -389,12 +394,12 @@ MVProbe states outright that full-scale weights are computationally
 prohibitive. Hoshen owns this route.
 
 *Escape 2 — read a cheap summary of the weights instead of the tensors.* This
-is where real LLM scale already exists:
-[AWM (arXiv 2510.06738, ICLR 2026)](https://arxiv.org/abs/2510.06738) solves a
-linear assignment problem to undo neuron permutation and then compares with
-CKA, on **150 model pairs from 1.3B to 70B parameters**, robust to supervised
-fine-tuning, 5.5 trillion tokens of continued pretraining, reinforcement
-learning, pruning and upcycling.
+is where real LLM scale already exists.
+[AWM (arXiv 2510.06738, ICLR 2026)](https://arxiv.org/abs/2510.06738) first
+solves a linear assignment problem to undo neuron permutation, then compares
+models with CKA. It runs on **150 model pairs from 1.3B to 70B parameters**. It
+stays robust through supervised fine-tuning, 5.5 trillion tokens of continued
+pretraining, reinforcement learning, pruning, and upcycling.
 [Spectral Signatures of Large Language Models (arXiv 2607.03377, KDD 2026)](https://arxiv.org/abs/2607.03377)
 uses the shape of each weight matrix's singular-value distribution as a
 data-free signature across **499 leaderboard models from 19 million to 70
@@ -501,24 +506,24 @@ every recommendation below. Reading models' weights to decide whether they are
   (Pitzalis, Shenaj, Cignoni, Cossu, Bacciu, Carta — Pisa). Verbatim from its
   abstract: *"strong performance in the closed-world setting does not
   necessarily translate to high accuracy in zero-shot backdoor detection."* It
-  evaluates on **previously unseen attacks and datasets** and proposes a
-  lightweight meta-classifier built only on layer-wise spectral measures, which
-  degrades least. **Corrected 2026-08-09 after reading the full text (§3.6):
-  the abstract undersells it. It also tests unseen adapter ranks and unseen
-  PEFT methods, on the public 13,300-adapter PADBench, and its own detector
-  inverts to AUROC .2628 on held-out AdaLoRA — a second published inversion,
-  also unfixed.** What it does *not* vary is the training objective: every
-  PADBench adapter is supervised fine-tuning on poisoned data.
+  evaluates on **previously unseen attacks and datasets**. It then proposes a
+  lightweight meta-classifier built only on layer-wise spectral measures, and
+  that classifier degrades least. **Corrected 2026-08-09 after reading the full
+  text (§3.6): the abstract undersells it. It also tests unseen adapter ranks
+  and unseen PEFT methods, on the public 13,300-adapter PADBench. And its own
+  detector inverts to AUROC .2628 on held-out AdaLoRA — a second published
+  inversion, also unfixed.** One thing it does *not* vary is the training
+  objective. Every PADBench adapter is supervised fine-tuning on poisoned data.
 - [Spectral Geometry (arXiv 2604.08844)](https://arxiv.org/abs/2604.08844):
   a detector trained on preference-training adapters scores **every**
   activation-steering adapter as safer than **every** preference adapter —
   **AUC ≈ 0.00**, a clean inversion, not mere failure.
 - [Has This Checkpoint Been Abliterated? (arXiv 2607.01854)](https://arxiv.org/abs/2607.01854)
-  names two zero-cost evasions of its own detector: a **spoofed reference**
-  (declare a different base so the weight difference is zero by construction —
-  defeats both axes with no training at all), and a white-box owner who simply
-  trains past the threshold. The author's own summary: *"effective triage, not
-  tamper-proofing."*
+  names two zero-cost ways to evade its own detector. The first is a **spoofed
+  reference**: declare a different base model, so the weight difference is zero
+  by construction. That defeats both of the detector's axes with no training at
+  all. The second is a white-box owner who simply trains past the threshold.
+  The author's own summary: *"effective triage, not tamper-proofing."*
 - [On Trojan Signatures in Large Language Models of Code (arXiv 2402.16896)](https://arxiv.org/abs/2402.16896)
   tested the original weights-only trojan detector on code language models and
   concluded that *"detecting trojans only from the weights in such models is a
@@ -582,21 +587,23 @@ they disagree in a very informative way.
 
 - [Weight-space Detection of Backdoors in LoRA Adapters (arXiv 2602.15195)](https://arxiv.org/abs/2602.15195)
   (Puertolas Merenciano, Vasyagina, Zhu, Ferrando, Chaudhary; Feb 2026, v3 Apr
-  2026) takes five spectral statistics from each attention projection (Q, K, V,
-  O), builds a 20-number signature per adapter, fits a logistic regression, and
-  reports **100% accuracy** separating poisoned from clean adapters on
-  Llama-3.2-3B, Qwen2.5-3B and Gemma-2-2B, trigger-agnostic, without running the
-  model. Its abstract never states how many adapters were used.
+  2026) takes five spectral statistics from each attention projection — Q, K, V,
+  and O. That gives a 20-number signature per adapter. It fits a logistic
+  regression on those numbers. It reports **100% accuracy** separating poisoned
+  adapters from clean ones on Llama-3.2-3B, Qwen2.5-3B and Gemma-2-2B. The
+  method is trigger-agnostic and never runs the model. Its abstract never
+  states how many adapters were used.
 - [Spectral Geometry of LoRA Adapters Encodes Training Objective and Predicts
   Harmful Compliance (arXiv 2604.08844)](https://arxiv.org/abs/2604.08844) (Roi
   Paul, single author, **pre-registered**; Apr 2026) builds 38 adapters on
-  Llama-3.2-3B-Instruct in four families — healthy supervised fine-tuning,
-  preference training on inverted harmlessness, preference training on inverted
-  helpfulness, and adapters derived from activation steering — and reports that a
-  detector trained on the preference-training families **assigns every
+  Llama-3.2-3B-Instruct, in four families: healthy supervised fine-tuning;
+  preference training on inverted harmlessness; preference training on inverted
+  helpfulness; and adapters derived from activation steering. It then trains a
+  detector on the preference-training families. That detector **assigns every
   steering adapter a lower drift score than every preference adapter, AUC ≈
-  0.00**. Not "it fails": *perfectly backwards*. The author's own conclusion is
-  that *"cross-method monitoring requires per-method calibration."*
+  0.00**. That is not "it fails". It is *perfectly backwards*. The author's own
+  conclusion is that *"cross-method monitoring requires per-method
+  calibration."*
 
 Put together: **the signal these detectors read is largely an artifact of *how*
 the adapter was trained, not of *what* it does.** Change the recipe and the
@@ -669,18 +676,19 @@ transfers.
 written. The closest work, with links:**
 - **[Z-PEFT (arXiv 2608.02271, 3 August 2026)](https://arxiv.org/abs/2608.02271)
   is a partial scoop and must be read in full before anything else happens.**
-  It publishes the same *shape* of contribution: weight-space backdoor detectors
-  look great in a closed world and do not transfer; here is a lightweight
-  layer-wise-spectral meta-classifier that degrades least. What it does *not*
-  claim, from its abstract, is transfer across **fine-tuning methods** — its
-  axis is unseen *attacks and datasets*. The recipe axis (supervised fine-tuning
-  versus preference training versus activation steering versus merging) is the
-  one where [arXiv 2604.08844](https://arxiv.org/abs/2604.08844) measured the
-  inversion, and Z-PEFT does not appear to cover it. That distinction is the
-  whole remaining claim, so it must be verified against Z-PEFT's full PDF, not
-  its abstract. If Z-PEFT already covers recipes, **D1 is dead** and should be
-  recorded as such. Note also that "degrades least" is a weaker deliverable than
-  an actual invariance, which leaves room — but not much.
+  It publishes the same *shape* of contribution as ours. Its message: these
+  detectors look great in a closed world and do not transfer, so here is a
+  lightweight layer-wise-spectral meta-classifier that degrades least. What its
+  abstract does *not* claim is transfer across **fine-tuning methods**. Its axis
+  is unseen *attacks and datasets*. Our axis is the recipe axis — supervised
+  fine-tuning versus preference training versus activation steering versus
+  merging. That is the axis where
+  [arXiv 2604.08844](https://arxiv.org/abs/2604.08844) measured the inversion,
+  and Z-PEFT does not appear to cover it. That distinction is our whole
+  remaining claim. So verify it against Z-PEFT's full PDF, not its abstract. If
+  Z-PEFT already covers recipes, **D1 is dead** and should be recorded as such.
+  Note also that "degrades least" is a weaker deliverable than a real
+  invariance. That leaves us room, but not much.
 - [arXiv 2604.08844](https://arxiv.org/abs/2604.08844) names the problem but
   does not fix it; n=38, one base model, one author. Its recommendation
   ("per-method calibration") is the *weak* answer — it needs labelled examples
@@ -803,14 +811,15 @@ this.** Three separate defences already exist, which shrinks the opening a lot:
 - [Adversarial Attacks in Weight-Space Classifiers (arXiv 2502.20314)](https://arxiv.org/abs/2502.20314)
   (Shor, Fetaya, Baskin, Bronstein; v1 Feb 2025, v3 Mar 2026;
   [code](https://github.com/tamirshor7/Parameter-Space-Attack-Suite)) is the
-  closest paper and I read its PDF. It studies **implicit-representation**
-  weight classifiers, attacks by *perturbing* weights with white-box gradient
-  methods, finds surprising robustness, and attributes it to **gradient
-  obfuscation** — which in the adversarial-images literature is the classic sign
-  that a robustness claim will not survive an adaptive attack. Its §5 says the
-  robustness *"weakens and potentially fails under the presence of gradient-free
-  attacks"* and **defers black-box attacks to future work**. It never tests
-  function-preserving symmetry transforms, which are exactly a gradient-free,
+  closest paper, and I read its PDF. It studies **implicit-representation**
+  weight classifiers. It attacks them by *perturbing* weights with white-box
+  gradient methods. It finds surprising robustness, and it attributes that
+  robustness to **gradient obfuscation**. In the adversarial-images literature,
+  gradient obfuscation is the classic sign that a robustness claim will not
+  survive an adaptive attack. Its §5 says the robustness *"weakens and
+  potentially fails under the presence of gradient-free attacks"*, and it
+  **defers black-box attacks to future work**. It never tests
+  function-preserving symmetry transforms — which are exactly a gradient-free,
   zero-distortion attack.
 - The spoofing community is awake but is doing something different:
   [GhostPrint (arXiv 2606.16100)](https://arxiv.org/abs/2606.16100) evades
@@ -858,15 +867,16 @@ already independent support for this shape:
 [The Appeal and Reality of Recycling LoRAs with Adaptive Merging
 (arXiv 2602.12323)](https://arxiv.org/abs/2602.12323) (Liu, Je, Ciccone, Xu,
 Raffel) assembled a pool of nearly **1,000 user-contributed LoRAs pulled from
-the Hub, all from Llama-3.1-8B**, and found that *which* LoRAs you merge barely
-matters and randomly-initialized LoRAs perform similarly — the apparent benefit
-looks like regularisation, not transfer. That is a wild-population result
-contradicting a self-trained-population intuition.
+the Hub, all from Llama-3.1-8B**. They found that *which* LoRAs you merge barely
+matters. Randomly-initialized LoRAs perform about as well. So the apparent
+benefit looks like regularisation, not transfer. That is a wild-population
+result, and it contradicts what self-trained populations suggest.
 
-The deliverable is the readout that works on wild adapters — most likely one
-that is lineage-blind (never test on a descendant of a training model) and that
-encodes the *task vector* rather than the raw weights, so the encoder sees what
-the fine-tuning did rather than which family it came from.
+The deliverable is the readout that works on wild adapters. Most likely it has
+two properties. It is lineage-blind: we never test it on a descendant of a
+model it trained on. And it encodes the *task vector* rather than the raw
+weights, so the encoder sees what the fine-tuning did rather than which family
+the model came from.
 
 **Why our assets help.** Contamination-controlled splits are house discipline
 (the `run-provenance` rules), and we have caught leakage before. Downloading and
@@ -924,9 +934,10 @@ easy to measure: accuracy, learning rate, seed, task. No zoo carries a label for
 a *formally defined safety property*, because in real settings nobody can
 compute one. Our designed-but-unauthorised sparsity-premise study
 (`code/sparsityprem/DESIGN.md`) works in a small synthetic world where the
-property **can be computed exactly**: 300 models (4 widths × 3 training arms ×
-25 seeds), six checkpoints each — about 1,800 checkpoints — every one carrying an
-exact "dangerous / not dangerous" label from
+property **can be computed exactly**. The study trains 300 models: 4 widths ×
+3 training arms × 25 seeds. It measures each model at six checkpoints, so about
+1,800 checkpoints in total. Every one of them carries an exact "dangerous / not
+dangerous" label, taken from
 [Definition 5.22 of Bengio's LawZero paper (arXiv 2606.29657)](https://arxiv.org/abs/2606.29657).
 
 The WSL question riding on top: **can a weight-space readout detect the
@@ -1061,10 +1072,11 @@ wherever it appears.**
 does not build a zoo. It uses **PADBench**, released with
 [PEFTGuard (arXiv 2411.17453)](https://arxiv.org/abs/2411.17453) (Sun, Cong,
 Liu, Lin, He, Chen, Han, Huang), published at **IEEE Symposium on Security and
-Privacy 2025**. PADBench is **13,300 LoRA adapters** across five base models
-(Llama-2-7B, Llama-2-13B, Qwen1.5-7B, Flan-T5-XL, RoBERTa-base), five datasets,
-six attacks, five PEFT methods (LoRA, AdaLoRA, DoRA, LoRA+, QLoRA), and ranks
-from 8 to 2048. It ships only the query and value projection weights. **Neither
+Privacy 2025**. PADBench is **13,300 LoRA adapters**. It covers five base
+models — Llama-2-7B, Llama-2-13B, Qwen1.5-7B, Flan-T5-XL, RoBERTa-base — plus
+five datasets, six attacks, five PEFT methods (LoRA, AdaLoRA, DoRA, LoRA+,
+QLoRA), and ranks from 8 to 2048. It ships only the query and value projection
+weights. **Neither
 PEFTGuard nor PADBench appears anywhere on this page. That was a real gap:
 PEFTGuard is the security-venue baseline of record, and PADBench is far larger
 than every registry in §2.6 put together.**
@@ -1164,29 +1176,32 @@ old); so do
 [2602.15195](https://arxiv.org/abs/2602.15195) and
 [2607.01854](https://arxiv.org/abs/2607.01854). The productive pull was
 backwards: PEFTGuard has **36 forward citations**, all screened. Four are new
-to this page and none is a scoop:
-[DFBScanner (arXiv 2605.18907)](https://arxiv.org/abs/2605.18907) — static
-inspection of the **final classification layer** of vision networks,
-attack-agnostic, over 5,000 backdoored models, 12 architectures, 20 attack
-types; the classic-vision analogue of this cell, and a baseline shape we should
-know about;
-[Fine-Tuning Integrity (arXiv 2604.04738)](https://arxiv.org/abs/2604.04738) —
-zero-knowledge cryptographic proofs that a released model's drift lies in a
-declared class of norm-bounded, low-rank or sparse updates; a completely
-different answer to the same supply-chain worry, worth citing rather than
-competing with;
-[LoRA as Oracle (arXiv 2601.11207)](https://arxiv.org/abs/2601.11207) — attaches
-a probe adapter and reads its optimisation dynamics, so it needs data and
-training and is not weights-only;
-[a fine-tuning-security survey (arXiv 2605.25073)](https://arxiv.org/abs/2605.25073),
-whose own re-evaluation finds that cross-lingual backdoor transfer *"reported
-as near-perfect at larger scales, fails entirely on tested 1B–4B models"* — a
-second, independent instance of this literature's headline numbers not
-surviving a change of setting. Ten mechanism-shape searches in adjacent
-vocabulary (fine-tuning recipe, preference optimization, training objective,
+to this page, and none of them is a scoop.
+
+- [DFBScanner (arXiv 2605.18907)](https://arxiv.org/abs/2605.18907) — static
+  inspection of the **final classification layer** of vision networks. It is
+  attack-agnostic, and it covers over 5,000 backdoored models, 12
+  architectures, and 20 attack types. It is the classic-vision analogue of this
+  cell, and a baseline shape we should know about.
+- [Fine-Tuning Integrity (arXiv 2604.04738)](https://arxiv.org/abs/2604.04738) —
+  zero-knowledge cryptographic proofs that a released model's drift lies in a
+  declared class of norm-bounded, low-rank, or sparse updates. It is a
+  completely different answer to the same supply-chain worry. Cite it rather
+  than compete with it.
+- [LoRA as Oracle (arXiv 2601.11207)](https://arxiv.org/abs/2601.11207) —
+  attaches a probe adapter and reads its optimisation dynamics. So it needs
+  data and training, and it is not weights-only.
+- [A fine-tuning-security survey (arXiv 2605.25073)](https://arxiv.org/abs/2605.25073)
+  — its own re-evaluation finds that cross-lingual backdoor transfer *"reported
+  as near-perfect at larger scales, fails entirely on tested 1B–4B models"*.
+  That is a second, independent case of this literature's headline numbers not
+  surviving a change of setting.
+
+Ten mechanism-shape searches in adjacent vocabulary returned **nothing new**.
+The ten: fine-tuning recipe, preference optimization, training objective,
 harmful + spectral, AdaLoRA + detection, aspect ratio + singular value,
 third-party adapters + supply chain, community-contributed adapters, model hub
-+ safety + weights, recipe + invariant) returned **nothing new**.
++ safety + weights, and recipe + invariant.
 
 **New cheapest decisive step, replacing the old two-stage plan. Stage 0.5,
 about zero GPU-hours and a few CPU-hours.** Download PADBench. Reproduce
@@ -1212,14 +1227,15 @@ in-distribution does the question survive."* **Their evaluation is entirely on
 curated targets. The question survives.**
 
 **What the paper actually is.** They collect Hugging Face models under four
-vision tags — 22,055 available — keep only those that instantiate through the
-auto-classes without remote code and tokenize successfully, and stop at **2,000
-training plus 200 validation** models, **171 billion parameters**, individual
-models up to 1.3 B. The mix is 42.0% transformer, 21.8% convnet, 5% hybrid, and
-**31.4% whose architecture cannot even be told from the name**. They then adapt
-the SANE encoder-decoder with three changes — per-token loss normalisation at
-runtime, dense tokenization, and sinusoidal position encodings — and train one
-backbone (450 M or 900 M parameters) for everything.
+vision tags, which gives 22,055 candidates. They keep only the models that load
+through the auto-classes without remote code and that tokenize successfully.
+They stop at **2,000 training plus 200 validation** models, **171 billion
+parameters** in total, with individual models up to 1.3 B. The mix is 42.0%
+transformer, 21.8% convnet, 5% hybrid, and **31.4% whose architecture cannot
+even be told from the name**. They then adapt the SANE encoder-decoder with
+three changes: per-token loss normalisation at runtime, dense tokenization, and
+sinusoidal position encodings. They train one backbone for everything, at 450 M
+or 900 M parameters.
 
 **What tasks it demonstrates.** The main body is **entirely weight
 generation**: produce ResNet-18 weights for five image datasets; produce 25
@@ -1314,14 +1330,16 @@ checkpoints, not just summary statistics."*
 
 Searching the whole `sparsityprem` repository for `torch.save`, `safetensors`
 and `state_dict` returns **zero hits**. The word "checkpoint" in the design
-document means "a step at which we measure something", not "a saved file". In
-`src/sparsityprem/harness.py`, `train_one` probes at six steps and appends a
-**dictionary of scalars** — loss, marginal miss rate, the harm-coordination
-scores, and the dangerous flag — to a trace. It then hands back the live model
-object, the driver keeps it in a Python list, and only a JSON file is written.
-Every model is destroyed when the process exits. The band-sampling routine does
-the same. All nineteen recorded run directories together total **14 MB** of
-JSON and no binary artifacts.
+document means "a step at which we measure something", not "a saved file".
+
+Here is what the code does. In `src/sparsityprem/harness.py`, `train_one`
+probes at six steps. At each step it appends a **dictionary of scalars** to a
+trace: loss, marginal miss rate, the harm-coordination scores, and the
+dangerous flag. It then hands back the live model object. The driver keeps that
+object in a Python list, and writes only a JSON file. Every model is destroyed
+when the process exits. The band-sampling routine does the same. All nineteen
+recorded run directories together total **14 MB** of JSON, with no binary
+artifacts.
 
 So D4 is real, its label is real, and it is still the one candidate whose
 novelty does not depend on winning a race — **but the scout page's claim that
@@ -1536,15 +1554,16 @@ Named cells, with the occupant and the reason.
    [AWM (ICLR 2026)](https://arxiv.org/abs/2510.06738) plus
    [Spectral Signatures (KDD 2026)](https://arxiv.org/abs/2607.03377) own
    LLM-scale fingerprinting up to 70B.
-6. **Do not touch model merging or task arithmetic theory.** 182 papers with
-   "model merging" in the abstract in the first seven months of 2026 — about 26
-   a month — with four established groups (Frossard/EPFL, Rodolà/Sapienza,
-   Li Shen + Dacheng Tao, Raffel/Toronto), three surveys
-   ([the reference one, arXiv 2408.07666](https://arxiv.org/abs/2408.07666);
-   [an LLM-focused 2026 one, arXiv 2603.09938](https://arxiv.org/abs/2603.09938)),
-   and at least eight 2026 papers whose main claim is a *theory* of why merging
-   works. Anything generic here is scooped before the experiments finish. This
-   also covers the already-killed compositional-merging row.
+6. **Do not touch model merging or task arithmetic theory.** In the first seven
+   months of 2026 there were 182 papers with "model merging" in the abstract —
+   about 26 a month. Four established groups work here: Frossard/EPFL,
+   Rodolà/Sapienza, Li Shen + Dacheng Tao, and Raffel/Toronto. There are three
+   surveys, including
+   [the reference one, arXiv 2408.07666](https://arxiv.org/abs/2408.07666) and
+   [an LLM-focused 2026 one, arXiv 2603.09938](https://arxiv.org/abs/2603.09938).
+   At least eight 2026 papers claim a *theory* of why merging works. Anything
+   generic here is scooped before the experiments finish. This also covers the
+   already-killed compositional-merging row.
 7. **Do not do cheap spectral diagnostics of LLM weights for lineage,
    clustering, or quality.** Yaoqing Yang and Michael Mahoney own it, and
    [Spectral Signatures (KDD 2026)](https://arxiv.org/abs/2607.03377) already
