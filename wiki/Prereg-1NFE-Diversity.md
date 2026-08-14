@@ -127,6 +127,34 @@ the same time. The spec therefore prescribes:
 
 Owner decision still needed: the compute window.
 
+**Cost pilot RESULT (2026-08-14, measured on OrangeGrid L40S).** All
+three arms cost the same: about 1,780–1,800 seconds per tick, which is
+2.0 ticks per hour per card, within 1.4% of each other, with identical
+peak memory. One rate prices the whole campaign. The shipped
+10,000-tick length cannot be bought (~14,900 GPU-hours). The exchange
+rate is simple: **100 ticks per arm = 149 GPU-hours across the three
+arms.** The recommendation is 500 ticks per arm = **745 GPU-hours,
+about 10.4 days on three free OrangeGrid cards** — 500 ticks trains a
+real model, not a toy. Keep fp32: bf16 was measured (1.23× faster,
+3.7 GB lighter) and declined, because the saving does not change what
+is affordable and it deviates from the published recipe. The M=1
+stability check finishes unattended overnight. One new caveat, named
+NOTE-P1: at equal ticks, the tuple-matched arm takes 4× the optimizer
+steps of the others; the main A-vs-B contrast is unaffected.
+
+**Companion gate (2026-08-14): the "transplant the diversity
+ingredient" METHOD idea is KILLED** (overlap Level 2).
+[SubFlow](https://arxiv.org/abs/2604.12273) already ships a
+plug-and-play diversity fix into Shortcut and MeanFlow and measures it
+as recall; PacGAN owns the group-size knob. H3 itself is untouched:
+Drifting, iMF and IMM never measure recall or precision anywhere in
+their papers, so the matched-precision recall measurement is still an
+empty slot that H3 takes. One ungated lead is recorded and NOT acted
+on: whether train-time guidance-strength conditioning correlates with
+diversity (must pass a gate before any GPU time). Records: nfe1
+`runs/h3_pilot/20260814/`, tier2gates
+`runs/h3ingredient-gate-20260814/`.
+
 ## Status: LOCKED 2026-08-08
 
 The professor signed off and adopted the recommended defaults. Lock hash:
