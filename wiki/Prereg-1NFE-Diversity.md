@@ -39,6 +39,14 @@ page.
 The full record is in nfe1
 `runs/week2_check/20260809/RESULTS-week2-boundary.md`, plus 12 numbered notes.
 
+**Where H1–H4 are defined:** in section 4 of this page, under
+"Predictions, fixed before the run." Short version — **H1:** variety
+(recall) falls as steps drop to one inside the averaging family.
+**H2:** Drifting, trained without averaging, loses less than half of
+what the averaging family loses. **H3:** a matched pair trained from
+scratch shows the same ordering. **H4:** SubFlow's fix helps the
+averaging family but not Drifting.
+
 **H1 is confirmed in Shortcut and NOT confirmed in iMF.** In Shortcut every
 matched contrast is positive: 6 of 6 for the B model and 7 of 7 for the XL
 model, at +0.0917 at 50k samples. In iMF the same comparison gives +0.0004 on a
