@@ -56,7 +56,7 @@ was wrong. Details are in its row in Part 2.
 | RoboJudge | ICLR, ready to lock |
 | 1-NFE diversity | CVPR, week-1 passed, ready to lock |
 | Epistemic contextualization | ICML, pipeline ready, needs sign-off |
-| SVIB→TMLR | Writing |
+| SVIB→TMLR | **Owner decision Aug 14: withdraw from NeurIPS now, submit to TMLR.** Drafting started; target draft-complete ~Aug 28, submit on withdrawal |
 | Sparsity-premise test | Design ready, runs on OrangeGrid, a standalone safety-empirics paper |
 | Robot-evaluator uncertainty audit | Headline proven; write the boundary note, then design |
 
