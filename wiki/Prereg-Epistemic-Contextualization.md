@@ -181,6 +181,26 @@ cleanly whenever a card appears.
 **Integrity after the cancellation:** all four run directories are verified
 complete, with manifests. Nothing of record lived on scratch.
 
+**OWNER DECISION (2026-08-15): AMEND THE METHOD AND RE-RUN THE GATE —
+Deviation 3, ledgered here.** The amendment tests two fixes for the
+invented-sources failure, separately and together: (a) a STRONGER
+REWRITER (candidates served through AnvilGPT, Purdue's hosted
+open-model API at anvilgpt.rcac.purdue.edu — the owner's suggestion;
+access requires an owner-side ticket if not yet enabled), and (b) a
+RETRIEVAL-GROUNDED SOURCE FIELD: where the corpus carries real
+metadata (news outlet, date, forum username), the rewrite USES it
+instead of asking the model to produce one — attacking the failure at
+its root, since the gate showed the model invents sources exactly when
+metadata is thin. The re-run keeps the frozen 0.97 threshold and the
+same audit design; one improvement is REQUIRED this time: the judge
+must be a DIFFERENT model family from the rewriter (round 1's judge
+shared the rewriter's family — a recorded leniency bias). The round-1
+human spot-check (50 blinded items) is still owed and applies to the
+new round as well. Campaign economics note: an API can serve the GATE
+(≈2,100 documents) cheaply, but the full 2 B-token rewriting campaign
+needs self-hosted throughput — if a stronger model passes the gate,
+the campaign serves that model with vLLM on Anvil GPUs as before.
+
 ## Original draft status
 
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
