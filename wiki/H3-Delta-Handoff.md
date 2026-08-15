@@ -47,11 +47,13 @@ territory: none of the source papers measures recall at all.
 
 ## The plan, in order
 
-1. **Check the stability verdict first.** The 20-tick M=1 stability
-   check finished (or is finishing) on OrangeGrid:
-   `og_cluster:~/h3pilot/` via `finalize.sh`, mirrored to nfe1
-   `runs/h3_pilot/20260814/`. If M=1 diverged, STOP and escalate —
-   the campaign design changes.
+1. **Check the stability verdict first — ANSWERED: STABLE
+   (2026-08-15, nfe1 commit 1444dfe).** All three arms finished all
+   20 ticks with zero non-finite weights and matching parameter
+   norms; the verdict table and `stability.json` are in nfe1
+   `runs/h3_pilot/20260814/` (RESULTS.md §7). The step-1 gate is
+   cleared — pull nfe1, confirm you see commit 1444dfe, and proceed
+   to the probes.
 2. **Probe before sizing (hard rule).** Run the 3-tick timing probe on
    ONE H200 (and on an A100 if the H200 queue is long) exactly as the
    runbook says. The pilot measured 1,780 sec/tick on an L40S; the
