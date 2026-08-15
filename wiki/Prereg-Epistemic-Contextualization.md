@@ -231,6 +231,19 @@ web sheet). Gate re-run: five arms (incl. a serving-control arm), same
 frozen 0.97, independent judge throughout, invented-source count
 reported as a diagnostic beside the criterion. AnvilGPT: working, 16
 models, account-wide ~80 req/min cap that returns HTTP 400 (not 429).
+**HUMAN SPOT-CHECK COMPLETE (owner, 2026-08-15; scored record in
+ctxprereg `runs/2026-08-09/fact-audit-01/human_spotcheck_SCORED.json`):
+the human pass rate is 35/50 = 70%**, far below the round-1 judge's 94%
+on the same items and close to the independent judge's overall rate —
+**round 1's leniency is confirmed by ground truth** (13 items the judge
+passed and the human failed, versus 1 the other way). The human labels
+also show no meaningful treatment-vs-placebo separation (C1 0.67 vs C3
+0.73 at n=24/26), supporting the "general rewriting-fidelity problem at
+7B scale" reading. Blind-integrity note: one item (20) received a
+coordinator explanation before the owner's verdict. Implication for the
+gate: with humans finding ~30% of rewrites fact-lossy, the 0.97 bar is
+far from ANY current arm — the negative finding is human-anchored, not
+a judge artifact.
 
 ## Original draft status
 
