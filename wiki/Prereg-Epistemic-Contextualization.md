@@ -265,7 +265,16 @@ instrumentation reasons; (2) CALIBRATED — read 0.97 as ≥0.813 on the
 gpt-oss scale (a true 97% maps there through its measured specificity
 0.824, CI 0.665–0.917); needs owner ratification as a deviation;
 (3) through the round-1 judge — reachable but indefensible (it would
-certify ~30% document damage). **Round-1 headline correction, now
+certify ~30% document damage). **OWNER DECISION (2026-08-15,
+verbatim: "Calibrated") — Deviation 4, ratified:** the gate is read
+through the CALIBRATED mapping — an arm passes if its gpt-oss-judged
+rate is ≥0.813 (where a true 97% lands through the judge's measured
+specificity 0.824, calibrated on the owner's 50 human labels). The
+literal 0.97 verdict is still computed and reported FIRST beside every
+calibrated verdict, so any reader can apply either rule; the
+calibration record (judge_calibration.json) and its 50-item basis are
+cited wherever the mapping is used, including its CI (0.665–0.917) and
+the sensitivity trade-off that motivated it. **Round-1 headline correction, now
 statistically grounded:** human C1−C3 difference −0.064 (CI −0.304 to
 +0.181, p=0.76) — no contextualization-specific cost; the phenomenon is
 general 7B rewriting infidelity. Transferable design lesson (mirrors
