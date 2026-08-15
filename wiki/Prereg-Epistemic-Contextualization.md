@@ -245,6 +245,34 @@ gate: with humans finding ~30% of rewrites fact-lossy, the 0.97 bar is
 far from ANY current arm — the negative finding is human-anchored, not
 a judge artifact.
 
+**JUDGE CALIBRATION AGAINST THE HUMAN LABELS (2026-08-15; record in
+ctxprereg `runs/2026-08-14/judge-calibration-01/`):** five judges
+scored on the owner's 50 labels (15 true fact losses). The round-1
+judge misses 87% of real fact losses (sensitivity 0.13; on the placebo
+it caught 0 of 7 — why C3 "looked" like 0.97). **gpt-oss:120b is
+essentially unbiased as a rate (+0.020 overall; 0.000 on C1)** and is
+the calibration judge of record. Per-item join to the human sheet was
+reconstructed from the exporter's seeded shuffle and verified
+byte-identical on all 50 items.
+**DECISION REQUIRED (owner): the frozen 0.97 threshold is unreachable
+through ANY judge that can actually detect fact loss** — every such
+judge fails some genuinely faithful rewrites (specificity 0.82–0.89),
+capping even a PERFECT rewriter below 0.97; the only judges that reach
+0.97 are the ones that pass real damage. Three readings, reported side
+by side by the gate summary with the literal verdict always first:
+(1) LITERAL — no arm can ever pass; the study stops partly for
+instrumentation reasons; (2) CALIBRATED — read 0.97 as ≥0.813 on the
+gpt-oss scale (a true 97% maps there through its measured specificity
+0.824, CI 0.665–0.917); needs owner ratification as a deviation;
+(3) through the round-1 judge — reachable but indefensible (it would
+certify ~30% document damage). **Round-1 headline correction, now
+statistically grounded:** human C1−C3 difference −0.064 (CI −0.304 to
++0.181, p=0.76) — no contextualization-specific cost; the phenomenon is
+general 7B rewriting infidelity. Transferable design lesson (mirrors
+RoboJudge's blind-floor lesson): a pre-registered pass threshold must
+be set BELOW the judge's own measured specificity ceiling, or it tests
+the judge, not the method.
+
 ## Original draft status
 
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
