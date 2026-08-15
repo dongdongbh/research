@@ -201,6 +201,37 @@ new round as well. Campaign economics note: an API can serve the GATE
 needs self-hosted throughput — if a stronger model passes the gate,
 the campaign serves that model with vLLM on Anvil GPUs as before.
 
+**Amendment progress note (2026-08-15) — two findings that REFRAME
+round 1; gate re-run in flight, verdicts pending:**
+1. **Our staging fed the rewriter FALSE source facts.** 88.6% of the
+   2,100 audit documents carried at least one wrong or junk metadata
+   field: the crawl date presented as the publication date (64.9%),
+   corpus slugs as outlets ("reddit-forum"), the literal word "Edu" as
+   the outlet on 264 academic pages, raw Unix timestamps as dates. The
+   worst round-1 group (academic, 0.833) is the group with 99.7% false
+   dates. Real metadata existed upstream and was dropped at staging;
+   recovery is built and joined 100% on all three joinable corpora.
+   So part of "the model invents sources" was "we handed the model
+   invented sources." An early n=8 signal even suggests stronger
+   rewriters do WORSE under bad metadata — they copy it more
+   faithfully.
+2. **Round 1's judge leniency was worth 26–35 points, not a
+   footnote.** An independent-family judge re-scoring round 1's own
+   saved rewrites: C1 0.9119 → 0.65, C3 0.9714 → 0.62 — and the
+   treatment-vs-placebo separation DISAPPEARS (the placebo fails as
+   often, via omissions/changed values instead of invented sources).
+   Under the independent judge, round 1 reads as a general
+   rewriting-fidelity problem at 7B scale, not a
+   contextualization-specific cost. The round-1 headline must not be
+   quoted without this caution until the human spot-check arbitrates.
+**Consequence: the 50-item human spot-check is now load-bearing** — two
+judges disagree by 26–35 points on identical text, so only human labels
+decide which is closer to truth (the owner is labeling via the blinded
+web sheet). Gate re-run: five arms (incl. a serving-control arm), same
+frozen 0.97, independent judge throughout, invented-source count
+reported as a diagnostic beside the criterion. AnvilGPT: working, 16
+models, account-wide ~80 req/min cap that returns HTTP 400 (not 429).
+
 ## Original draft status
 
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
