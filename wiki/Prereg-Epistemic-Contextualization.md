@@ -2,10 +2,17 @@
 
 ## Where this stands right now
 
-**The study is STOPPED.** A check that we wrote into the plan before we ran
-anything came back FAIL on 2026-08-10. The plan says to stop when that happens,
-so we stopped. The owner and the professor now choose what to do next. The
-sections below give the whole record in order.
+**The study is STOPPED, and the amended gate re-run has its decisive
+result (2026-08-15).** A check that we wrote into the plan before we ran
+anything came back FAIL on 2026-08-10; the owner amended the method
+(Deviation 3) and we re-ran the gate. The re-run split cleanly: the
+invented-sources problem the amendment targeted is **fixed and proven**
+(the grounded arm now invents *less* than the placebo), but the frozen
+fact-preservation gate **still fails every arm** — and part of that
+failure is the measuring instrument, which scores correct grounding as
+if it were fabrication. The full record is in the "Amended gate re-run"
+section below. One owner decision is pending (how to report the split
+result); the sections below give the whole record in order.
 
 ## Words used on this page
 
@@ -281,6 +288,104 @@ general 7B rewriting infidelity. Transferable design lesson (mirrors
 RoboJudge's blind-floor lesson): a pre-registered pass threshold must
 be set BELOW the judge's own measured specificity ceiling, or it tests
 the judge, not the method.
+
+## Amended gate re-run — decisive bf16 results (2026-08-15)
+
+This section records the finished matched pair: the grounded prompt
+(called **v4**) against the round-1 prompt (called **v3**), same model
+(Qwen 7B), same weights, same random seed, same 5,860 chunks, same
+serving (bf16 through vLLM), same judge (gpt-oss:120b). Only the prompt
+differs, so any difference between the two is caused by the prompt.
+Records live in ctxprereg `runs/2026-08-15/` (run directories named in
+each paragraph).
+
+**1. Gate verdicts — every arm FAILS, under both readings.**
+
+| Arm | Pass rate | Literal (≥0.97) | Calibrated (≥0.813, Deviation 4) |
+|---|---|---|---|
+| v4 grounded | 0.5381 | FAIL | FAIL |
+| v3 control | 0.6452 | FAIL | FAIL |
+| C3 placebo | 0.6190 | FAIL | FAIL |
+
+All three sit below the robustness band as well, so the verdict does
+not depend on judge-uncertainty choices. The v4-vs-v3 gap is −10.7
+points (p = 0.0016 — a real difference, not chance).
+
+**2. The invented-sources problem — the thing Deviation 3 was built to
+fix — is fixed.** We first used a model-based probe to count invented
+sources, and we RETRACT its number (32.4%): reading its flagged items
+showed 134 of 136 flags were the *real* outlet and date that the
+grounded prompt had correctly supplied — a 98.5% false-alarm rate,
+because the probe compared the rewrite against the chunk alone. The
+replacement is a deterministic check (no model involved): a detail
+counts as invented only if it appears in neither the original chunk nor
+the retrieved metadata for that document. Result, n = 420 per arm:
+
+| Arm | Invented sources | 95% range |
+|---|---|---|
+| v3 control | 11/420 = 2.62% | 1.47–4.63% |
+| **v4 grounded** | **2/420 = 0.48%** | 0.13–1.72% |
+| C3 placebo | 6/420 = 1.43% | 0.66–3.08% |
+
+The control reproduces round 1's direction (treatment invents ~1.8× the
+placebo). The grounded fix inverts it: the treatment now invents at
+0.34× the placebo rate — 5.5× fewer inventions than the control
+(p = 0.0215). The grounded arm used real retrieved metadata in 54
+domains and 22 dates; the control in almost none.
+
+**3. Why the grounded arm scores WORSE on the gate: mostly the
+instrument.** The judge compares each rewrite against the original
+chunk only. Moving real retrieved provenance into the prose — the whole
+purpose of contextualization — therefore reads to the judge as "added
+content." Measured, not guessed: 62% of v4's failures are "the rewrite
+added something"; 24.5% are added attribution that the frozen rubric
+explicitly says must PASS; and within v4, chunks that correctly
+injected retrieved metadata pass 16 points lower than chunks that did
+not (p = 0.019). Correcting only the explicit rubric violations puts v4
+at 0.6452 — identical to the control. (That correction is a keyword
+sort of the judge's stated reasons, not a re-judgement, so treat it as
+indicative.) Honesty check: this bias explains part of the drop, not
+all of it — v4 would still robustly fail without it. Note v4's raw
+fidelity is *better* than the control's (number recall 0.9227 vs
+0.9150; proper-name recall 0.9015 vs 0.8869).
+
+**4. One genuine cost, not an artifact.** The grounded prompt's
+restrictions made the model skip attribution entirely on 17.8% of
+chunks — 3.2× the control (1,043 vs 325). A treatment that stops
+contextualizing drifts toward the placebo, which would weaken the
+treatment-versus-placebo comparisons in any later training run. This is
+a real weakness of the v4 prompt to fix or accept.
+
+**5. New instrument finding: the judge disagrees with itself on 19% of
+identical inputs.** The two runs' placebo arms produced 99.88%
+byte-identical rewrites (same prompt, weights, seed). Judging the same
+texts twice at temperature 0 agreed on only 329/405 = 0.8123. That
+self-agreement is the ceiling on the judge's agreement with anything —
+and it agreed with the human labels at 0.735, close to that ceiling, so
+most human-judge disagreement is judge noise, not hidden bias. Scale
+check: judge noise moves a whole-arm rate by roughly ±2 points; the
+10.7-point v4-vs-v3 gap is about 6× that, so it stands. The invention
+result is deterministic and unaffected. This confirms the standing
+rule: use this judge only as a rate instrument, never to adjudicate
+single items.
+
+**6. Reproducibility, three ways.** The placebo re-run matches round 1
+to 0.24 points (0.6190 vs 0.6214); the control matches round 1's
+re-judged C1 to 0.5 points (0.6452 vs 0.65); and a serving comparison
+banked before trimming the hosted arm shows bf16 scores 3.8 points
+above the hosted 4-bit quantization with identical invention — the
+hosted gate was mildly conservative, changing no verdict.
+
+**7. DECISION PENDING (owner).** The amendment split cleanly: invention
+fixed and proven; fact-preservation-vs-chunk still failing,
+substantially for instrument reasons. The two honest ways to proceed:
+(a) report exactly as pre-registered — the invention fix succeeded, the
+frozen gate remains unmet; or (b) amend the gate to score rewrites
+against the chunk PLUS the retrieved metadata, which would be a new
+deviation (Deviation 5) requiring owner ratification before any use.
+Nobody acts on (b) without the owner's word. Three stronger-rewriter
+arms (Llama 3.3 70B and Llama 4 Scout, via AnvilGPT) are still running
+and report under the same rules.
 
 ## Original draft status
 
