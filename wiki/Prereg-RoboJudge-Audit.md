@@ -80,6 +80,48 @@ Three caveats must travel with the results table.
 the mute blind arms — the arms that get no video — as "most over-confident."
 The worker caught the bug, wrote a unit test, and kept the superseded values.
 
+## 72B appendix arm (2026-08-23; lock item 8 option exercised, not a deviation)
+
+Lock item 8 dropped the 72B judge from the headline roster on cost and
+allowed it only as an optional appendix arm if spare compute appeared.
+Spare compute appeared (the tail of Anvil job 19933424), so the option was
+exercised: Qwen2.5-VL-72B ran the full protocol unchanged — same frozen
+index, human ranking, aggregation code, and pinned environment — for 6.4
+H100-hours, one seed, post lock. Record: robojudge
+`runs/judge/appendix72b-2026-08-15.MANIFEST.md`; the paper carries it as
+Appendix app:72b (ICLR repo commit 199c32a).
+
+**Result: the cost decision cost nothing measurable.** The 72B's agreement
+with the human ranking is identical to the 7B's — tau +0.714, rho +0.857,
+to three decimals. Ten times the parameters bought no extra rank
+agreement.
+
+**Guardrail, written before anyone quotes the top-1.** The 72B picks the
+human top-1 and the 7B does not. This must NOT be read as "scale fixes
+top-1": with only 7 policies, tau moves in steps of about 0.095, the two
+confidence intervals overlap almost entirely, and one more evaluator
+landing on the human top-1 is another instance of H1's top-1 instability,
+not a correction to it. Single unreplicated post-lock arm, one seed.
+
+**Second finding: the larger judge commits less.** It scores 1 or 5 in
+77.0% of episodes (middle of the scale: 5.1%) and therefore ties on 48.1%
+of sessions against the 7B's 36.1% — it expresses no preference on nearly
+half its comparisons. It is also less over-confident (1 of 5
+humanly-inseparable pairs ordered, versus 2 for the 7B). An observation,
+not a calibration claim.
+
+Parse compliance was perfect under both the locked and the widened rule
+(the judge emitted exactly five distinct strings in 10,212 replies; zero
+rows rescued), and the blind arm was degenerate exactly as every campaign
+blind arm is — all sessions tie with byte-identical text, valuable only as
+proof the blind path never opened a video.
+
+Housekeeping found during this arm: `configs/judge-env-requirements.txt`
+still pinned torch 2.9.1, which silently downgraded fresh rebuilds off the
+locked 2.11.0. No recorded number is affected (all campaign shards recorded
+2.11.0). The file is corrected in the working tree; if the paper's artifact
+release ships it, it must ship the corrected copy.
+
 ## A3 addendum: the confound controls (campaign closed)
 
 A3 is the set of control runs that test hidden factors.
