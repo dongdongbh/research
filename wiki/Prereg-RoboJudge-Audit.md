@@ -122,6 +122,35 @@ locked 2.11.0. No recorded number is affected (all campaign shards recorded
 2.11.0). The file is corrected in the working tree; if the paper's artifact
 release ships it, it must ship the corrected copy.
 
+## Watch item: NVIDIA RoboLab's unquantified RoboArena claim (2026-08-26)
+
+A scout run (owner-ordered) verified three NVIDIA releases from June–August
+2026: [RoboLab](https://github.com/NVlabs/RoboLab) (a 120-task simulation
+benchmark with a public [leaderboard](https://research.nvidia.com/labs/srl/projects/robolab/leaderboard.html)),
+[Isaac Lab-Arena](https://github.com/isaac-sim/IsaacLab-Arena) v0.2 (policy-
+evaluation environments with a DROID embodiment), and the
+[Cosmos3 family](https://huggingface.co/datasets/nvidia/Cosmos3-DROID)
+(world-action models plus the DROID corpus with per-episode success labels).
+None carries human preference labels, so none is a second audit substrate.
+
+**The load-bearing fact:** RoboLab's leaderboard page states its simulation
+ranking "correlates strongly with RoboArena Elo scores" — and the RoboLab
+paper ([arXiv 2604.09860](https://arxiv.org/abs/2604.09860) v1) contains no
+RoboArena, Elo, or correlation analysis at all. This is exactly the
+unquantified-evaluator-claim pattern the audit documents. Only 3 of
+RoboLab's 9 leaderboard policies overlap our frozen seven (π0-FAST, π0,
+paligemma-binning), so any correlation we computed would have n=3 — below
+our own effective-n bar, reportable only as an illustration of the
+underpowered pattern, never as an evaluator verdict.
+
+**Scoop clock:** if NVIDIA quantifies the RoboArena correlation in a v2,
+they claim the sim-evaluator corner of this territory. The paper cites
+RoboLab, Isaac Lab-Arena, and the Cosmos3 lineage before the Sep 18
+abstract. **Pending owner decision:** whether to add an appendix note
+applying our own standard to RoboLab's claim (system-level, n=3, no
+interval computable — the audit's point made on the newest example), which
+would be a post-lock addition needing a ledger entry like the 72B arm.
+
 ## A3 addendum: the confound controls (campaign closed)
 
 A3 is the set of control runs that test hidden factors.
