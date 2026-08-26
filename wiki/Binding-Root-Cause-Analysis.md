@@ -411,9 +411,18 @@ note "verify that earlier work before claiming it is new" was right and
 was not executed until now.
 
 What this page still contributes, folded into the TMLR paper: the first
-POWERED measurement of the phenomenon on the SigLIP2 attention-pool path
-against role-binding items (the prior work measured segmentation data on
-plain CLIP); the caption-length warning (a "flip" at benchmark scale can
+POWERED measurement of the phenomenon against role-binding items.
+**CORRECTION (2026-08-26): the four-locus role probe ran on OpenAI CLIP
+ViT-B/32, NOT on the SigLIP2 attention-pool path as this paragraph
+previously said.** The run manifests
+(`cropdistill/runs/role_probe/20260803-corpus` and `20260805-verb`,
+both `"model_id": "openai/clip-vit-base-patch32"`) are the record; the
+pooled-locus dimension (512) confirms it. The TMLR draft inherited the
+wrong attribution from this paragraph and was corrected the same day.
+What remains true: the probe is the first powered role-binding
+measurement of this kind (prior work measured segmentation data), and
+the separate benchmark-scale untrained-readout analysis (Cell A) did
+run on SigLIP2. The caption-length warning (a "flip" at benchmark scale can
 be pure length bias — a direct caution for anyone following DCSM's
 advice to "recognize inverted patterns" from scores); the honest
 29.8→44.8 self-correction; and the MOCHI specificity contrast. The
