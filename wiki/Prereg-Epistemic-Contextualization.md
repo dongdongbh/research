@@ -2,17 +2,20 @@
 
 ## Where this stands right now
 
-**The study is STOPPED, and the amended gate re-run has its decisive
-result (2026-08-15).** A check that we wrote into the plan before we ran
-anything came back FAIL on 2026-08-10; the owner amended the method
-(Deviation 3) and we re-ran the gate. The re-run split cleanly: the
-invented-sources problem the amendment targeted is **fixed and proven**
-(the grounded arm now invents *less* than the placebo), but the frozen
-fact-preservation gate **still fails every arm** — and part of that
-failure is the measuring instrument, which scores correct grounding as
-if it were fabrication. The full record is in the "Amended gate re-run"
-section below. One owner decision is pending (how to report the split
-result); the sections below give the whole record in order.
+**The study is STOPPED, and the amended gate re-run is COMPLETE — all
+seven arms judged (2026-08-26), no arm passes.** A check we wrote into
+the plan before running anything came back FAIL on 2026-08-10; the
+owner amended the method (Deviation 3) and we re-ran the gate across
+seven arms and three rewriter models. Final picture: the amendment's
+grounding fix **works at both model scales** (it fixes attribution
+precision on the 7B, and unlocks 6.3× more contextualisation at
+unchanged precision on the 70B), scale alone **fails** (the 109B model
+is worst on both axes), and the frozen fact-preservation gate **fails
+every arm** — substantially because it scores rewrites against the
+chunk alone, penalising the retrieved provenance the method exists to
+add. The full record is in the "Amended gate re-run" sections below.
+One owner decision is pending: report as pre-registered, or ratify
+Deviation 5 and re-score against chunk plus retrieved metadata.
 
 ## Words used on this page
 
@@ -386,6 +389,78 @@ deviation (Deviation 5) requiring owner ratification before any use.
 Nobody acts on (b) without the owner's word. Three stronger-rewriter
 arms (Llama 3.3 70B and Llama 4 Scout, via AnvilGPT) are still running
 and report under the same rules.
+
+## Amended gate re-run — FINAL results, all seven arms (2026-08-26)
+
+The three stronger-rewriter arms finished (records in ctxprereg
+`runs/2026-08-23/` through `runs/2026-08-25/`; run order and every
+outage, restart, and re-order is in the run manifests). Execution notes
+of record: llama3.3:70b went down service-side on AnvilGPT once,
+costing one 13-hour rewriting pass (the rerun is the arm reported
+here); AnvilGPT serves 70B-class models at ~8 calls/min regardless of
+client workers; hosted decoding is not seeded, and an accidental
+repeat of one arm's first pass measured the run-to-run noise at 4
+chunks out of 5,860. Arms 2 and 3 and the rerun of arm 1 ran C1 only —
+a coordinator-approved evidence ordering (the pre-registered rule
+"every rewritten arm must meet the threshold" means the first failing
+criterion decides); any C1 pass would have required its C3 before
+being called a pass, and none passed.
+
+**1. Gate verdicts, final — seven arms, no pass.**
+
+| Arm | Model | Prompt | Gate | Literal | Calibrated | Robustness |
+|---|---|---|---|---|---|---|
+| Stronger v3 | llama3.3 70B | v3 | 0.7429 | FAIL | FAIL | nominal_fail |
+| Control | qwen 7B | v3 | 0.6452 | FAIL | FAIL | robust_fail |
+| Placebo | qwen 7B | C3 | 0.6190 | FAIL | FAIL | robust_fail |
+| Grounded | qwen 7B | v4 | 0.5381 | FAIL | FAIL | robust_fail |
+| Stronger+grounded | llama3.3 70B | v4 | 0.5286 | FAIL | FAIL | robust_fail |
+| Stronger v3 | llama4 109B | v3 | 0.5119 | FAIL | FAIL | robust_fail |
+
+The llama3.3-with-original-prompt arm (0.7429) is the only arm to land
+INSIDE the calibration band (0.653–0.911) rather than below it — a
+nominal fail, not a robust one. It is the one arm where the 50-item
+human calibration is load-bearing; a larger calibration set could move
+that verdict either way.
+
+**2. Metric correction, self-caught and recorded.** The raw
+invented-source rate is confounded by how much sourcing an arm
+attempts: an arm that never names a source cannot invent one.
+(llama3.3+v3 emitted only 29 specific source details in 420 chunks —
+its near-zero invention rate was abstention, not accuracy.) The honest
+measure is **attribution precision**: of the specific source details an
+arm emits, how many are real.
+
+| Arm | Details emitted | Wrong | Precision | 95% CI |
+|---|---|---|---|---|
+| qwen 7B + v3 | 34 | 11 | 0.676 | 0.508–0.809 |
+| qwen 7B + v4 grounded | 78 | 2 | 0.974 | 0.911–0.993 |
+| llama3.3 70B + v3 | 29 | 1 | 0.966 | 0.828–0.994 |
+| llama3.3 70B + v4 grounded | 182 | 9 | 0.951 | 0.909–0.974 |
+| llama4 109B + v3 | 164 | 25 | 0.848 | 0.785–0.895 |
+
+**3. What the amendment concludes.**
+
+- **Grounding (workstream b) succeeds at both scales, by different
+  routes.** On the 7B it fixes precision (0.676 → 0.974, p = 2.7×10⁻⁵)
+  and doubles volume. On the 70B it unlocks volume — 6.3× more
+  contextualisation (29 → 182 details), the most of any arm — at
+  statistically unchanged precision (0.966 → 0.951, p = 1.00).
+- **Scale alone (workstream a) fails.** llama4 with the original
+  prompt has the worst precision of any metadata-using arm (0.848),
+  the worst gate score (0.5119), and 2.3× the 7B's raw invention.
+  Both large models fabricated only dates — every single invention
+  was a year, zero domains — exactly the field the crawl-date staging
+  defect poisons.
+- **The frozen gate fails every arm**, substantially for instrument
+  reasons: it compares rewrites against the chunk alone, penalising
+  the retrieved provenance the method exists to add (measured −16
+  points for metadata-injecting chunks, p = 0.019), and the judge's
+  own test-retest ceiling is 0.81.
+
+The owner decision in item 7 above is now the only open item for this
+study: report as pre-registered (a), or ratify Deviation 5 (b) and
+re-score against chunk plus retrieved metadata.
 
 ## Original draft status
 
