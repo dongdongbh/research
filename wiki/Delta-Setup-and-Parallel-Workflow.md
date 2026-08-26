@@ -559,6 +559,41 @@ the two-times charge and the work fits within one hour.
 [Delta interactive access, direct SSH, queue limits, and charge factors](https://docs.ncsa.illinois.edu/systems/delta/en/latest/user_guide/running_jobs.html)
 [Delta reserved-resource accounting](https://docs.ncsa.illinois.edu/systems/delta/en/latest/user_guide/job_accounting.html)
 
+### Smoke-test on a cheap card before any long submission (rule, 2026-08-14)
+
+A smoke test is a short run of the real code, done only to prove the code
+starts and trains without crashing. Do one before every batch job that is
+expected to run more than about an hour.
+
+Why this rule exists: the H200 queue regularly holds hundreds of pending
+jobs (334 jobs, 308 pending, observed 2026-08-14). A job can wait many
+hours for a node and then die in its first minute on a code bug — a wrong
+path, a missing package, a bad flag. The wait is then wasted, and the next
+attempt waits again. A one-hour test on a cheap card removes that risk for
+almost no money.
+
+How to do it:
+
+1. Take the cheapest card that can run the code. On Delta that is one
+   A100 on `gpuA100x4` (charge factor 1.0; the H200 partition charges
+   3.0). Use `salloc` with a short wall time, 30–60 minutes.
+2. Run the exact code path the batch job will run — same venv, same
+   entry script, same flags — shrunk only in length (fewer ticks, fewer
+   steps, a smaller sample count). It must get past startup and complete
+   at least one real unit of work (one training tick, one batch, one
+   scored file).
+3. Only submit the full `sbatch` after the smoke test finishes cleanly.
+4. If the production A100 queue is itself slow, `gpuA100x4-interactive`
+   (double charge, one-hour cap) is an acceptable price for unblocking a
+   multi-day submission.
+
+One caveat: a smoke test proves the code runs; it does not prove the
+sizing. An A100 has 40 GB of memory and an H200 has 141 GB, so a job can
+pass on the H200 and fail on the A100 for memory reasons, or need
+different batch settings. Check the job's known peak memory against the
+card before reading a smoke-test failure as a code bug (the H3 pilot's
+peak was 34.8 GB, which fits a 40 GB A100 with little room).
+
 ### Production GPU batch
 
 Production GPU partitions allow up to 48 hours. Prefer `sbatch` for training,

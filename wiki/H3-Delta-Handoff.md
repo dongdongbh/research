@@ -56,7 +56,10 @@ territory: none of the source papers measures recall at all.
    to the probes.
 2. **Probe before sizing (hard rule).** Run the 3-tick timing probe on
    ONE H200 (and on an A100 if the H200 queue is long) exactly as the
-   runbook says. The pilot measured 1,780 sec/tick on an L40S; the
+   runbook says. Before submitting the probe to the busy H200 queue,
+   smoke-test the same command on one cheap A100 first (rule of
+   2026-08-14 in [[Delta-Setup-and-Parallel-Workflow]]) so a code bug
+   cannot waste a long queue wait. The pilot measured 1,780 sec/tick on an L40S; the
    H200 number is unknown and this model is bandwidth-bound, so DO NOT
    assume a ratio. Also probe the multi-GPU scaling (1 vs 2 vs 4 GPUs
    on one arm, 3 ticks) — DDP efficiency at 32×32 is unknown.
