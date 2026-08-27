@@ -163,6 +163,10 @@ zero) and needs a ratified post-lock ledger entry;
 (c) one appendix sentence applying the interval math to RoboLab's r = 0.68
 at n = 4 without touching the locked figure or counts. Coordinator
 recommendation: (c) — the point lands, the locked numbers stay locked.
+**OWNER DECISION (2026-08-26, verbatim: "do c"): option (c) ratified.**
+The appendix sentence is commentary on a post-lock external claim; the
+locked Fisher-z set and its 74/40 counts stay untouched. The interval is
+recomputed with the audit's own Fisher-z code before the sentence lands.
 
 ## A3 addendum: the confound controls (campaign closed)
 
