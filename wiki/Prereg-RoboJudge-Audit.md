@@ -143,13 +143,26 @@ paligemma-binning), so any correlation we computed would have n=3 — below
 our own effective-n bar, reportable only as an illustration of the
 underpowered pattern, never as an evaluator verdict.
 
-**Scoop clock:** if NVIDIA quantifies the RoboArena correlation in a v2,
-they claim the sim-evaluator corner of this territory. The paper cites
-RoboLab, Isaac Lab-Arena, and the Cosmos3 lineage before the Sep 18
-abstract. **Pending owner decision:** whether to add an appendix note
-applying our own standard to RoboLab's claim (system-level, n=3, no
-interval computable — the audit's point made on the newest example), which
-would be a post-lock addition needing a ledger entry like the 72B arm.
+**Scoop clock UPDATE (same day, 2026-08-26): it already partially fired.**
+The paper worker found RoboLab's arXiv v4 (updated 2026-08-14; published
+at RSS 2026 per the arXiv journal-ref, verified) now quantifies the claim
+in the paper body: **Spearman rho = 1.00 and Pearson r = 0.68 over the
+four shared policies** (pi0.5, pi0-FAST, pi0, PaliGemma). Under this
+audit's own standard those numbers are the pattern the audit documents:
+rho = 1.00 is degenerate under Fisher-z, and r = 0.68 at n = 4 carries an
+interval of roughly [-0.81, +0.99] — compatible with zero. The ICLR paper
+now cites RoboLab (RSS 2026) in related work WITH its v4 numbers stated
+plainly (ICLR repo commit 3c6f821); the earlier planned "publishes no
+coefficient" sentence was never written because it became false on Aug 14.
+
+**Pending owner decision, reshaped by v4 — three options:**
+(a) leave as committed — RoboLab cited with its numbers, no commentary;
+(b) add RoboLab as a TENTH audited paper in the Fisher-z figure — this
+changes the locked headline counts (74 intervals / 40 compatible with
+zero) and needs a ratified post-lock ledger entry;
+(c) one appendix sentence applying the interval math to RoboLab's r = 0.68
+at n = 4 without touching the locked figure or counts. Coordinator
+recommendation: (c) — the point lands, the locked numbers stay locked.
 
 ## A3 addendum: the confound controls (campaign closed)
 
