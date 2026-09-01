@@ -33,15 +33,20 @@ territory: none of the source papers measures recall at all.
   `gpuA100x4` (40 GB cards) works for probes; the pilot's peak was
   34.8 GB, which fits but is tight.
 - **GPU walls are 2 days.** No longer partitions exist. The campaign
-  must checkpoint and resume across windows (IMM snapshots every tick,
-  so this is native).
+  must checkpoint and resume across windows. CORRECTION 2026-08-26: IMM
+  does NOT snapshot every tick — its shipped numbered-save interval is
+  500 ticks and its `-latest` state file is never written. The scripts
+  set the interval to 10 ticks; see the prereg ledger entry of
+  2026-08-26.
 - **torch must be pinned to cu128 wheels** (driver 570.x):
   `--index https://download.pytorch.org/whl/cu128`, and IMM needs
   **torch 2.8.0+cu128 exactly** (newer torch breaks IMM's Sampler).
 - Delta bills the MAX fraction of GPU/CPU/RAM requested — a full-node
   request bills as a full node. That is fine here: we want the node.
-- RH96 migration: migrated nodes need `--reservation=RH96` from
-  dt-login04; the H200 nodes had NOT migrated as of Aug 8. Re-check.
+- RH96 migration: re-checked 2026-08-26 — the RH96 reservation no
+  longer exists on Delta at all (`scontrol show reservation`). No
+  `--reservation` flag on any job. gpue01 is reserved for another
+  project until 2026-09-19 (7 of 8 H200 nodes open).
 - Only the owner can log in (password + Duo). The session runs there
   under the owner's account; agents never store those credentials.
 

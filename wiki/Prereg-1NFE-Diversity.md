@@ -155,6 +155,417 @@ diversity (must pass a gate before any GPU time). Records: nfe1
 `runs/h3_pilot/20260814/`, tier2gates
 `runs/h3ingredient-gate-20260814/`.
 
+## Delta campaign preparation (2026-08-26): step-1 gate cleared, probes staged, numbers PENDING
+
+**Who:** prepared by the Delta session on dt-login02; the owner submits every
+job. Every number below traces to a named file or command.
+
+**Step 1, the M=1 stability check, is cleared.** nfe1 commit `1444dfe`,
+`runs/h3_pilot/20260814/RESULTS.md` §7 and `stability.json`: at tick 20
+each of the three arms has 0 non-finite values among its 56,062,595 EMA
+parameters (EMA = the slow-averaged copy of the weights). EMA L2 norms are
+226.6004 (arm A), 226.6002 (arm B), 226.6850 (arm C). The runbook's
+"if M=1 diverged, STOP" rule does not fire.
+
+**Cluster facts re-checked 2026-08-26 09:15 CDT (`scontrol`, `sinfo`,
+`squeue`, `accounts` on dt-login02):**
+
+- The RH96 reservation no longer exists on Delta. `scontrol show reservation`
+  lists only infinia, gpuc-fw-float, NDIF-H200 and NDIF-A40. No job needs a
+  `--reservation` flag.
+- H200 node gpue01 stays reserved for other projects (NDIF-H200) until
+  2026-09-19, so 7 of 8 H200 nodes are open. H200 queue: 403 jobs pending,
+  32 running. A100 queue: 1,658 pending, 235 running. Submit early.
+- Balance: 1,999 of 2,000 service units (SU). One SU is one A100-GPU-hour.
+  The H200 partition charges 3 SU per GPU-hour ([[Anvil-vs-Delta]], from the
+  Delta queue table). So the balance buys at most **666 H200-GPU-hours.**
+- Why that matters: at the L40S pilot rate (1,775.7 s/tick, arm A median,
+  `cost_table.json`) 500 ticks × 3 arms costs 740 GPU-hours = **2,220 SU,
+  which is more than the balance** (`parse_probe.py` on the pilot log). The
+  campaign fits only if an H200 is faster than an L40S. The probes decide
+  the affordable tick count; nothing is assumed.
+- One H200 node has 96 CPUs, 2,015 GB memory and 8 GPUs, so 12 CPUs and
+  250 GB per GPU. Every job requests exactly that share, so Delta's
+  largest-fraction billing charges only the GPUs used.
+
+**Three code facts found while preparing. Each changes the job scripts,
+none changes the training recipe. Escalated for the owner's ratification,
+not self-approved.**
+
+1. IMM never writes its `training-state-latest.pt` file. The pilot log says
+   `Failed to save the latest checkpoint: Missing key use_zero` at every
+   save. The handoff's "snapshot every tick" was wrong: the shipped interval
+   for numbered saves is 500 ticks (`configs/cifar10.yaml`). To resume
+   across 48-hour walls the scripts set `training.snapshot_ticks=10` and
+   `training.state_dump_ticks=10`. These settings only decide what is
+   written to disk (about 0.9 GB per save and 45 GB per arm, estimated from
+   the 56,062,595 parameters in fp32: weights, two RAdam moments, and the
+   EMA copy). They do
+   not touch any number in training.
+2. IMM's stop rule: a run with `total_ticks=T` trains T−1 full ticks plus
+   one optimizer step (`training_loop.py` line 504; this is why the pilot's
+   tick 20 was partial). The scripts now pass T+1, so "500 ticks" means
+   exactly 500 full ticks: 50,000 optimizer steps for arms A and B, and
+   200,000 for arm C (NOTE-P1). The throw-away partial tick costs one step.
+3. IMM's resume restores the weights, the EMA and the optimizer state
+   (`train.py` lines 65–82, `training_loop.py` lines 288–311). It does NOT
+   restore the position in the data order or the random-number streams;
+   those restart from the seed. To keep the three arms identical in
+   procedure, every 48-hour window stops all arms at the same tick
+   (`WINDOW_TICKS`), so all arms resume at the same ticks. The list of
+   resume ticks will be written here after the campaign.
+
+**Probe and smoke jobs, all in nfe1 `delta/` (the owner submits; every job
+asks for the 48-hour maximum wall per the owner's standing instruction):**
+
+| Job | Card(s) | What it measures | Rough cost |
+|---|---|---|---|
+| `smoke_a100.sbatch` | 2 × A100 (factor 1) | The exact campaign code path: DDP, numbered saves, and a real resume across two launches (ticks 1–2, then ticks 3–4 from the tick-2 save). Pass = second launch prints `resuming from … (tick 2)` and its tick-3 line reads kimg 1228.8. | 2–4 SU (4 full ticks + 2 partial on 2 cards; range = perfect to no DDP scaling at the L40S rate) |
+| `probeA_h200.sbatch` | 1 × H200 | Probe A: seconds per tick on one H200, arm-A settings, 3 full ticks (median of ticks 2–3). | 4.4 SU at the L40S rate (3 × 1,775.7 s × 3) |
+| `probeB_h200.sbatch` | 4 × H200 (half node) | Probe B: seconds per tick at 2 and 4 GPUs, same settings. The 1-GPU row comes from Probe A. | 13–36 SU at the L40S rate (range = perfect to no DDP scaling) |
+
+Outputs land in `/work/hdd/bhvn/dli26/h3/runs/<job>_<jobid>/`.
+`parse_probe.py` reads the logs with the pilot parser unchanged (tick 1 and
+partial ticks excluded) and prints the sizing table below.
+
+**Sizing rule, fixed before the numbers exist:**
+
+- Cost in SU for 500 ticks = 3 arms × n GPUs per arm × 500 × (seconds per
+  tick at n GPUs) ÷ 3600 × 3.
+- Ticks per window = floor(46 hours ÷ seconds per tick ÷ 10) × 10 (46 = the
+  48-hour wall minus 2 hours for startup and the last save).
+- Pick the smallest n whose cost fits 1,999 SU minus what the probes spent,
+  with the fewest windows. All three arms use that same n. If 500 ticks does
+  not fit at any n, the table shows the affordable tick count and the owner
+  chooses the tick count.
+
+**Smoke result 1 (job 21472348, gpua068, 2 × A100, 2026-08-26 09:29–09:50
+CDT, COMPLETED 0:0):** startup, data, DDP over 2 cards, the fp32 banner, the
+numbered saves and the sample export all worked on the first try. Steady
+rate on 2 × A100: **611.9 s/tick** (tick 2; tick 1 was 622.7 s with setup);
+peak GPU memory 34.80 GB, the same as the pilot. But the smoke caught a
+bug in its own settings: with saves every 1 tick, the partial final tick's
+save (tick 3) is a multiple of the interval, so the second launch resumed
+from it and correctly said "nothing to do" — the resume path was NOT
+exercised. Fix: `run_arm.sh` now refuses an interval below 2 and requires
+the tick targets to be multiples of the interval; the smoke re-runs with
+interval 2 and 4 full ticks (job 21472708). The campaign setting (interval
+10, targets multiples of 10) never had this problem.
+
+**Smoke result 2 (job 21472708, gpua071, 2 × A100, 09:52–10:13 CDT):** the
+first launch ran ticks 1–2 (602.5 s/tick at tick 2) and saved at tick 2. The
+second launch chose the right file (`training-state-000002.pt`, skipping the
+partial tick-3 save) and then crashed while loading it:
+`Unsupported global: torch_utils.persistence._reconstruct_persistent_obj`.
+Cause: torch 2.6 and later refuse, by default, to load saved files that hold
+whole Python objects (`weights_only=True`), and IMM's training-state file
+holds the whole network object. IMM predates that change. Fix, without
+editing IMM: `run_arm.sh` sets `TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1`, the
+official switch back to the old behaviour; the files are our own. Checked
+on the login node: the tick-2 file loads (network, optimizer state, scaler
+state). File sizes: 673 MB state + 225 MB snapshot = 0.9 GB per save, as
+estimated. Job 21473085 re-runs only the resume launch against that
+tick-2 save.
+
+**Probe A RESULT (job 21472531, gpue03, one H200, 09:45–10:13 CDT;
+`runs/probeA_h200_21472531/probe_A.json`, parsed with the pilot parser):**
+
+- Seconds per tick, steady (ticks 2 and 3): 556.2 and 556.1 → median
+  **556.15 s/tick**. Tick 1 with setup: 567.1 s. Peak GPU memory 34.82 GB,
+  steady 33.50 GB (the pilot: 34.8 / 33.21 GB).
+- One H200 is **3.19× an L40S** on this job (1,775.7 ÷ 556.15).
+- At 1 GPU per arm: 500 ticks × 3 arms = **695 SU**, which fits the 1,999
+  SU balance; each arm needs 77.2 hours = **2 windows of 48 hours** with
+  290 ticks per window; 1,437 ticks per arm would be affordable at the
+  balance. The 2- and 4-GPU rows (Probe B) decide whether more GPUs per
+  arm buy fewer windows at an acceptable SU price.
+
+**Incident during Probe A (recorded, no effect on the numbers):** the
+session edited the shared `run_arm.sh` while this job was running it.
+Bash reads a script piece by piece, so when training finished, bash
+continued from a shifted position in the new file and started a SECOND
+training run on the same GPU (`ngpu1/imm_cifar10/00001-…`). The job was
+cancelled at 10:22 CDT before that run reached a tick, so the log holds
+exactly the four tick lines of the real probe, and the parser (which
+drops any tick whose image counter does not advance) saw only those.
+Cost: about 9 minutes of one H200. Fix: every sbatch now copies
+`run_arm.sh` into the job's output directory at start and runs that
+frozen copy. Rule from now on: never edit a script while a job that
+reads it is running.
+
+**Smoke result 3 — RESUME VERIFIED (job 21473085, gpua048, 2 × A100,
+10:20–10:41 CDT, COMPLETED 0:0; log `runs/smoke_a100_21472708/
+ngpu2_job21473085_launch1.log`):** the launch chose `training-state-000002.pt`,
+loaded it under the env-var fix, and its first tick line was `tick 3 kimg
+1228.8` — the exact image count for three full ticks — then `tick 4 kimg
+1638.4`, saved at tick 4, and ended on the partial tick 5. A further launch
+found the tick-4 save and exited with "already at tick 4; nothing to do".
+That is the campaign's per-window behaviour, proven on Delta. Steady rate
+on 2 × A100 across the three smoke runs: 602.5–613.1 s/tick.
+
+**Owner decisions (2026-08-26, about 13:25 CDT), verbatim:** "Both
+decisions confirmed. (1) Resubmit Probe B with --time=04:00:00 — the probe
+needs <3 h and the max-wall rule is for work jobs, not probes; log this as
+an owner-approved exception. (2) I confirm the campaign: 500 ticks per arm,
+1 GPU per arm. Set GPUS_PER_ARM=1, WINDOW_TICKS=290, flip the gate, and
+submit today so the queue wait starts now. Probe B's result goes into the
+ledger for the record but does not change this campaign — all arms keep
+1 GPU for the whole run."
+
+**Owner-approved exception:** Probe B runs with a 4-hour wall instead of
+the 48-hour maximum. Reason: it is a probe, not a work job, and a shorter
+wall lets the scheduler fit it into gaps (job 21472532, 48 h wall, had an
+estimated start 27 hours out after 3.5 hours of waiting; cancelled and
+resubmitted as **job 21477439** at 13:27 CDT).
+
+**CAMPAIGN SUBMITTED: job 21477440, 2026-08-26 13:27 CDT.** Shape: 3 arms
+side by side on one gpuH200x8 node, 1 H200 each (3 GPUs, 36 CPUs, 750 GB =
+3/8 node), 48-hour wall, `TICKS=500`, `GPUS_PER_ARM=1`, `WINDOW_TICKS=290`,
+`DUMP_K=10`, `GATE_CONFIRMED=yes`. Plan: window 1 runs every arm from
+tick 0 to tick 290 (290 × 556.15 s = 44.8 h + startup), window 2 resumes
+every arm at tick 290 and runs to tick 500. The same file is resubmitted
+for window 2. Expected cost: 695 SU (`probe_A.json`). Run directory:
+`/work/hdd/bhvn/dli26/h3/runs/campaign/<arm>/`; per-window logs
+`<arm>_job<jobid>.log` in that directory. Arms: `m4_seed0` (A),
+`m1_seed0` (B), `m1_tuplematched_seed0` (C), seed 0, batch_gpu 256, fp32,
+`training.metrics=[]`, snapshot and state saves every 10 ticks, all other
+settings the shipped `cifar10.yaml`.
+
+**Campaign window 1 COMPLETE.** Job 21477440 ran on gpue03 from
+2026-08-26 20:42 to 2026-08-28 19:58 CDT (1 day 23 h 17 min, exit code
+0:0), 43 minutes inside the 48-hour wall. **All three arms reached full
+tick 290** — the plan's target — so no arm resumes from a lower tick:
+
+| Arm | Last full tick | Rate (s/tick) | Save failures | Loss NaN/Inf |
+|---|---|---|---|---|
+| A `m4_seed0` (M=4, batch 4096) | 290 | 555.9 | 0 | 0 |
+| B `m1_seed0` (M=1, batch 4096) | 290 | 585.4 | 0 | 0 |
+| C `m1_tuplematched_seed0` (M=1, batch 1024) | 290 | 583.1 | 0 | 0 |
+
+Each arm holds 29 numbered saves, one at every multiple of 10 from 10 to
+290, plus the partial tick 291 dump that the resume rule ignores (291 is
+not a multiple of 10). Rates stayed flat to within 0.5% for two days. The
+M=1 arms ran 5.3% slower than the M=4 arm throughout; in the L40S pilot,
+where each arm had its own machine, the spread was 1.3%. This is a
+throughput difference only — it does not touch the objective, the data,
+or the number of optimizer steps.
+
+**Campaign window 2 STARTED: 2026-08-30 07:19 CDT on gpue08** (job
+21570100). It was submitted on 08-28 17:36 with
+`--dependency=afterany:21477440`, so it collected queue priority while
+window 1 finished but could never run at the same time; it then waited
+1 day 11 hours in the ordinary queue. All three arms resumed exactly as
+designed: each loaded `training-state-000290.pt`, skipped the partial
+tick-291 dump (291 is not a multiple of 10), and set `resume_tick=290
+target_tick=500 total_ticks=501`. No load errors. Arms are on GPUs 0, 1
+and 2 as before, writing into the same run directory each arm used in
+window 1. Remaining work: 210 full ticks, about 32 hours for arm A and
+34 hours for arms B and C, inside a 48-hour wall that ends 2026-09-01
+07:18 CDT.
+
+**CAMPAIGN TRAINING COMPLETE: 2026-08-31 17:38 CDT.** Window 2 (job
+21570100) ran 1 day 10 h 19 min and exited 0:0, about 14 hours inside its
+wall. **All three arms reached full tick 500**, each with the identical
+image count `kimg 204800.0` (500 × 409.6), each ending on the throw-away
+partial tick 501. Every arm holds 52 numbered saves.
+
+| Arm | Full ticks (window 1 + 2) | s/tick w1 | s/tick w2 | Final kimg | Exit | Save failures | Loss NaN/Inf |
+|---|---|---|---|---|---|---|---|
+| A `m4_seed0` | 290 + 210 = 500 | 555.9 | 566.1 | 204800.0 | rc=0 | 0 | 0 |
+| B `m1_seed0` | 290 + 210 = 500 | 585.4 | 587.2 | 204800.0 | rc=0 | 0 | 0 |
+| C `m1_tuplematched_seed0` | 290 + 210 = 500 | 583.1 | 585.5 | 204800.0 | rc=0 | 0 | 0 |
+
+**Stability of the FINAL weights — all arms finite** (`campaign/FINAL/
+stability_tick500.json`, produced by `delta/check_final.py`, which imports
+the pilot's `summarize()` unmodified, so this is the same measurement as
+the tick-20 pilot verdict). IMM's snapshot files carry only the EMA
+("slow-averaged") copy of the network — keys `ema`, `augment_pipe`,
+`dataset_kwargs` — so, as in the pilot, the EMA copy is what is measured:
+
+| Arm | Non-finite params | EMA L2 norm | Max abs param | Ratio vs arm A |
+|---|---|---|---|---|
+| A `m4_seed0` | 0 of 56,062,595 | 260.6406 | 1.3964 | 1.0000 |
+| B `m1_seed0` | 0 of 56,062,595 | 261.1315 | 1.5596 | 1.0019 |
+| C `m1_tuplematched_seed0` | 0 of 56,062,595 | 383.0679 | 1.9433 | 1.4697 |
+
+Zero non-finite values anywhere after 500 full ticks. Launch-spec risk 1
+("M=1 may not train stably") is answered NO at full campaign length, not
+just at the pilot's 20 ticks. Arms A and B — the pair that answers H3 —
+end within 0.2% of each other in weight norm.
+
+**Arm C's larger norm is the NOTE-P1 covariate, not a finding and not
+instability.** Arm C runs 4× the optimizer steps per tick, so at tick 500
+it has taken 200,000 steps against 50,000 for arms A and B. Its norm ratio
+grew steadily with those steps: 1.331 at tick 300, 1.4697 at tick 500.
+Nothing is non-finite and the norm is the same order of magnitude. This
+number says nothing about diversity; it is reported so no later reader
+mistakes it for a result.
+
+**Cost, measured:** the campaign spent about 739 SU against the 695
+projection, 6% over. The projection used Probe A's single-arm rate
+(556.15 s/tick, one arm alone on a node); in the real campaign the two
+M=1 arms ran about 5% slower than arm A with three jobs sharing a node.
+Balance after training: 1,256 of 2,000 SU. Wall-clock total 81.6 hours
+across two windows. Disk 132 GB.
+
+**NOTHING ABOUT H3 IS ANSWERED YET.** These runs produced three trained
+models; they did not measure anything about diversity. No samples have
+been generated and no recall, precision or FID has been computed from
+these checkpoints. The measurement phase is untouched, and it starts with
+launch spec §9 step 1 — build and freeze CIFAR-10 reference statistics
+and record the digest, which has never been done — then generation with
+`run_imm.py` at 1/2/4/8 steps, scoring with `score_npz.py` at k=3,
+matched precision at ±0.02 with BOTH guidance branches enumerated
+(NOTE-12: IMM's precision is not monotone in guidance), paired bootstrap
+intervals (never the naive generated-side bootstrap, biased −0.09), and
+CIFAR's OWN re-derived resolution limit. Both pre-declared
+"uninterpretable" outcomes remain live: arms A and B may share no
+precision range, and arms B and C may disagree.
+
+**Final weights for scoring:** `campaign/<arm>/imm_cifar10/00001-cifar10-
+32x32-uncond-gpus1-cifar10_a1b4k15/network-snapshot-000500.pkl` (window-1
+saves are under `00000-…`; window 2 opened a new numbered directory).
+
+**Note on IMM's resume, restated for the record:** resuming restores the
+network, the EMA copy and the optimizer state, but not the position in
+the shuffled data order and not the random-number streams, which restart
+from seed 0. All three arms were interrupted at the SAME tick (290) and
+resumed the same way, so the arms stay procedurally identical to each
+other — which is what the comparison requires.
+
+Tick-2 rates in the campaign (three arms sharing one node, one H200
+each): **A 556.8 s, B 586.8 s, C 584.3 s per tick**, peak memory 34.82 GB
+each. The two M=1 arms run 5.4% slower than the M=4 arm here (1.3% in the
+L40S pilot, where each arm had its own machine). Consequence for window 1:
+arm B is projected to reach tick 290 at about 2026-08-28 19:58 CDT, 44
+minutes before the 48-hour wall at 20:42. If the wall arrives first, arms
+B and C resume from their tick-280 save while arm A resumes from 290; that
+would be recorded here as a per-arm difference in the resume tick (the
+arms still stop at the same final tick, 500).
+
+**Probe B RESULT (job 21477439, gpue05, 20:58–21:26 CDT, COMPLETED;
+`runs/probeB_h200_21477439/probe_B.json`, joined with Probe A by
+`parse_probe.py`, pilot parser rules unchanged):**
+
+| GPUs per arm | sec/tick (median of ticks 2–3) | speed-up vs 1 GPU | DDP efficiency | SU for 500 ticks × 3 arms | fits 1,999 SU? | ticks per 46 h window | 48 h windows (3 arms side by side) |
+|---|---|---|---|---|---|---|---|
+| 1 | 556.15 | 1.0 | 1.0 | 695 | yes | 290 | 2 |
+| 2 | 278.75 | 1.995 | 0.998 | 697 | yes | 590 | 1 |
+| 4 | 140.1 | 3.97 | 0.993 | 700 | yes | 1180 | n/a (>8 GPUs) |
+
+Plain reading: DDP (data-parallel training across GPUs) scales almost
+perfectly for this model at 32×32 — 2 GPUs are 1.995× as fast, 4 GPUs
+3.97×. Peak memory per GPU stays 34.82 GB at every count. So 2 GPUs per
+arm would have finished 500 ticks in ONE 48-hour window for 697 SU
+instead of two windows for 695 SU. **For the record only:** the owner
+confirmed 1 GPU per arm before this result, the campaign (job 21477440)
+was already running, and all arms keep the same GPU count for the whole
+run. The 2-GPU shape is the recommendation for any future rerun. This paragraph is replaced by the
+`parse_probe.py` table (`probe_A.json`, `probe_B.json`) when the probes
+finish. Nothing in this section is measured on an H200 yet. `sbatch
+--test-only` on 2026-08-26 09:28 CDT accepted all four files and estimated
+starts of about now (smoke), +1 h (Probe A) and +23 h (Probe B, campaign).
+
+## Scoring phase, opened 2026-08-31: two findings that change the measurement plan
+
+**ESCALATED, NOT SELF-APPROVED.** Both items below change what the H3
+measurement can do. They are recorded here for the owner's ruling, as the
+standing deviation rule requires.
+
+### Finding 1: guidance does not exist for these arms, so the guidance sweep cannot run
+
+The H3 arms are trained **unconditional**. `configs/cifar10.yaml` sets
+`dataset.use_labels: false`, every run directory is named `...-uncond-...`,
+and the network therefore has `label_dim = 0`. IMM's guidance path
+(`training/preconds.py`, `cfg_forward`, lines 268-280) sets `class_labels`
+to `None` whenever `label_dim == 0`, then builds its guided batch with
+`torch.cat([torch.zeros_like(class_labels), class_labels])`. There is no
+guidance knob on an unconditional model, and asking for one raises an error
+rather than silently doing nothing.
+
+What this breaks: the locked plan's matched-precision recipe says "Match
+precision through guidance and temperature sweeps" (section 4), the H3 launch
+spec requires "Both guidance branches enumerated", and the campaign shape
+(section 9 step 5) budgets "a guidance sweep at 10k per arm to find the shared
+precision band". **None of that is executable on CIFAR-10 as trained.** The
+week-2 note NOTE-12 about IMM's precision being non-monotone in guidance also
+does not apply here.
+
+What remains as a precision knob: the **number of sampling steps** (NFE) and
+the step discretization. Nothing else — `pushforward_generator_fn` has no
+temperature argument. This makes launch-spec risk 3 ("matched precision may
+not exist between the arms") materially more likely, because the search now
+runs over a handful of discrete NFE values instead of a continuous knob.
+
+Consequence for generation: sample packs are produced at **NFE 1, 2, 4 and
+8** per arm, which is what launch spec section 6 step 1 names, so the Anvil
+side has something to match precision over. A 1-NFE-only delivery would make
+the matched-precision step impossible.
+
+### Finding 2: the study's instrument is not on Delta, and scoring stays on Anvil
+
+`src/score_npz.py` and `src/bootstrap.py` score through Drifting's JAX
+InceptionV3 with Drifting's reference files, and they carry hard-coded
+`/anvil/projects/x-cis261253/...` paths. On Delta: `repos/drifting` is absent,
+`/anvil` is not mounted, and no JAX environment exists. IMM ships its own
+PyTorch InceptionV3, but substituting it would be a NEW scorer, and the lab's
+provenance rule is that a new or reimplemented scorer's numbers do not count
+until it reproduces a frozen invariant of the established pipeline — which
+needs the ImageNet reference files that live on Anvil.
+
+**Owner ruling, 2026-08-31, verbatim:** "Do not rebuild or approximate the
+scorer on Delta. Scoring happens on Anvil with the original instrument."
+Delta's job is therefore generation and staging only.
+
+### What Delta produced
+
+1. **Frozen CIFAR-10 reference IMAGE packs**, `/work/hdd/bhvn/dli26/h3/refstats/`
+   (launch spec section 9 step 1, previously never done):
+   `cifar10_ref_50k.npz`, all 50,000 training images, pixel SHA-256
+   `f799e8d246a8e52c...`; and `cifar10_ref_10k.npz`, 1,000 per class under
+   seed 0, pixel SHA-256 `1f5375d898bdd208...`. Full digests in that
+   directory's `MANIFEST.md` and per-pack JSON.
+
+   **A trap worth carrying forward:** `cifar10-32x32.zip` is fully
+   class-grouped — 50,000 entries in 10 contiguous blocks of 5,000, with only
+   9 label changes between neighbours. Taking "the first 10,000" as a
+   reference would give a set holding 2 of the 10 classes and would wreck any
+   diversity measurement. The 10k pack is class-stratified for that reason.
+
+   Inception FEATURES were deliberately NOT computed here: features are
+   instrument-specific and belong to the Anvil scorer.
+
+2. **Sample packs — DONE 2026-09-01 06:26 CDT**, staged at
+   `/work/hdd/bhvn/dli26/h3-samples/` (job 21672369, gpua061, COMPLETED
+   31 min 56 s, exit 0:0). Twelve packs: 3 arms x NFE 1/2/4/8, 50,000
+   samples each, `(50000, 32, 32, 3)` uint8 under key `arr_0`, seed 0 with
+   identical latents across arms (a paired design), sampled from each arm's
+   tick-500 snapshot with `pushforward_generator_fn`. The two CIFAR-10
+   reference packs were copied in beside them; the originals in
+   `h3/refstats/` stay canonical. All 14 `.npz` files pass
+   `sha256sum -c SHA256SUMS.txt`. The directory also carries a per-pack JSON
+   sidecar, `MANIFEST.md`, `MANIFEST-refstats.md`, and a frozen copy of
+   `gen_samples.py`. Nothing was scored on Delta.
+
+   1-NFE pack digests (the primary row per arm):
+   arm A `m4_seed0_nfe1.npz` `d88f49dd173f21ff...`;
+   arm B `m1_seed0_nfe1.npz` `67e90e43089233ca...`;
+   arm C `m1_tuplematched_seed0_nfe1.npz` `7655a944c5e4120f...`.
+   The full 14-row digest table is in that directory's `SHA256SUMS.txt`.
+
+   **The guidance failure is now measured, not inferred.** The recorded
+   attempt raised `TypeError: zeros_like(): argument 'input' (position 1)
+   must be Tensor, not NoneType` from `cfg_forward`, exactly as Finding 1
+   predicted. Evidence is in the job log,
+   `runs/logs/h3-gen-anvil-21672369.out`.
+
+   **One raw-pixel observation for the scorer, NOT a result:** mean pixel
+   value is 129-131 for arm A's packs and 122-126 for arms B and C. If
+   precision tracks that separation, arms A and B may occupy different
+   precision ranges, which is launch-spec risk 3 and would make the contrast
+   unreadable. Only the Anvil scorer can settle this; the numbers above are
+   pixel statistics and say nothing about precision or recall.
+
 ## Status: LOCKED 2026-08-08
 
 The professor signed off and adopted the recommended defaults. Lock hash:
