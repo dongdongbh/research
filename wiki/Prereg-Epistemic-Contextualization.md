@@ -644,6 +644,119 @@ block presents the crawl date as a publication date, which is known-false.
 Consequence of the choice: verdicts could only move fail→pass, never the
 reverse.
 
+## Deviation 7 — DRAFT amendment (2026-09-01, NOT RATIFIED)
+
+**Status: DRAFT for owner sign-off. Nothing below is in force. No
+rating, no corpus change, and no training starts before ratification.**
+The bar in part B is written down now, before any human rating, so it
+cannot be tuned to the data later.
+
+### Part A — retire the LLM-judge absolute gate as the training gate
+
+The locked gate ("≥97% LLM-judge pass rate") is retired as the decision
+rule for training. Reason, fully measured across Deviations 4–6: the
+judge agrees with itself on only 81% of repeated identical items, so no
+rewriter can reach 97%; it penalised retrieved metadata (fixed by
+Deviation 5, +8.8 and +20.7 points on the grounded arms); and it
+penalises required hedges (Deviation 6 recovered only about a third of
+that, with regressions elsewhere). The judge results stay in the paper
+as instrument characterization. They no longer decide whether we train.
+
+### Part B — the new training gate: human-anchored and comparative
+
+Training may start only if BOTH conditions below hold, measured by the
+human-calibration protocol in the next section:
+
+1. **Comparative:** the treatment's human-judged fact-preservation rate
+   is not more than **5 percentage points below** the placebo's, on the
+   same chunks (paired comparison; the 95% bootstrap confidence
+   interval of the difference must not extend below −5 points).
+2. **Absolute floor:** the treatment's human-judged pass rate is at
+   least **80%**. A pipeline that alters facts in more than one chunk
+   in five is not trained on, no matter what the control does.
+
+Why comparative: the placebo paraphrase measures how much fact damage
+*any* rewriting does. The study's claim only needs the treatment to add
+no damage beyond that baseline. Why the floor: a control cannot license
+training on badly corrupted text.
+
+### Part C — production rewriter of record
+
+Llama 3.3 70B with the v4 grounded prompt: attribution precision 0.951
+with 6.3× the source-detail volume (182 details), the best
+precision-volume combination measured. The 7B stays as the budget
+fallback (precision 0.974, half the volume).
+
+### Part D — corpus addition for signal richness
+
+Add one bylined news corpus so that date and author co-occur above 0%.
+Candidate: **RealNews** ([Zellers et al. 2019](https://arxiv.org/abs/1905.12616)),
+which carries authors, publication dates, and domains per article.
+Verify its availability and license before lock; fallback is
+re-extracting CC-News dumps with news-please, which recovers bylines.
+After the swap, re-run the coverage measurement (Addition 2) on the new
+mixture and report both numbers in the paper. All four arms are rebuilt
+from the same updated document set, so the comparison stays fair.
+
+### Part E — unchanged
+
+The four arms, hypotheses H1–H5, the format-gating probe (Addition 3),
+the evaluation suites, the seed and bootstrap rules, and the budget all
+stay as locked.
+
+## Human-calibration protocol (frozen with Deviation 7; run only after ratification)
+
+**Purpose.** Measure true fact preservation with human judgment, since
+the LLM judge cannot certify it. Output: the two numbers Part B needs.
+
+**Items.** 300 chunks drawn fresh (seed 0) from the 5,860-chunk pool,
+stratified over the seven text types, **excluding** the 420 chunks the
+LLM gate used (so the instrument is not calibrated on data it already
+selected). Each chunk contributes two items: its treatment rewrite
+(70B + v4 grounded) and its placebo rewrite (C3), giving 600 rated
+items on identical source material — this is what makes the comparison
+paired.
+
+**What the rater sees.** The original chunk, the rewrite, and the
+retrieved SOURCE FACTS block — the human must see the metadata, or the
+protocol rebuilds the exact bias Deviation 5 fixed. The rater does NOT
+see which arm produced the rewrite. Item order is shuffled (seed 0);
+arms are interleaved.
+
+**The question.** "Did the rewrite add, remove, or change any fact,
+judged against the original passage plus the source facts? Generic
+hedges ('an unnamed source', 'at an unrecorded date') are required
+output when the source facts lack that field, and are not fact
+changes." Answer: pass / fail, plus a one-word failure reason
+(invented-detail, dropped-fact, changed-number, changed-meaning,
+other).
+
+**Attention checks, frozen before rating.** 60 extra items mixed in:
+30 unchanged originals presented as rewrites (must pass) and 30 with
+one programmatically injected fact change — a swapped name, number, or
+date (must fail). A rating session counts only if the rater catches at
+least 90% of the injected changes. This measures the rater the same way
+we measured the judge.
+
+**Raters.** The owner is the primary rater. A second rater covers a
+100-item overlap subset; inter-rater agreement (Cohen's kappa) is
+reported. If kappa < 0.6, the human instrument is inadequate and the
+gate cannot run — that result is reported, not worked around. If no
+second rater can be recruited, the overlap subset is re-rated by the
+owner after a 14-day gap and reported as intra-rater agreement, labeled
+as the weaker check.
+
+**Analysis, fixed now.** Primary: paired difference in pass rate
+(treatment minus placebo) with a 10,000-resample bootstrap confidence
+interval resampling chunks, plus McNemar's test. Secondary: per-type
+rates, failure-reason table. No exclusions except failed attention
+sessions; every rated item is reported.
+
+**Cost.** 660 items at roughly one minute each: about 11 hours of
+rating, splittable across days. A reduced 200-chunk version (~7.5
+hours) is acceptable if time is short, at the price of a wider
+confidence interval; the choice must be made before rating starts.
+
 **Addition 1 — per-field date trust rule** (owner-approved
 2026-08-31). Metadata fields differ in how much they can be trusted,
 and the rewriter must treat them differently:
