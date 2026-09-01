@@ -1,5 +1,11 @@
 # What 26 Leading Researchers Are Working On — 2026-08-02
 
+**Refreshed 2026-08-31: see [[Researcher-Scan-Refresh-2026-08-31]]** for the
+delta — star changes, opening-status changes, five corrections to this page
+(including: CoVFT is a Beihang paper, not Darrell's; the autoresearch FDR
+opening was already gate-marked SCOOPED), and the new-opportunity list. For
+any commitment, trust the refresh, not this page.
+
 This page tracks researchers and the openings around their work. Read it with
 [[Unified-Direction-Ranking-2026-08]], which gives the current star ranking for
 research directions. [[Direction-Reevaluation-2026-08]] keeps the earlier

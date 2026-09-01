@@ -40,6 +40,20 @@ and **`ACCESS Delta`** (an `NCSA Delta` collection also exists under the NCSA
 identity; ACCESS is simpler for us). Delta's collection exposes home plus
 `/work/hdd` and `/work/nvme`.
 
+Collection UUIDs (verified 2026-08-31, both GCS v5 mapped collections):
+
+| Collection | UUID |
+|---|---|
+| `Anvil ACCESS` | `c42f0096-2d87-42f9-8e6a-edd08f2e1834` |
+| `ACCESS Delta` | `7e936164-de58-4e3d-85da-21aa23c07169` |
+
+First CLI use needs a one-time browser consent for each collection's
+`data_access` scope (one command covers both):
+
+```bash
+globus session consent --no-local-server 'urn:globus:auth:scope:transfer.api.globus.org:all[*https://auth.globus.org/scopes/c42f0096-2d87-42f9-8e6a-edd08f2e1834/data_access *https://auth.globus.org/scopes/7e936164-de58-4e3d-85da-21aa23c07169/data_access]'
+```
+
 For repeated/resumed transfers enable **"Sync only files where checksum
 differs."**
 
@@ -47,8 +61,8 @@ CLI form (asynchronous — the terminal does not need to stay connected):
 
 ```bash
 globus transfer \
-  "$ANVIL_COLLECTION_ID:/anvil/scratch/.../run-2026-07-29/" \
-  "$DELTA_COLLECTION_ID:/work/hdd/.../run-2026-07-29/" \
+  "c42f0096-2d87-42f9-8e6a-edd08f2e1834:/anvil/scratch/.../run-2026-07-29/" \
+  "7e936164-de58-4e3d-85da-21aa23c07169:/work/hdd/.../run-2026-07-29/" \
   --recursive \
   --sync-level checksum \
   --verify-checksum \

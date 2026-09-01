@@ -14,8 +14,51 @@ is worst on both axes), and the frozen fact-preservation gate **fails
 every arm** — substantially because it scores rewrites against the
 chunk alone, penalising the retrieved provenance the method exists to
 add. The full record is in the "Amended gate re-run" sections below.
-One owner decision is pending: report as pre-registered, or ratify
-Deviation 5 and re-score against chunk plus retrieved metadata.
+On 2026-08-31 the owner ratified **Deviation 5** (option b): re-score
+the same rewrites with the judge shown the chunk PLUS the retrieved
+metadata. The owner also approved two method additions the same day: a
+per-field date trust rule, and a metadata coverage measurement before
+any full-scale rewrite. **Both ran the same day.** The re-score: every
+arm rose, none passes the 0.97 bar; best arm 0.7667; the grounded arms
+gained most (+8.8 and +20.7 points), confirming the instrument bias the
+deviation named — and about half the grounded arms' remaining failures
+are the judge penalising the required "no source available" hedges,
+which would be a Deviation 6 to fix. The coverage measurement: after
+the trust rule, 100% of documents keep a website, 23.3% a publication
+date, 27.3% an author, and none keep both date and author. (The 23.3%
+counts Amazon's platform-recorded review date as page-stated; if the
+owner reverses that call it drops to 16.0%.) Details in the sections
+below.
+
+### Coverage measurement — RESULTS (2026-08-31, run record ctxprereg runs/2026-08-31/metadata-coverage-01/)
+
+Measured on the 2,100-document stratified sample (300 per type, every
+document scored, none excluded), then projected over the full 3,894,805
+staged documents. 95% bootstrap confidence intervals, 10,000 resamples.
+
+- **Website: 100%** of documents, every type.
+- **Publication date: 23.3%** corpus-weighted (news 59.2%, review 87.6%,
+  everything else ≤2%). All FineWeb dates are crawl dates and count as
+  unusable — those 1,362 sample documents are exactly the old 64.9%
+  defect.
+- **Author: 27.3%** corpus-weighted, and it is Reddit usernames only.
+  No other corpus carries an author at all (Amazon has only an opaque
+  account id).
+- **Zero documents have both a usable date and a usable author.** The
+  full "source S said X at time T" record exists for 0% of this corpus.
+  The largest type by volume (`other`, 31% of the mixture) keeps neither.
+- Consequence for evaluation: on about 77% of documents the correct
+  rewrite carries no date, so "an unnamed source" / "at an unrecorded
+  date" is the honest output — any judge that rewards specificity
+  punishes the treatment for honesty (this is the same bias the
+  Deviation 5 re-score found).
+- The thinness is a property of the four staged corpora (every zero
+  traces to a missing upstream column), not of the web. Getting date and
+  author together is a corpus decision to make before rewriting at
+  scale.
+- **Owner call pending:** whether Amazon's platform-recorded review date
+  counts as page-stated (current numbers say yes; reversing drops
+  corpus-weighted date coverage from 23.3% to 16.0%).
 
 ## Words used on this page
 
@@ -461,6 +504,119 @@ arm emits, how many are real.
 The owner decision in item 7 above is now the only open item for this
 study: report as pre-registered (a), or ratify Deviation 5 (b) and
 re-score against chunk plus retrieved metadata.
+
+## Deviation 5 ratified; two method additions (2026-08-31, owner)
+
+**Deviation 5 is RATIFIED.** The owner chose option (b) on 2026-08-31.
+
+What changes: the judge now sees each rewrite beside the original
+chunk AND the retrieved metadata for that chunk. Before this change,
+the judge saw the chunk alone, so a rewrite that correctly copied a
+real outlet name from the metadata looked like invented content and
+was marked FAIL. The measured penalty for this was −16 points on
+chunks that added retrieved facts (p = 0.019).
+
+What does not change: the same seven arms' rewrites are re-scored; no
+new rewriting runs. The judge model, prompt structure, and 420-chunk
+sample stay the same except for the added metadata context.
+
+One fact to keep in view when reading the re-score: the judge agrees
+with itself on only 81% of repeated identical items. A 97% pass bar
+sits above that ceiling no matter what the judge is shown. If the
+re-score still fails every arm for this reason, the honest report is
+"instrument ceiling," and any change to the bar itself would be a new
+deviation needing its own ratification.
+
+### Deviation 5 re-score — RESULTS (2026-08-31, run records in ctxprereg runs/2026-08-31/)
+
+**Every arm rose. No arm passes the unchanged 0.97 bar. Best is 0.7667.**
+Judge of record unchanged (gpt-oss:120b, temperature 0); new prompt version
+`factcheck-judge-v2-metadata` adds only the retrieved-metadata block to the
+frozen v1 prompt; 2,940 calls, zero failures; metadata found for all 2,940
+chunks. McNemar's test compares paired pass/fail flips per chunk.
+
+| Arm | Rewriter | Prompt | Old gate | New gate | Change | McNemar p |
+|---|---|---|---|---|---|---|
+| Stronger v3 | llama3.3 70B | v3 | 0.7429 | **0.7667** | +2.4 | 0.229 |
+| Control | qwen 7B | v3 | 0.6452 | 0.6833 | +3.8 | 0.064 |
+| Placebo | qwen 7B | C3 | 0.6190 | 0.6667 | +4.8 | 0.031 |
+| Placebo (2nd) | qwen 7B | C3 | 0.5976 | 0.6619 | +6.4 | 0.0009 |
+| Grounded | qwen 7B | v4 | 0.5381 | 0.6262 | +8.8 | 0.0002 |
+| Stronger+grounded | llama3.3 70B | v4 | 0.5286 | **0.7357** | +20.7 | 1.4e-15 |
+| Stronger v3 | llama4 109B | v3 | 0.5119 | 0.5548 | +4.3 | 0.076 |
+
+**The deviation's prediction held.** The gain tracks how much retrieved
+metadata an arm writes into its prose: the two grounded arms gain +8.8 and
++20.7 points with overwhelming significance, while the v3 arms gain +2.4 to
++4.3 at p ≥ 0.031 — near judge noise. The ranking changed:
+llama3.3+grounded moved from 5th of 6 to 2nd. The two near-identical
+placebo arms score 0.6619 vs 0.6667 (half a point apart), a free
+reproducibility check.
+
+**A second instrument bias survives, and it is now the bigger one.** On the
+grounded arms, about half the remaining failures are the judge penalising
+the hedges the v4 prompt itself requires ("an unnamed source", "at an
+unrecorded date"): 52.5% of llama3.3+grounded failures and 50.3% of
+qwen+grounded failures, versus 14.3% on the v3 control (keyword sort of the
+judge's stated reasons — indicative, not exact). The coverage measurement
+below shows why this matters: on roughly 77% of documents the correct
+rewrite carries no date, so the hedge is the honest output. Fixing this
+would be a new deviation (Deviation 6) needing owner ratification; nothing
+has been changed.
+
+**Do not reuse the Deviation 4 calibrated bar (0.813).** It was derived
+from the v1 judge's error rates against human labels; the v2 prompt moves
+the judge's operating point. No arm passes under either bar, so no verdict
+turns on this.
+
+### Deviation 6 — RATIFIED (2026-08-31, owner)
+
+The owner ratified Deviation 6: teach the judge that a required hedge is
+not a fact change. The v4 rewrite prompt orders the model to write "an
+unnamed source" or "at an unrecorded date" when no usable metadata
+exists; the frozen rubric says such hedges pass; the judge fails them
+anyway (52.5% and 50.3% of remaining grounded-arm failures, versus 14.3%
+on the control). The coverage measurement shows the hedge is the honest
+output on about 77% of documents.
+
+What changes: a new judge prompt version (built on v2, base rules
+asserted unchanged) stating that a hedge is correct when the retrieved
+metadata lacks that field. A detail that appears in neither the chunk
+nor the metadata still fails. Same judge model, same 420 chunks, same
+arms, re-scored. The 0.97 bar is still unchanged. If arms still fail
+after this, the remaining gap is dominated by the judge's own 81%
+self-agreement ceiling, and the honest report is "instrument ceiling."
+
+One recorded judgement call: every arm was shown the grounded metadata
+block, including v3 arms whose rewriter saw the older block. The older
+block presents the crawl date as a publication date, which is known-false.
+Consequence of the choice: verdicts could only move fail→pass, never the
+reverse.
+
+**Addition 1 — per-field date trust rule** (owner-approved
+2026-08-31). Metadata fields differ in how much they can be trusted,
+and the rewriter must treat them differently:
+
+- **Website name (domain):** always usable. It comes from the page's
+  address and is almost never wrong.
+- **Publication date:** usable ONLY when the page itself states a
+  date. Never use the crawl date (the day the crawler visited). The
+  crawl date sat in the publication-date field for 64.9% of our
+  documents, and every single invented detail from the 70B and 109B
+  rewriters was a date — zero were domains. If no stated date exists,
+  the rewrite carries no date.
+- **Author / username:** usable when present in the page or feed
+  metadata; omit when absent.
+
+**Addition 2 — metadata coverage measurement** (owner-approved
+2026-08-31, runs before any full-scale rewrite, no GPU needed).
+Measure, per text type (news, blog, academic, forum, review,
+encyclopedia, other): the fraction of documents that keep a usable
+publication date and a usable author after the trust rule is applied.
+Purpose: know how much of the "when" and "who" part of attribution
+survives before spending rewriting compute. If the surviving fraction
+is small, attribution at scale is mostly "which website," and the
+paper must say so.
 
 ## Original draft status
 

@@ -168,6 +168,73 @@ The appendix sentence is commentary on a post-lock external claim; the
 locked Fisher-z set and its 74/40 counts stay untouched. The interval is
 recomputed with the audit's own Fisher-z code before the sentence lands.
 
+## Framing pivot — OWNER-RATIFIED (2026-08-31), plus the August landscape
+
+The 2026-08-31 researcher-scan refresh ([[Researcher-Scan-Refresh-2026-08-31]])
+found that our general framing was published for text judges, while our
+evidence remains unclaimed. The owner ratified the pivot the same day.
+
+**What was taken.** [A Judge Should Know What Changed](https://arxiv.org/abs/2608.24419)
+(2026-08-25) makes the "a judge can be consistent and still not measure the
+right thing" argument for text judges: the judges it tests keep the same
+answer on wording-only changes 94.5% of the time, but detect genuine
+content changes only 31.9% of the time, and simple surface features
+reproduce 67.4% of MT-Bench's human votes. It contains no robotics.
+
+**The pivot.** The paper leads with the embodied setting from the first
+paragraph: robot evaluation has physical ground truth, tiny candidate
+pools (n = 4–11 policies, where an interval can span nearly the whole
+range), and judges shipping inside products. "Reliability is not
+validity" is cited as established (2608.24419), not claimed as new. Our
+contribution statement: the first judge-versus-human ranking audit with
+honest uncertainty in robotics, where no one has done it.
+
+**New citations to fold into the draft** (all verified 2026-08-31; none
+were in the draft):
+
+- [RoboWorld](https://arxiv.org/abs/2607.01060) v3: claims r = 0.989 /
+  rho = 0.970 against RoboArena from **n = 8 policies, GPT-4o judge, no
+  confidence interval, no significance test**. It is inside our audited
+  eleven, so our interval math applies directly. Weaker footing than the
+  RoboLab claim already handled by option (c).
+- [TrustRoboReward](https://arxiv.org/abs/2608.08491) (2026-08-09): an
+  independent group found a real RoboReward defect — 20.15% score-pair
+  reversal conflicts. Third-party evidence for our premise.
+- [PRM-as-a-Judge 1.5](https://arxiv.org/abs/2608.14284) (2026-08-14):
+  ships 2,244 human-annotated intervals and reports sim-vs-real
+  Spearman rho = 0.18–0.58 — a citable, dated number for "sim scores do
+  not settle real rankings." It does not test judge-vs-human ranking, so
+  it is not a scoop. Open-source claim has no URL; treat availability as
+  unconfirmed.
+- [Mazaheri judge-leniency audit](https://arxiv.org/abs/2608.16003)
+  (2026-08-17): separates a soft judge (threshold shift) from a blind
+  judge (discrimination loss) with signal-detection theory; threshold
+  moved in 15 of 15 conditions. **Zero-compute strengthener:** the same
+  decomposition runs on scores we already have. Also our closest
+  competitor — a small team one step from a robot version.
+- Adjacent, for related work: [WorldSimProbe](https://arxiv.org/abs/2608.09298),
+  [WorldEcho/WorldSync](https://arxiv.org/abs/2608.24885),
+  [XEWorld](https://arxiv.org/abs/2608.05799) (all audit world-model
+  faithfulness, none audits a judge's ranking validity);
+  [OSReward](https://arxiv.org/abs/2607.28609) (leniency bias in
+  computer-use judges); [DA-RAC](https://arxiv.org/abs/2608.14950) and
+  [RecurSE](https://arxiv.org/abs/2608.24231) (text-judge miscalibration);
+  [HarnessEval-W](https://arxiv.org/abs/2608.16859) and
+  [XPolicyLab](https://arxiv.org/abs/2608.09892) (new evaluation
+  machinery, unvalidated); the anytime-valid sim-to-real certificates of
+  [2608.21572](https://arxiv.org/abs/2608.21572) (methodologically
+  adjacent to our statistics).
+
+**The clock, stated plainly.** The NeurIPS 2026 workshop
+["Who Verifies the Agents?"](https://verify-agents-workshop.github.io/)
+closed submissions 2026-08-29, and NVIDIA is productizing RoboLab into
+[Isaac Lab-Arena](https://github.com/isaac-sim/IsaacLab-Arena) with no
+validation of its success detector. Expect a December wave of judge
+audits. The ICLR abstract (2026-09-18) must not slip.
+
+This section changes framing and citations only. The locked Fisher-z set,
+its 74/40 counts, and the option (c) ruling stay untouched.
+
 ## A3 addendum: the confound controls (campaign closed)
 
 A3 is the set of control runs that test hidden factors.
