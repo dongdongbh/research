@@ -22,13 +22,16 @@ any full-scale rewrite. **Both ran the same day.** The re-score: every
 arm rose, none passes the 0.97 bar; best arm 0.7667; the grounded arms
 gained most (+8.8 and +20.7 points), confirming the instrument bias the
 deviation named — and about half the grounded arms' remaining failures
-are the judge penalising the required "no source available" hedges,
-which would be a Deviation 6 to fix. The coverage measurement: after
-the trust rule, 100% of documents keep a website, 23.3% a publication
-date, 27.3% an author, and none keep both date and author. (The 23.3%
-counts Amazon's platform-recorded review date as page-stated; if the
-owner reverses that call it drops to 16.0%.) Details in the sections
-below.
+are the judge penalising the required "no source available" hedges.
+The owner then ratified **Deviation 6** (teach the judge that required
+hedges pass); it ran the same night and only half-worked — the grounded
+arms rose again (best arm now 0.7738) but five arms dropped, one
+significantly, so **the Deviation 5 scores remain the numbers of
+record** and judge-prompt iteration stops there. The coverage
+measurement: after the trust rule, 100% of documents keep a website,
+23.3% a publication date, 27.3% an author, and none keep both date and
+author (Amazon's platform-recorded review date counts as page-stated,
+owner-ratified 2026-08-31). Details in the sections below.
 
 ### Coverage measurement — RESULTS (2026-08-31, run record ctxprereg runs/2026-08-31/metadata-coverage-01/)
 
@@ -588,6 +591,52 @@ nor the metadata still fails. Same judge model, same 420 chunks, same
 arms, re-scored. The 0.97 bar is still unchanged. If arms still fail
 after this, the remaining gap is dominated by the judge's own 81%
 self-agreement ceiling, and the honest report is "instrument ceiling."
+
+### Deviation 6 re-score — RESULTS (2026-08-31; the fix only half-worked)
+
+**The v3 judge prompt helped only the two grounded arms and hurt five
+arms, one significantly. The Deviation 5 (v2) scores stay the numbers
+of record. v3 is reported as an attempted instrument fix that
+underperformed, not as the new score.** Run records:
+ctxprereg `runs/2026-08-31/dev6-rescore-*`.
+
+| Arm | Rewriter | Prompt | v2 | v3 | Change | McNemar p |
+|---|---|---|---|---|---|---|
+| Stronger+grounded | llama3.3 70B | v4 | 0.7357 | **0.7738** | +3.8 | 0.056 |
+| Stronger v3 | llama3.3 70B | v3 | 0.7667 | 0.7405 | −2.6 | 0.126 |
+| Grounded | qwen 7B | v4 | 0.6262 | 0.6738 | +4.8 | 0.027 |
+| Control | qwen 7B | v3 | 0.6833 | 0.6571 | −2.6 | 0.152 |
+| Placebo | qwen 7B | C3 | 0.6667 | 0.6429 | −2.4 | 0.237 |
+| Placebo (2nd) | qwen 7B | C3 | 0.6619 | 0.6405 | −2.1 | 0.298 |
+| Stronger v3 | llama4 109B | v3 | 0.5548 | 0.5071 | −4.8 | **0.003** |
+
+No arm passes 0.97 under either prompt. Two mechanisms explain the
+drops, both recorded in the run logs: (1) the added permission was
+conditioned on the metadata line reading "not recorded", which only the
+grounded arms' output satisfies, while the block's closing re-assertion
+made the judge harsher on everything else; (2) the longer prompt made
+the reasoning judge run out of its 1,024-token budget more often —
+empty returns rose on five of seven arms, and an empty return counts as
+non-pass.
+
+**Calibration of the earlier estimate:** the keyword sort that
+predicted ~50% of grounded-arm failures were hedge-penalties overstated
+the recoverable share about 3×. Of the failures it flagged, 38.1% and
+32.0% actually flipped on the grounded arms, 0–11% elsewhere. Hedge-
+blamed failures still make up 33–44% of the grounded arms' remaining
+failures — the judge only partly obeys the new rule.
+
+**What this closes:** further judge-prompt iteration is instrument
+tuning with diminishing returns; the judge's 81% self-agreement ceiling
+caps every score regardless. The study's honest summary stands: the
+grounding method is proven (attribution precision 0.974); the frozen
+gate fails every arm; the measured reasons are (a) the chunk-only
+comparison (fixed by Deviation 5, +8.8 and +20.7 on the grounded arms),
+(b) a hedge penalty (partly fixable, Deviation 6 recovered about a
+third of it at the cost of regressions elsewhere), and (c) the judge's
+own reliability ceiling (not fixable by prompting). Two narrower
+prompt revisions were identified but NOT run; either would be a further
+owner-ratified deviation.
 
 One recorded judgement call: every arm was shown the grounded metadata
 block, including v3 arms whose rewriter saw the older block. The older
