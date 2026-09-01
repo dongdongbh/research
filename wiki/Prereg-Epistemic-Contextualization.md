@@ -56,9 +56,11 @@ staged documents. 95% bootstrap confidence intervals, 10,000 resamples.
   traces to a missing upstream column), not of the web. Getting date and
   author together is a corpus decision to make before rewriting at
   scale.
-- **Owner call pending:** whether Amazon's platform-recorded review date
-  counts as page-stated (current numbers say yes; reversing drops
-  corpus-weighted date coverage from 23.3% to 16.0%).
+- **Owner call RATIFIED (2026-08-31):** Amazon's platform-recorded
+  review date counts as page-stated. Reasoning: the platform's record of
+  when the claim was made public is exactly what "when" means for
+  attribution, and it is more reliable than an author-typed date. The
+  23.3% figure stands as the number of record.
 
 ## Words used on this page
 
@@ -618,6 +620,19 @@ survives before spending rewriting compute. If the surviving fraction
 is small, attribution at scale is mostly "which website," and the
 paper must say so.
 
+**Addition 3 — format-gating probe** (owner-approved 2026-08-31, added
+before the next lock). At evaluation time, test the trained arms with
+**present-but-worthless metadata**: source blocks that are structurally
+normal but carry no real information (an unknown domain, no date, no
+author). Purpose: separate two explanations of any gain. If the model
+behaves differently just because a source block is present, the gain is
+**format gating** — reacting to the shape of the input. If the model
+responds to how good the source actually is, the gain is **source
+sensitivity** — the effect the study claims. Jiralerspong's fine-tuning
+result ("a compartmentalized policy, not genuine alignment") shows
+format gating is the live rival explanation. The probe costs evaluation
+compute only, no extra training.
+
 ## Original draft status
 
 Status: **DRAFT v1, 2026-08-04 — for professor sign-off.** Start building the
@@ -650,14 +665,33 @@ do not provide a completed algorithm)."** We corrected this citation on
 position paper. We checked both PDFs.
 
 The direction was named eighteen months ago, and its requirements have been
-formal for one month. Nobody has built it, including [LawZero](https://lawzero.org). LawZero has no
-public code and is still hiring a pipeline team. We will build the first
-version and measure what it actually changes.
+formal for one month. LawZero has no public code and is still hiring a
+pipeline team. **Wording corrected 2026-08-31 (owner-ratified):** one
+public partial implementation exists at fine-tuning scale —
+[truthification_pretraining](https://github.com/superkaiba/truthification_pretraining)
+by Thomas Jiralerspong (Mila), public since April 2026. It fine-tunes
+Qwen-2.5-7B on reliability-tagged data (3 seeds) and measures emergent
+misalignment, not calibration under source conflict, and it does no
+mid-training. The owner ruled this a wording correction plus related
+work, not a stop: our outcome measures, training stage, and scale band
+differ. We will build the first *mid-training* implementation measured
+on calibration and sycophancy.
 
 ## 2. What recent work has shown (checked 2026-08-03)
 
-- **No working implementation exists.** We checked again, including the most
-  recent weeks.
+- **No mid-training implementation exists.** (Corrected 2026-08-31; see
+  above.) The Jiralerspong repo is the one public partial implementation,
+  at fine-tuning scale with a misalignment outcome. Its written
+  next-phase plan (FineWeb, 2–10B tokens, raw / truthified /
+  random-metadata arms) is close to our Phase 1 but has no results and no
+  pushes since 2026-04-21. Related work we now cite:
+  [MeCo](https://arxiv.org/abs/2501.01956) (ICML 2025 — metadata
+  conditioning during pre-training; our tags-only arm C2 under a
+  published name, so C2 doubles as a MeCo replication),
+  [MIRA](https://arxiv.org/abs/2605.30288) (source-aware data selection,
+  no rewriting), and
+  [ElephantBench](https://arxiv.org/abs/2608.28478) (retention of
+  conflicting accounts; candidate evaluation).
 - **The closest idea adds tags, which is a different thing.** Source-aware
   training ([2404.01019](https://arxiv.org/abs/2404.01019)) connects *document ID tags* with content, so a model
   can name its sources. It uses synthetic data and does not rewrite the text.
