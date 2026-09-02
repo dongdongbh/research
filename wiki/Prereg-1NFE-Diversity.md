@@ -517,6 +517,121 @@ needs the ImageNet reference files that live on Anvil.
 scorer on Delta. Scoring happens on Anvil with the original instrument."
 Delta's job is therefore generation and staging only.
 
+### Anvil-side amendments (2026-09-01, written before any decisive row was read)
+
+Recorded by the coordinator at 20:10 UTC with 2 of 14 scoring rows finished
+(the two reference rows only). Reported to the owner in the same session.
+
+1. **Host change, same instrument.** Anvil's `ai` partition quoted a 9-day
+   start for a 1-hour job, so the harness runs on OrangeGrid's L40S instead.
+   The code is the same checkout (`uv.lock` byte-identical), the same
+   Drifting JAX InceptionV3, the same chunked feature path, k = 3. The
+   CIFAR reference port is a sibling script (`src/score_npz_cifar.py`); the
+   vendored scorer and `score_npz.py` are untouched. Self-tests: a real
+   2,000-image slice against itself gives precision 1.000, recall 1.000,
+   FID −8e−07; the 50k real pack against the 10k reference gives FID exactly
+   0.000 and Inception Score 11.27 (published real-CIFAR value about 11.24).
+2. **The real-versus-real "ceiling" row is replaced.** The 10k precision/recall
+   reference is a class-stratified subset of the 50k training pack, so recall
+   of the 50k pack is 1.0 by construction. The ceiling row now scores the
+   40,000 training images that share no image with the reference.
+3. **A fourth outcome is added to the H3 rule, in advance.** The arms are
+   tick-500 checkpoints (5% of the shipped 10,000-tick schedule), and the
+   first scored arm shows FID 212 and recall 0.022 at NFE 1. If every arm's
+   NFE-1 recall lies below CIFAR's re-derived resolution limit, then the
+   step-count shortfalls cannot differ by more than that limit for any reason,
+   and the launch-spec rule would read "refuted" on the measurement floor
+   alone. That is not evidence about the objective. So: if all three arms'
+   NFE-1 recall is below the resolution limit, the verdict is **"unresolved at
+   this training budget"**, reported beside the rule's literal outcome, and
+   the campaign needs longer training before H3 can be read. This adds a
+   category; it does not move the thresholds of the existing three.
+
+### Scoring result (2026-09-01): H3 is not answered at tick 500
+
+**Verdict in one sentence.** At tick 500 (5% of the shipped 10,000-tick
+schedule) none of the three arms produces measurable diversity, so H3 is
+**unresolved at this training budget**; read literally, the launch-spec rule
+returns **uninterpretable** (arms B and C disagree), and no clause of it
+produces support for H3.
+
+Evidence: `nfe1/runs/h3_score/20260901/` (14 rows, one host, one GPU, one set
+of Inception weights, `RUN-MANIFEST.json`), report in
+`nfe1/.orchestrator/tasks/h3-score-20260901-01/result.md`. Instrument: the
+study's own scorer (Drifting's JAX InceptionV3, k = 3, 10,000-image
+class-stratified CIFAR-10 reference), run on OrangeGrid's L40S. Instrument
+checks: real CIFAR-10 Inception Score 11.273 (published about 11.24); the real
+50k pack against the reference gives FID exactly 0.000; the sibling bootstrap
+agrees with the upstream scorer within 0.0001.
+
+**The fourteen rows.** Recall is the share of real images that fall inside the
+generated set's neighbourhood; precision is the share of generated images
+that fall inside the real set's neighbourhood.
+
+| row | precision | recall | FID |
+|---|---|---|---|
+| A (M=4, distributional), 1 step | 0.3878 | **0.0218** | 211.7 |
+| A, 2 / 4 / 8 steps | 0.0991 / 0.0513 / 0.0371 | 0.0000 | 261 / 271 / 276 |
+| B (M=1, averaging), 1 step | 0.1862 | **0.0005** | 249.0 |
+| B, 2 / 4 / 8 steps | 0.0707 / 0.0445 / 0.0312 | 0.0000 | 276 / 282 / 286 |
+| C (M=1, tuple-matched), 1 step | 0.3498 | **0.0157** | 195.0 |
+| C, 2 / 4 / 8 steps | 0.0327 / 0.0217 / 0.0271 | 0.0000 | 280 / 295 / 290 |
+| real 40k (disjoint from the reference) | 0.6851 | **0.6906** | 0.131 |
+
+Three facts decide the reading.
+
+1. **More steps make these models worse.** In every arm recall drops to
+   exactly zero and FID rises as the step count goes from 1 to 8. The
+   shortfall the hypothesis is written about (recall at 4 steps minus recall
+   at 1 step, expected positive) is negative everywhere. These checkpoints do
+   not behave like the trained models H1 and H2 were measured on.
+2. **The 1-step rows cannot be matched.** They are the only rows with any
+   recall, and their precisions sit 0.20 apart for A versus B (ten times the
+   ±0.02 tolerance). All thirteen cross-arm pairs that do fall inside the
+   tolerance are at 2, 4 or 8 steps, where both members have recall 0.0000,
+   so every matched pair carries a recall difference of exactly 0.0000. This
+   is launch-spec risk 3 realised.
+3. **The largest recall any arm reaches, 0.0218, is 32 times below the real-data
+   ceiling** of 0.6906 measured on the same instrument.
+
+**The two readings, side by side.**
+
+- *Launch-spec rule, literal:* **uninterpretable.** Arms B and C differ in their
+  4-versus-1 shortfall by +0.0153 [+0.0129, +0.0178], which survives Holm and
+  is three times the 0.0057 resolution limit at that recall level. The rule's
+  second clause would also fire (the averaging arm shows the smaller
+  shortfall, which it calls "refuted"), but the third clause governs: a B–C
+  disagreement means the A–B difference cannot be attributed to the objective.
+- *Amendment of 2026-09-01, literal:* **not triggered.** It requires all three
+  arms' 1-step recall to sit below the resolution limit; arm A's 0.0218 clears
+  the ceiling-level limit of 0.0181 by about 0.004. We report it as
+  untriggered. Its intent applies: the measurement is uninformative about
+  objectives.
+
+**CIFAR's resolution limit is not one number.** Re-deriving it by NOTE-02's
+method gives 0.0181 at the real-data ceiling (within a tenth of ImageNet's
+0.020, as expected for a proportion over a fixed 10,000-image reference) and
+0.0057 / 0.0048 / 0.0009 on the three 1-step rows, shrinking with recall.
+Any threshold test must name the recall level its limit came from.
+
+**Two corrections carried forward.** The specified "real 50k against real 10k"
+ceiling row has recall 1.0000 by construction (the reference is a subset of
+the pack); the honest ceiling is the disjoint 40k row above. And
+`condor_ssh_to_job` sessions on OrangeGrid die at random and kill their
+children, so scoring ran as a resumable per-row script behind a reconnect loop.
+
+**What this means for H3.** The campaign produced three trained-but-far-from-
+converged models and no diversity measurement. The lock's own fallback applies
+(the from-scratch matched pair at reduced size), and longer training is the
+only way to read the objective contrast. Measured rates: one H200 runs an arm
+at 556 s/tick, one L40S at 1,776 s/tick. Reaching 2,000 ticks costs about 309
+H200-GPU-h (927 Delta service units) per arm, so a two-arm pair does not fit
+the remaining 1,256 service units; on OrangeGrid it is free but about 41 days
+of wall-clock on two L40S cards. A sub-5-GPU-hour probe (score arm A's saves
+at ticks 100, 300 and 500 at 1 and 8 steps) would show whether recall is rising
+with training at all before anything larger is paid for. **Owner decision
+pending.**
+
 ### What Delta produced
 
 1. **Frozen CIFAR-10 reference IMAGE packs**, `/work/hdd/bhvn/dli26/h3/refstats/`

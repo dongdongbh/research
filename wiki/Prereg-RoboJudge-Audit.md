@@ -349,6 +349,100 @@ order was then revised. The hold is part of this record.
 through the coordinator session before the campaign was submitted. This ledger
 entry was committed about seven minutes after that submission.
 
+## Deviation 3 (2026-09-01, coordinator-drafted, OWNER-RATIFIED 2026-09-01)
+
+**Who decided:** the coordinator drafted this on 2026-09-01 after the direction
+audit of that day found the gap (audit record:
+`research/.orchestrator/audit-20260901/robojudge-feeds.md`). The owner's words
+that opened it: "do RoboJudge fix follow the best practice". **Owner
+ratification, verbatim, 2026-09-01: "and also ratify Deviation 3".** Nothing
+had been run under it at ratification time; the method arm starts after this
+entry.
+
+**What went wrong: the method part, as written, cannot be tested with the
+locked statistic.** §3 promises "change RoboReward's episode scores so that
+they match the ranking goal on held-out policies". Lock item 4 fixes the
+aggregation as induced-preference Bradley–Terry: within each session, the
+judge's score for policy A is compared with its score for policy B and the
+higher one wins. Any per-episode re-scoring that is one increasing function of
+the scalar score leaves every within-session winner unchanged, so the
+Bradley–Terry fit is unchanged and Kendall τ is unchanged. Such a change can
+only create more ties, which is neutral or worse. So the promised method, read
+literally, is a monotone recalibration and has no possible effect on the
+paper's headline statistic. This is a specification gap, not a failed run.
+
+**What we specify instead (no hypothesis, arm, metric, or decision rule of the
+lock changes; this fills a blank).** The method arm is a re-scoring function
+whose input is a per-episode **vector**, not the scalar, so it can reverse
+within-session orders:
+
+1. Inputs allowed: the judge's own scalar score; the same judge's secondary
+   numeric outputs where they exist (SigLIP2 per-frame cosine scores; the
+   first-frame and shuffled-frame arm scores from A3); and the scalar scores of
+   the other headline judges (a stacked evaluator). Inputs forbidden: episode
+   duration, instruction text, and anything else the blind floor uses. A
+   "floor-only" stacker (duration + language features) is fitted and reported
+   beside the method so the gain cannot be the floor in disguise.
+2. Fitting: pairwise logistic regression on sessions, which is Bradley–Terry
+   with the re-scoring as the score function, trained only on sessions whose
+   two policies are both in the training fold.
+3. Held-out protocol: leave-one-policy-out over the frozen policy set; the
+   held-out τ is computed from the full leaderboard with the held-out policy
+   scored by a model that never saw its sessions. Report the mean held-out τ
+   and its session-level paired bootstrap interval (10,000 draws) against each
+   judge's raw τ from the campaign table.
+4. Decision rule, directional: the method counts as a gain only if the paired
+   interval of (stacked τ − best single-judge τ) excludes zero AND the top-1
+   flip rate does not rise. Kill: if the stacked held-out τ does not exceed the
+   best single judge, the method part is reported as a null and the paper's
+   constructive deliverable is the report card alone.
+5. A second, cheaper variant may be reported beside it, never instead of it:
+   explicit tie-breaking, where a session tied under judge J is decided by a
+   named second judge. It changes the score's resolution and can move τ.
+
+**What we do NOT approve.** Any per-episode function of the scalar alone
+(offset, scale, temperature, criterion shift, isotonic map) presented as the
+method; it cannot move τ and must not be reported as if it could. The
+Mazaheri criterion-versus-d′ decomposition (audit item 1) is a diagnosis of
+why a judge fails; it may motivate the method but is not the method.
+
+**What this means for the ICLR abstract (2026-09-18).** Until this deviation
+is ratified and the arm is run, the abstract may claim the audit, the blind
+floor, the sample-size figure, and the report card, and must not claim a
+method gain.
+
+**Result (2026-09-01, same day, analysis only, 0 GPU-h): NULL on both halves
+of the rule.** Evidence: `robojudge/runs/review/20260901/a7/` and the task
+report `robojudge/.orchestrator/tasks/rj-review-analysis-20260901-01/result.md`.
+The stacked re-scoring (13 parameters: six judge scalars, three SigLIP2
+per-frame cosines, four A3 arm scores; ridge chosen by nested
+leave-one-policy-out) reaches a mean held-out τ of +0.741 [+0.374, +0.918]
+against +0.810 for the best single judge, RoboReward-4B. The paired
+difference is −0.068 [−0.218, +0.408], which contains zero, and the top-1
+flip rate rises from 0 to 0.714. The floor-only control (duration and
+instruction features) reaches +0.170 and is significantly worse than the best
+judge (Δ −0.639 [−0.871, −0.095]), so the stacker carries real evaluator
+signal that fails to add to the best judge. The tie-break variant that
+resolves Qwen2.5-VL-7B's ties with RoboReward-4B reaches +0.810, level with
+the best judge, with an interval on the difference containing zero; every
+other tie-break lowers τ. As the kill clause specifies, the method part is
+reported as a null and the constructive deliverable is the report card.
+
+**Two further rulings from the same review response, recorded here.**
+(1) Bootstrap unit: the review asked whether sessions are independent. Task
+instruction, calendar day and rater-day resampling change nothing (mean τ
+interval width 0.643, 0.643, 0.643, 0.631 against 0.643 for sessions);
+widening appears only at 44 rater clusters and 12 site clusters (both 0.702).
+The plan's rule "the wider bootstrap is the headline" tied; the coordinator
+chose `rater` (44 clusters) as the headline cluster unit, with `site` reported
+beside it, because a 12-cluster percentile interval cannot be trusted on its
+own. Under `rater` SigLIP2's reversal is [−0.810, −0.048]; under `site` it is
+[−0.810, +0.048]. The human top-1 holds in 0.940 of session draws and 0.686
+of rater draws. (2) Top-1 wording: no evaluator agrees with the human top-1 in
+as many as half of the paired draws (0.000 to 0.422; the unregistered 72B arm
+0.591); the paper reports the probabilities and no longer counts "wrong best
+policy" as if the reference were certain.
+
 ## Ledger addendum (2026-08-09)
 
 **What is recorded:** the coordinator ratified three environment fixes as the
