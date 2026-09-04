@@ -443,6 +443,36 @@ as many as half of the paired draws (0.000 to 0.422; the unregistered 72B arm
 0.591); the paper reports the probabilities and no longer counts "wrong best
 policy" as if the reference were certain.
 
+## Post-lock appendix arm: LLM-as-a-Verifier (2026-09-04, owner-authorized "run it")
+
+Run under lock item 8's precedent (the 72B arm): never in the headline roster,
+reported in the appendix, with an outcome rule written before the run: if it
+beats RoboReward-4B on agreement with the human top-1, the paper's sentence
+"no evaluator reliably recovers the human best policy" gains a stated
+exception. Evidence: `robojudge/runs/judge/llmv-2026-09-04/` with manifest,
+report in `robojudge/.orchestrator/tasks/llmv-arm-20260904-01/result.md`.
+
+**Result: the exception fired.** [LLM-as-a-Verifier](https://arxiv.org/abs/2607.05391)
+(base Qwen3.5-9B, continuous score read from token probabilities) on the 2,506
+sessions both arms scored: τ +0.810 [+0.429, +1.000]; top-1 pi0_fast_droid held
+in 82.8% of paired draws (RoboReward-4B: 31.5% on the same sessions); agrees
+with the human top-1 in 0.827 of draws (0.337); never ties; d′ 1.410 [1.294,
+1.526]; but accuracy where both sides commit is 0.753 against 0.844, and
+half-credit accuracy 0.716 against 0.733. Among the 5,651 draws where exactly
+one arm recovered the human top-1, this arm won 93.3% [92.6%, 93.9%].
+
+**Caveats carried into the paper.** (1) Pipeline-modified: vLLM cannot run on
+the OrangeGrid pool (CUDA 12.8 driver vs libcudart.so.13), so the model was
+served through transformers with the library's prompt, sampling request and
+logprob readout untouched; reported in its own row. (2) It samples at
+temperature 1.0: a rerun with nothing changed flips 6.5% of induced
+preferences; the attention-kernel swap flips 12.9%. (3) The released code has
+no robotics recipe and cannot reproduce the paper's own robotics number.
+(4) Its continuous readout removes ties entirely (5,058 distinct scores over
+5,059 episodes) without raising accuracy, which is the resolution route
+Deviation 3 named. Compute 8.29 L40S-hours; frames pixel-identical to
+InternVL3's on 5,106/5,106 episodes.
+
 ## Ledger addendum (2026-08-09)
 
 **What is recorded:** the coordinator ratified three environment fixes as the

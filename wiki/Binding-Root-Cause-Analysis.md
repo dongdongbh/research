@@ -430,6 +430,35 @@ search lesson (our words "inverted/anti-aligned/below chance" return
 zero hits; the field says "opposite visualization" / "prefers the
 background") is now part of the gate rules.
 
+## 11. Text encoders of text-to-image systems (2026-09-04): the token states keep roles, the pooled vector does not
+
+Asked by the professor for the Sony proposal: does the text tower also lose
+role information, and what does that mean for text-to-image generation? We
+ran the recorded text-locus probe (linear, one classifier, no images) on the
+prompt encoders of Stable Diffusion 1/2/XL/3 and FLUX: OpenAI CLIP ViT-L/14,
+OpenCLIP ViT-H/14 and ViT-bigG/14, and the T5 v1.1 XXL encoder, after a gate
+that reproduced our three recorded backbones within 5e-5. Evidence:
+`cropdistill/runs/t2i_text_probe_20260904/report.md`.
+
+- **Pooled sentence vector** (what the recorded instrument reads): 0.57 to
+  0.74 on the synthetic spatial set (CLIP ViT-L/14 0.628, T5-XXL 0.569).
+- **Token states** (what every diffusion model actually consumes): 0.94 to
+  0.995 spatial and 0.985 to 0.993 on real-photo verb pairs, on all four
+  encoders, intervals under 0.02 wide; controls at chance.
+- The pooled loss is mostly representation (mean token state under the same
+  linear probe lifts CLIP ViT-L/14 from 0.628 to 0.988) and partly readout (a
+  one-hidden-layer probe on the pooled vector lifts it to 0.928): entangled,
+  not empty, the same pattern as the image side.
+- For T5 and SigLIP 2 (text towers not contrastively aligned with entity
+  names) the recorded elementwise-product instrument is the wrong tool (0.57
+  and 0.57 linear; 0.94 and 0.91 with a one-hidden-layer probe): any table
+  must say which probe.
+
+Reading for the proposal: the prompt encoder keeps who-does-what in the token
+states the generator reads; a binding failure in generation therefore sits in
+how the generator reads those tokens, the same readout pattern as the image
+tower. We ran no generation experiment; that sentence is a hypothesis.
+
 ## Related
 
 [[Method-Gates-Wave-3-2026-08]] · [[Prereg-Crop-Consistency-Distillation]] ·
