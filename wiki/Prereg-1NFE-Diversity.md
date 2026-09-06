@@ -632,6 +632,66 @@ at ticks 100, 300 and 500 at 1 and 8 steps) would show whether recall is rising
 with training at all before anything larger is paid for. **Owner decision
 pending.**
 
+### Correction (2026-09-06): the tick-500 scoring result is superseded. It measured a sampler bug, not the models.
+
+**Who decided, and why.** The owner asked on 2026-09-06 whether the tick-500
+numbers were normal or a bug ("I feel something is wrong"). The coordinator
+launched a six-check audit (nfe1
+`.orchestrator/tasks/h3-sanity-audit-20260906-01/`, result.md there).
+
+**The bug.** `nfe1/delta/gen_samples.py` line 80 draws the starting latent as
+plain `torch.randn(...)`. IMM draws it as `net.get_init_noise(...)`, which is
+`torch.randn(...) * net.sigma_data`, and `sigma_data` is 0.5 for the shipped
+CIFAR-10 network. Every H3 sample therefore started from a latent twice the
+size the network was trained on. Every call site inside IMM uses
+`get_init_noise`; none uses a bare `randn`.
+
+**The number that decided it.** IMM's released CIFAR-10 checkpoint
+([lumaai/imm](https://huggingface.co/lumaai/imm), `cifar10.pt`) sampled
+through our exact path and scored on our exact scorer:
+
+| checkpoint | latent | steps | FID | recall |
+|---|---|---|---|---|
+| released IMM | `randn` (ours) | 1 | 224.1 | 0.008 |
+| released IMM | `randn` (ours) | 2 | 296.9 | 0.000 |
+| released IMM | `randn * 0.5` (IMM's) | 1 | 3.249 | 0.590 |
+| released IMM | `randn * 0.5` (IMM's) | 2 | 2.006 | 0.618 |
+
+Published values are 3.20 and 1.98, so the scorer, the references, the
+encoder and IMM's sampler are all correct. The broken rows land on top of the
+H3 arms (195 to 249 at one step, 261 to 280 at two), including the "more
+steps make it worse" pattern and the near-zero recall. A model that reaches
+FID 3.2 reproduces the entire tick-500 table when run through our sampler.
+
+**What else the audit checked, all clean:** dataset pixel range, channel
+order, class balance and round trip; no schedule depends on `total_ticks`;
+the two-window resume on Delta kept the EMA and optimizer state (verified
+against the Delta logs, now on Anvil under `nfe1/runs/h3_delta_logs/`);
+uniform versus the shipped time discretization costs 0.04 FID. IMM's own
+Figure 4 starts at 50,000 steps, exactly our budget, at about FID 4.6, so the
+budget was never the explanation.
+
+**Two findings the owner must rule on.**
+
+1. **Arms B and C ran no moment matching.** At `matrix_size=1` both
+   self-similarity terms of the IMM loss are identically 1, so the objective
+   collapses to `2 * (1 - k(f_st, f_sr))`, a per-sample distance. Verified by
+   calling the real loss code. The "M=1 versus M=4" contrast is therefore not
+   "averaging objective versus moment matching"; it is "a degenerate
+   per-sample loss versus moment matching". H3's design needs a decision
+   before any result from arms B and C is read as evidence about objectives.
+2. **No loss curve, no in-training FID, no sample grid exists anywhere.**
+   `metrics=[]` disabled evaluation, Weights & Biases was not configured, and
+   IMM's `save_image_grid` is defined but never called. The 739 service-unit
+   campaign ran blind. Process rule proposed: every training campaign must
+   log a loss curve and a sample grid at fixed ticks, and someone must look
+   at them before scoring.
+
+**Status of the tick-500 rows above:** withdrawn as a measurement of the
+models. The corrected re-sample of the three tick-500 snapshots (transferred
+from Delta by Globus on 2026-09-06, 224.5 MB each) is running; its numbers
+will be appended here.
+
 ### What Delta produced
 
 1. **Frozen CIFAR-10 reference IMAGE packs**, `/work/hdd/bhvn/dli26/h3/refstats/`

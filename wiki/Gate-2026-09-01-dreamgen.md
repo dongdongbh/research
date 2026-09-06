@@ -505,6 +505,182 @@ recorded outcomes, or any refresh of GR00T-Dreams. The workshop notifies on
 
 ---
 
+## Week-1 result (run 2026-09-05)
+
+**Authorization.** The owner wrote on 2026-09-05: "continue running more
+detailed gates, and may be pre-registrations ... for conditional, run the
+condition and write back results to wiki. I approve the week-1 step". That
+approves section 4 of this page as written. The work is task
+`gate3-dreamgen-wk1-20260905-01`.
+
+### Verdict: STRONG, but not for the reason section 4 expected
+
+**The shipped judge cannot tell a successful robot episode from a failed one.
+Its d′ is 0.035, and the whole 95% interval, [0.003, 0.069], sits far below the
+0.40 line section 4 drew. That is the STRONG outcome.**
+
+**But the cause is not the prompt. It is the frame handling.** Give the very
+same model the very same DreamGen prompt and let our own video pipeline prepare
+the frames, and d′ jumps to 0.743. That is arm C, and it is almost the same as
+our own baseline of 0.840. Section 4 wrote a guard for exactly this case, and
+the guard has fired. We must say plainly that this is a picture-preparation
+finding, not a prompt finding.
+
+### What was run
+
+All five arms scored the same frozen 5,106 episodes, the ones with a recorded
+0-or-1 success label. The judge is the public
+[GR00T-Dreams](https://github.com/NVIDIA/GR00T-Dreams) script
+`dreamgenbench/eval_sr_qwen_whole.py` at commit `ec3881d4`, Apache-2.0. Its
+frame sampler, its resize, its message order, its four-token generation call
+and its reading rule were imported from a byte-identical copy of that file, not
+rewritten. Every arm used the same weights,
+[Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct),
+revision `cc594898`.
+
+### The numbers
+
+New words used below, each defined once. **ROC area** is the chance that the
+judge scores a real success above a real failure; 0.5 is a coin flip.
+**Calls it a success** is the share of all 5,106 episodes the arm placed above
+the middle of its own scale. **Tie rate** is the share of the 2,553 evaluation
+sessions in which the arm gave both robots the same score, so it expressed no
+preference. All intervals are 95% and come from one shared set of 10,000
+resamples of the sessions, seed 20260802, the same machinery the locked
+campaign uses.
+
+| Arm | calls it a success | ROC area | d′ | 95% interval | criterion | tie rate |
+|---|---|---|---|---|---|---|
+| **A** default prompt, 49 frames, exactly as shipped | 2.9% | 0.510 | **+0.035** | [+0.003, +0.069] | +1.805 | 94.4% |
+| **B** harsh prompt, 49 frames | 5.1% | 0.518 | +0.066 | [+0.023, +0.113] | +1.521 | 92.5% |
+| **C** default prompt, our video pipeline at 1 frame per second | 11.2% | 0.700 | **+0.743** | [+0.648, +0.839] | +0.759 | 84.2% |
+| **D** default prompt, one fixed unrelated frame | 0.1% | 0.499 | −0.003 | [−0.005, −0.000] | +3.344 | 99.9% |
+| **E** our rubric prompt, same weights, already on disk | 30.2% | 0.724 | **+0.840** | [+0.746, +0.936] | +0.169 | 36.1% |
+
+**9.7% of these episodes really did succeed.** Arm A calls 2.9% of them a
+success. Arm E, the same weights under our prompt, calls 30.2%. The criterion
+column says the same thing in one number: the higher it is, the harsher the
+judge, and arm A sits at +1.805 against arm E's +0.169.
+
+Differences in d′, computed on the same resamples so the pairing is kept:
+
+| Difference | point | 95% interval | excludes zero |
+|---|---|---|---|
+| A − E, shipped judge against our baseline | −0.805 | [−0.904, −0.708] | yes |
+| **A − C, frame handling alone** | **−0.708** | [−0.809, −0.609] | yes |
+| **C − E, prompt alone** | **−0.097** | [−0.188, −0.006] | yes |
+| B − A, harsh prompt against default | +0.031 | [−0.018, +0.082] | no |
+| D − E, blind arm against our baseline | −0.843 | [−0.938, −0.748] | yes |
+
+**Read the middle two rows together.** The gap between the shipped judge and
+our baseline is 0.805. Frame handling accounts for 0.708 of it, about 88%. The
+prompt accounts for 0.097, about 12%. The prompt matters a little. The frames
+matter almost entirely.
+
+### The three kill conditions of section 4, checked one by one
+
+1. **"Arm A reaches d′ ≥ 0.60 and its interval's lower end stays above 0.40."
+   FAILS.** d′ is 0.035 and the interval's *upper* end is 0.069.
+2. **"Arms A and B agree on ≥ 90% of episodes." HOLDS.** They agree on 93.6%,
+   interval [92.9%, 94.4%]. They disagree on 325 of 5,106.
+3. **"Arm D, the blind arm, has a d′ interval that includes zero." FAILS on the
+   letter, and the letter is misleading.** Arm D's interval is
+   [−0.005, −0.000], which misses zero by four ten-thousandths, on the
+   *negative* side. Arm D answered "success" 7 times in 5,106 and tied both
+   robots in 99.9% of sessions. This is a judge with no opinion at all, not a
+   judge that sees something without the video. Nobody should quote condition 3
+   as failed without that sentence beside it.
+
+The direction dies only if all three hold at once. Condition 1 fails, so it
+does not die. Section 4's STRONG rule is "arm A's d′ interval's upper end sits
+below 0.40, or arms A and B disagree on more than 25%". The first half is true
+by a wide margin, so the outcome is **STRONG**.
+
+### The frame-sampling guard, and what it forces us to change
+
+Section 4 says: "If arm C lands far from arm A, the story is about frame
+sampling, not the prompt. Say so plainly and rewrite the claim." Before the run
+we fixed "far" as a paired difference that both excludes zero and is at least
+0.20 wide. The measured difference is **+0.708, interval [+0.609, +0.809]**.
+The guard fires.
+
+**Here is the mechanism, measured.** Arm A shows the model 49 frames and arm C
+shows it 40, so arm A sees *more* frames. But DreamGen shrinks every frame to
+30% of its width and height before passing it in. The result:
+
+| Arm | frames shown | input tokens the model actually receives |
+|---|---|---|
+| A, as shipped | 49 | 929 |
+| C, our pipeline | 40 | 3,698 |
+
+**Fewer pixels, not fewer frames.** The shipped recipe hands the model about a
+fifth as much picture detail per frame, and that is what removes its ability to
+judge. The claim we take forward is therefore about the released evaluation
+recipe, not about the prompt and not about the model.
+
+### Two smaller findings, both worth carrying
+
+**The shipped program cannot select its own harsh prompt.**
+`eval_sr_qwen_whole.py` reads a `--zeroshot` flag and then calls
+`evaluate(args.video_dir, args.output_csv, args.device)`. The flag is never
+passed on, so the function always uses the neutral prompt. The repository
+README documents `--zeroshot true` as the way to score a zero-shot model, so
+every run made that way silently used the other prompt. A second, smaller bug
+sits beside it: the flag is declared `type=bool`, and Python's argparse turns
+the word `false` into `True`. Arm B therefore called the function from Python
+with the harsh prompt selected directly. A test in our repository asserts the
+bug is still present upstream, so this note fails loudly if NVIDIA fixes it.
+
+**The harsh prompt is not harsher.** It was written to make the judge stricter.
+It made it more generous: arm A calls 147 episodes a success, arm B calls 262.
+Neither is near the 496 that actually succeeded.
+
+**The reading rule cannot fail, which hides its own failures.** DreamGen scores
+a reply as success only if its first character is `1`, and everything else
+becomes a failure. In arm A, 8 of 5,106 replies were prose rather than a digit,
+for example "The robot arm picks", cut off at four tokens. Each was silently
+recorded as a failed episode. The rate is tiny here, and on a harder input it
+would not be.
+
+### What this means for the direction
+
+**The out-of-distribution defence quoted in section 3 is now answerable.** The
+authors' README says their protocol "might not be generalized well to some OOD
+scenarios like multi-view videos". That sentence cannot explain arm C. Arm C is
+the same footage, the same weights and their own prompt, and it scores 0.743.
+If the footage were the problem, arm C would fail too.
+
+**But the finding is narrower and more useful than "the judge is broken".** It
+is: *the released frame-preparation recipe destroys most of the judge's
+discrimination, and the same model with the same prompt recovers it.* That is a
+fixable engineering fault in a public benchmark, stated with an interval, on
+5,106 episodes with recorded outcomes. It is also a smaller claim than the gate
+page assumed, and the paragraph in the RoboJudge submission should be written
+to that size.
+
+**One honest caution.** We have not shown that this fault changes DreamGen's
+published rankings. Their videos and human scores are not released, as section
+3 records, so we cannot re-score them. What we have shown is that the recipe
+cannot support the per-episode agreement their Pearson correlations imply.
+
+### Cost, against the estimate
+
+Section 4 budgeted 10 to 20 L40S-hours. The four passes took **2.61 L40S-hours**
+of scored work, plus 0.23 for smoke tests, on eight HTCondor jobs. The shipped
+recipe is cheap for exactly the reason it is weak: 929 input tokens per episode.
+
+### Where the evidence lives
+
+Scores, one JSON line per episode with the raw reply kept, on Anvil at
+`robojudge/runs/gate3_dreamgen_20260905/`. Statistics at
+`.../agreement/gate3_arms.json`. Code at `robojudge/scripts/gate3_dreamgen/`,
+including the vendored NVIDIA files and two tests: one asserting our prompts
+match the shipped script character for character, one asserting the new
+estimator reproduces the published d′ of 0.840 for arm E. Full detail in
+`.orchestrator/tasks/gate3-dreamgen-wk1-20260905-01/result.md`.
+
+---
+
 ## Related
 
 [[Direction-Audit-2026-09-01]] · [[Prereg-RoboJudge-Audit]] ·

@@ -365,3 +365,269 @@ in the lane, and because the two ladder papers close off the framing.
 [[Direction-Audit-2026-09-01]] · [[Prereg-RoboJudge-Audit]] ·
 [[Unified-Direction-Ranking-2026-08]] · [[Method-Gates-2026-08]] ·
 [[Method-Gates-Wave-3-2026-08]] · [[GPU-Resources-Across-Clusters]]
+
+## Week-1 result (run 2026-09-05)
+
+**Authorization.** Owner, 2026-09-05, verbatim: "continue running more detailed
+gates, and may be pre-registrations ... I approve the week-1 step". That
+authorizes §4 of this page as written.
+
+**Licence, as §3 requires.**
+[jepa-wms](https://github.com/facebookresearch/jepa-wms) is CC-BY-NC 4.0.
+**Non-commercial, academic use only.**
+
+### Headline
+
+**DIES, provisionally. The kill number fires in all three environments that
+ran.** The interval for `tau(H*) - tau(H_max)` contains zero everywhere on the
+pre-registered L2 objective: Push-T +0.200 [-0.311, +0.400], Wall +0.135
+[-0.267, +0.222], PointMaze +0.000 [+0.000, +0.000]. By condition 1 of §6 that
+sends the rating to **★★**.
+
+Provisional for one reason: §4 fixes the number over **four** environments and
+Metaworld could not run, because the jepa-wms dataset on Hugging Face is behind
+a licence gate only a person can accept. So this is three of four.
+
+**Two things must be read alongside that verdict, and neither rescues it.**
+
+First, **the curves are not flat**. On Wall rank agreement swings from **-0.449
+at H=1 to +0.719 at H=5**, with Mean Maximum Rank Violation falling from 0.494
+to 0.086 over the same stretch. That is a large horizon effect. It is simply not
+the one §4 aimed at: the damage sits at **short** rollouts, not long ones, and
+after H=5 the curve decays only gently to +0.494 at H=12. `tau(H*) - tau(H_max)`
+asks whether stopping early beats running to the end, and when the best horizon
+already sits near the long end that difference is small however dramatic the
+curve. Swapping in a better contrast now would be the exact selection the gate's
+own traps forbid, so the number stands as written.
+
+Second, **the run could not have resolved the difference it tests**. With 36
+held-out episodes the intervals are 0.5 to 0.7 wide while the differences under
+test are 0.0 to 0.2. This was flagged before the run, not after. A null here is
+weak evidence of no effect, not evidence of none.
+
+The full numbers, the three curves, and the L1 and pixel-space controls are in
+the task record at
+`research/.orchestrator/tasks/gate2-horizon-wk1-20260905-01/result.md`.
+
+### What ran
+
+1,800 scored episodes: 3 environments x 10 policies x 60 episodes, every cell
+complete, no duplicates, and the matched-episode check passing across thirty
+independently-run jobs. `H*` was chosen on 24 validation episodes and every
+reported number comes from the other 36, which is the validation-locked rule
+condition 4 of §6 demands.
+
+The two pre-registered controls behaved as controls should. Neither the L1
+objective nor Push-T in pixel space reproduces the L2 shape: L1 gives negative
+or zero differences everywhere and pixel space is flat at +0.018. So the L2
+point estimates are not an artefact of a saturating latent distance, but they
+are not corroborated either, which is a further reason not to read them as an
+effect.
+
+### Words used in this section
+
+- **Gated dataset** — a download that is public to read about but blocked until
+  a person accepts its terms on the website once.
+- **Marker file** — an empty file one job writes to tell another job that it has
+  finished with a graphics card.
+- **Smoke test** — a small run whose only job is to prove the code executes.
+- **Separation** — when one policy beats another every single time, so the
+  fitted strength wants to run off to infinity and the number you get comes from
+  the penalty rather than from the data.
+
+### What is ready
+
+The code is a new small package at
+`/anvil/projects/x-cis261253/code/wmhorizon/`, mirrored on OrangeGrid at
+`/home/dli160/wmhorizon/`. It has three parts: the statistics, the driver that
+scores policies on the graphics card, and the report that turns rows into the
+verdict.
+
+The statistics reuse RoboJudge unchanged, as §4 requires, with the one change
+§4 asked for. `tau_rows` used to be wired to RoboJudge's own policy count; it now
+takes that count as an argument, keeps the old value as the default so no
+existing caller changes, and refuses rather than miscomputes if the width is
+wrong. It was checked against `scipy.stats.kendalltau` at 7, 8, 10 and 12
+policies.
+
+The self-check passes, six tests. Two of them are the ones that matter: it
+plants a horizon effect in fake data and demands the gate find it, and it plants
+a flat curve and demands the gate kill it. A third checks that the interval for
+the difference between two horizons is tighter than it would be if the two
+horizons were treated as independent, which is the whole reason both rankings
+are refit inside one resample.
+
+Mean Maximum Rank Violation is implemented as
+[SIMPLER](https://arxiv.org/abs/2405.05941) defines it and is reported next to
+Kendall's tau, as condition 3 of §6 requires.
+
+All three runnable environments build end to end on the processor: the dataset
+loads, the simulator starts, the shapes are right. The model-side rollout was
+also smoke-tested on the processor in all three, with fixed actions instead of a
+planner. That check exists because the easiest thing to get silently wrong is
+the bookkeeping around the rollout, not the rollout itself: how many frames of
+context to carry, which rows of the unrolled sequence are predictions rather
+than context, and whether the per-step score lines up with horizon `H`. All
+three came back correct, with twelve finite scores.
+
+### One statistical worry, checked and cleared
+
+The simulator score is Success Rate, which is either 0 or 1. With ten policies
+and a few dozen episodes that could easily have produced **separation**, and
+then the intervals would have been set by the ridge penalty rather than by the
+data, exactly the case RoboJudge's `estimand_label` exists to label.
+
+Checked on simulated data of the same shape and size. The largest fitted
+log-strength is **1.17**, against RoboJudge's separation threshold of **5**, and
+**27 to 30 of every 30** bootstrap fits converge at the default ridge of 1e-6.
+So the pre-registered default is kept, no deviation is needed, and the interval
+will be an ordinary Bradley-Terry interval.
+
+### The choices that were mine, and why
+
+**Ten policies**, the same set in all environments: two world models
+(`jepa-wm` and `dino-wm`), two planners (CEM and NeverGrad), four search budgets
+from 300 samples for 30 iterations down to 30 samples for 5, and both the L1 and
+the L2 objective. The search budget is the axis that does the real work. A
+planner given a tenth of the search is genuinely worse, and that is what spreads
+the simulator success rates apart. Without a spread the simulator ranking is
+nearly a tie and a rank correlation against a tie measures nothing.
+
+The planner's own planning horizon is deliberately **held fixed** at the
+released value of 6. The repo uses the word horizon for two different things,
+the planner's planning horizon and the rollout length, and only the second is
+what this gate calibrates. Keeping them apart is worth more than one extra axis.
+
+**K = 12 everywhere.** An episode is 30 simulator steps and the world model
+advances 5 simulator steps at a time, so an episode is 6 model steps. K = 12
+covers that and the same distance again beyond it, which is where drift should
+start costing rank fidelity. The extra horizons are almost free: one imagined
+rollout of length 12 is scored at every H from 1 to 12 off the same latents.
+
+**60 episodes per environment, 24 for choosing and 36 for reporting.** The split
+is drawn once from a fixed seed before any curve is plotted, and `H*` is chosen
+only on the 24, which is the validation-locked rule condition 4 of §6 demands.
+The split is uneven on purpose: the episode is the independent unit of the
+bootstrap, and the number that gets judged comes from the reporting half, so the
+power belongs there.
+
+This was briefly cut to 30 when the measured cost put the design near 100
+GPU-hours against the 30 to 60 §4 budgeted. That was the wrong call and was
+overruled: the budget is a **cost** limit, and OrangeGrid pool time is free, so
+the real limit is wall time. The answer is to spread the work over more idle
+cards, not to measure fewer episodes. The 30 episodes already scored count
+toward the 60, so nothing was thrown away.
+
+### What is blocked, stated loudly
+
+**The two marker-gated cards turned out to be unusable, and the run was moved.**
+GPU 1 was released on schedule. Started there, the run made no progress at all:
+the connection into holder job 1081798 is torn down after two to three minutes
+of full-utilisation work, which is less than a single episode takes, and four
+automatic restarts produced zero scored episodes. Detaching inside that job does
+not help; both `setsid` and `tmux` were tried there and both die with the
+connection. This is the lab's own standing rule that long GPU work on OrangeGrid
+must be submitted rather than run inside the holder job.
+
+The run is therefore three submitted jobs, one per environment. The submit file
+asks the pool for L40S cards and **excludes the holder node**, so it cannot take
+the two cards the marker protocol governs away from the other two gates. That
+costs nothing: a dozen L40S nodes were sitting idle with two free cards each.
+
+**The cost is higher than §4 estimated, and it changed the design.** Measured on
+completed episodes of the most expensive policy: Push-T takes **258 seconds
+inside the world model and 129 seconds in the simulator**, so about 6.4 minutes
+for one policy on one episode, and Wall is the same. That says the planner
+dominates and the pixel-space decoder is a small part of it. PointMaze is about
+half, even with software rendering.
+
+Averaged over the ten policies, whose search budgets differ by a factor of
+sixty, the three-environment design would be roughly **100 GPU-hours at 60
+episodes**, against the 30 to 60 this page budgeted. The episode count was cut
+to 30, which brings it to about **45**. That is a real loss of power, not a free
+saving.
+
+**PointMaze hit a second, separate wall, and is now over it.** It is the one
+environment that renders through mujoco-py, which needs an offscreen graphics
+context. These compute nodes carry a **compute-only NVIDIA driver**:
+`libnvidia-ml` and `libnvidia-cfg` are present, but there is no `libEGL_nvidia`
+and no `libGL` anywhere, so hardware rendering is impossible and every episode
+died with "Failed to initialize OpenGL". Mesa's software EGL does not rescue it
+either, because mujoco-py's graphics-card path has to enumerate a rendering
+device and mesa does not present one.
+
+The fix is OSMesa, pure software rendering, which is ample for a 224x224 maze.
+The catch is that the current conda mesa has dropped OSMesa; version 23.3.4
+still ships it. With that, mujoco-py's processor build compiles and a real frame
+comes back. PointMaze is resubmitted and running.
+
+**Anvil was tried as a second site and abandoned.** The owner asked for longer
+runs there, so Push-T and Wall were submitted to account `cis261253-ai` on the
+`ai` partition. At submission every one of the 80 H100 cards across all 20 nodes
+was allocated, **361 jobs were pending against 66 running**, and the scheduler's
+own estimate for our job was **two weeks out**; shorter wall clocks did not move
+it at all. Both jobs were cancelled. The environment there is built and verified
+anyway, so the site can be picked up later without redoing the setup.
+
+PointMaze was never submitted on Anvil. It is the only environment needing
+mujoco-py and OSMesa, Anvil has no conda to install them from, and it already
+runs on OrangeGrid, so building that stack twice buys nothing.
+
+**Metaworld is out, and only a person can put it back in.** The jepa-wms
+[dataset repository](https://huggingface.co/datasets/facebook/jepa-wms) is
+**gated**. Our token is valid and authenticates, but every file returns 403 until
+someone accepts the terms once on that page. That was not done here, because it
+means agreeing to a non-commercial licence on the owner's behalf.
+
+Push-T, PointMaze and Wall were saved by a mirror. jepa-wms states that those
+three are re-hosted from [DINO-WM](https://github.com/gaoyuezhou/dino_wm)
+unmodified, and DINO-WM's own archive is ungated at
+[OSF](https://osf.io/bmw48/?view_only=a56a296ce3b24cceaf408383a175ce28). The
+file sizes match the gated copies exactly, to the byte. Metaworld has no such
+mirror, and the numbers it needs to scale actions and proprioception live only
+in that dataset, not in the released checkpoint. The model checkpoints
+themselves were never a problem: they are ungated on `dl.fbaipublicfiles.com`.
+
+**So the kill number needs restating for three environments.** §4 fixes it at
+"the interval contains 0 in all four". With three, a result that contains zero in
+all three is a **provisional** kill and must be labelled that way until Metaworld
+runs. Two of three excluding zero still meets condition 1 of §6 on its own terms.
+
+**Nothing here weakens the scoop position.** [SC3-Eval](https://arxiv.org/abs/2606.18610)
+remains the closest prior work and the write-up must still say so. Nothing on
+this page claims to be first to shorten a rollout.
+
+### How to finish it
+
+The thirty jobs are already running and resume from their own output, so nothing
+has to be restarted unless they are killed. To relaunch:
+
+```
+cd /home/dli160/wmhorizon && condor_submit og/shards.sub
+```
+
+Each job writes `runs/rows/<policy>/<env>.jsonl`, one line per episode, kept
+separate because ten jobs appending to a single file on shared storage would
+interleave lines. A complete run is 600 rows per environment, being 10 policies
+times 60 episodes. Merge before analysis:
+
+```
+mkdir -p runs/merged
+for e in pusht wall pointmaze; do cat runs/rows/*/$e.jsonl > runs/merged/$e.jsonl; done
+```
+
+The analysis keeps only episodes that every policy finished, and each job works
+in blocks of five episodes, so a partial run is still readable.
+
+Then, from `/anvil/projects/x-cis261253/code/wmhorizon`:
+
+```
+uv run python -m wmhorizon.report --rows <dir> --out runs/report --draws 10000
+```
+
+Run it in the background and split it by environment and objective with the
+`--envs` and `--scores` flags, because those pairs are independent. Each
+bootstrap draw costs about 0.23 seconds, so one environment and one objective is
+roughly 75 minutes at 10,000 draws. Do not let numpy open a thread per core on
+these 10-by-10 matrices; it made a draw four times slower, and `report.py` now
+pins the maths libraries to one thread itself.

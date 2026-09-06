@@ -136,6 +136,71 @@ record the source version strings 2606.29657v2 and 2607.07538v2 in DESIGN.md;
 and I accept that the study can only refute the premise, never confirm it."
 Rejecting it fails the method filter.
 
+## Owner decision and week-1 runs (2026-09-05)
+
+Owner, 2026-09-05, verbatim: "continue running more detailed gates, and may
+be pre-registrations. and also devide directions to diagnostic and mothod.
+for conditional, run the condition and write back results to wiki. I approve
+the week-1 step". Read as: all four week-1 steps approved; Gate 4's condition
+sentence accepted, so its design is edited first and then its pilot runs.
+
+Launched the same day, one Opus agent per gate, all on OrangeGrid (both L40S
+cards were idle): Gate 1 on card 0 (under 2 GPU-h), Gate 3 on card 1 (10–20
+GPU-h), Gate 4 on card 0 after Gate 1 finishes (~10 GPU-h pilot), Gate 2 on
+whichever card frees first after that (30–60 GPU-h). Each gate page gets its
+own "Week-1 result" section when its run ends. The diagnostic-versus-method
+split the owner asked for is at [[Direction-Classification-2026-09-05]]:
+gates 1 and 2 are methods; gates 3 and 4 are diagnostics with named unlocks.
+
+### Week-1 results as they land
+
+- **Gate 1 (2026-09-05): DEAD. The direction closes.** In the one direction
+  where the fitted rotation works well (LAION-2B into CLIP ViT-B/32: CIFAR-100
+  rises 4.18 points, Recall@1 falls 1.23), spatial role decodability drops
+  only 2.25 points at the headline anchor count, and refitting on all 16,654
+  images drives the drop to −0.87 [−1.65, −0.08]. The whole interval sits
+  below the 2-point line, which is §7.4's DEAD condition and §7.5's kill arm
+  at once. The large drop in the other direction (18.71) comes with a 23.83
+  point CIFAR-100 loss and is within 1.45 points of a random rotation, so it
+  is a bad fit, not a boundary. A second finding kills the design itself: the
+  map degrades the text tower in every pair and direction (9.48 to 33.76
+  CIFAR-100 points when the text side is mapped), so no configuration carries
+  categories well and roles badly, the lopsided residual §5.1 required.
+  Measurement validated: self-map drop 0.00; probes reproduce the numbers of
+  record exactly. Cost 12 GPU-minutes. Rating ★★ per §11. Full record:
+  [[Gate-2026-09-01-canonicalization]], Week-1 result section.
+
+- **Gate 2 (2026-09-06): DIES, provisionally.** On the pre-registered L2
+  objective, the interval for τ(H*) − τ(H_max) contains zero in all three
+  environments that could run: Push-T +0.200 [−0.311, +0.400], Wall +0.135
+  [−0.267, +0.222], PointMaze +0.000 [0, 0]. Provisional only because the
+  rule is written over four environments and Metaworld stayed blocked on the
+  dataset licence gate. Two facts change the meaning without changing the
+  verdict. First, the horizon effect is real but sits at the short end: on
+  Wall, rank agreement goes from −0.449 at H = 1 to +0.719 at H = 5 (MMRV
+  0.494 → 0.086), so the best horizon is near the long end and "stop early"
+  cannot beat "run to the end"; a contrast chosen after seeing that is the
+  selection the gate forbids. Second, with 36 held-out episodes the intervals
+  are 0.5–0.7 wide against differences of 0.0–0.2, so this null is weak
+  evidence, flagged before the run. Controls: L1 and Push-T pixel space do
+  not reproduce the L2 shape. 1,800 rows, no duplicates, 30 pool jobs, about
+  7 h wall. Rating ★★ by condition 1. Coordinator reading: the data says the
+  untrustworthy horizons are the short ones, which is what SC3-Eval's drift
+  truncation already handles, so a powered rerun of the same contrast is not
+  recommended; the owner decides. Full record: [[Gate-2026-09-01-horizon]].
+- **Gate 3 (2026-09-05): STRONG, with the frame guard fired.** The DreamGen
+  judge exactly as shipped cannot tell success from failure on our 5,106
+  RoboArena episodes: d′ 0.035 [0.003, 0.069]. The same weights and prompt
+  fed through our video pipeline reach d′ 0.743 [0.648, 0.839]; our baseline
+  run reproduces at 0.840. So 88% of the gap is frame handling (DreamGen
+  rescales frames to 30%, 49 frames in 929 tokens versus 40 frames in 3,698)
+  and 12% is the prompt. The blind arm is at zero (d′ −0.003, ties 99.9%).
+  Two carry-forward findings: the shipped script silently drops its own
+  `--zeroshot` flag, so every published harsh-prompt run used the neutral
+  prompt; and the harsh prompt is more generous, not stricter. Cost 2.84
+  GPU-h. The claim must be rewritten from "the prompt" to "the frame
+  pipeline". Full record: [[Gate-2026-09-01-dreamgen]], Week-1 result section.
+
 ## Recommendation
 
 Run Gate 1's week-1 step first (one day, under 2 GPU-h, everything cached; a

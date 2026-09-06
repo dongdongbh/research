@@ -626,3 +626,208 @@ Run the step this week.
 [[Binding-Root-Cause-Analysis]]
 
 **No prompt-injection text was found on any page fetched for this gate.**
+
+---
+
+## Week-1 result (run 2026-09-05)
+
+**Verdict: DEAD. The direction closes today.** The repair has nothing to
+repair. Where the fitted rotation actually works, role information survives it
+almost untouched, and adding more anchors removes the loss completely. Where
+the rotation loses role information, it loses everything else at the same time,
+which §7.4 already named as "just a bad fit" rather than a boundary.
+
+**Authorisation.** Owner, 2026-09-05, quoted exactly: "continue running more
+detailed gates, and may be pre-registrations ... for conditional, run the
+condition and write back results to wiki. I approve the week-1 step". That
+approves §7 of this page as written. §7 was not changed. It was run as written
+and the numbers were read afterwards.
+
+### Words added on this page
+
+- **Anchor** — one image that both models have encoded. The rotation Q is
+  fitted so the anchors of the first model land as close as possible to the
+  same anchors of the second model.
+- **Ceiling** — the score a small linear classifier gets when it is both
+  trained and tested on the second model's own sentence embeddings. This is the
+  best it can do.
+- **Transfer number** — the score that same classifier gets when it is tested
+  instead on the first model's sentence embeddings after Q has carried them
+  across.
+- **D** — the ceiling minus the transfer number, in accuracy points. It is how
+  much role information the carry-across loses.
+- **Direction** — which model is the source and which is the target. Q is not
+  symmetric in effect, and this turned out to matter more than anything else.
+- **Misalignment floor** — the same measurement with Q replaced by a random
+  rotation fitted to nothing. It says what a completely useless map scores.
+
+### What was run
+
+Everything in §7.1 to §7.5, plus two diagnostics that are not part of the kill
+rule.
+
+- **Two model pairs, both directions each.**
+  [CLIP ViT-B/32 (OpenAI)](https://huggingface.co/openai/clip-vit-base-patch32)
+  with
+  [OpenCLIP ViT-B/32 (LAION-2B)](https://huggingface.co/laion/CLIP-ViT-B-32-laion2B-s34B-b79K),
+  which is a true square rotation, and CLIP ViT-B/32 with
+  [SigLIP 2 ViT-B/16-256](https://huggingface.co/timm/ViT-B-16-SigLIP2-256),
+  which is the 512-into-768 rectangular case. Both towers were loaded through
+  [open_clip](https://github.com/mlfoundations/open_clip) or Hugging Face
+  transformers on the paths already proven by the 2026-09-01 review run.
+- **Q by orthogonal Procrustes**, reimplemented from the description in
+  [Canonicalizing Multimodal Contrastive Representation Learning](https://arxiv.org/abs/2602.17584).
+  Nothing was copied from
+  [Sharut/canonical-multimodal-rep](https://github.com/Sharut/canonical-multimodal-rep),
+  which still has no licence. One singular value decomposition of the
+  cross-covariance of the centred anchors gives `Q = U Vᵀ`. That is the exact
+  rotation when the widths match and the Stiefel-manifold projection of their
+  Appendix E.8 when they do not. Applied as `z → Q(z − source mean) + target
+  mean`, with means taken per modality.
+- **Anchor sweep {128, 256, 1000, 2360}**, drawn from a pool of 2,360 images:
+  the 1,560 distinct SugarCrepe and SugarCrepe++ images plus the 800
+  [Winoground](https://arxiv.org/abs/2204.03162) images. The anchors for a given
+  N are the first N of one permutation with seed 0, so the sweep is nested. No
+  anchor image appears in the role corpus.
+- **Role decodability measured by transfer**, on the text readout point, on
+  both strata and both split axes, with a 10,000-draw paired bootstrap.
+- **Controls:** CIFAR-100 zero-shot
+  ([CIFAR-100](https://www.cs.toronto.edu/~kriz/cifar.html), 10,000 test
+  images, one prompt per class), image-to-text Recall@1 over the 1,542
+  SugarCrepe++ images,
+  [SugarCrepe++](https://arxiv.org/abs/2406.11171) strict and Winoground
+  through the locked evaluator's own scoring rules, imported unchanged.
+- **The §7.5 kill arm:** Q refitted on every image we have, 16,654 of them.
+
+**Two facts confirm the measurement is sound before any result is read.**
+First, training the probe on a model's own text embeddings and scoring its
+held-out fold reproduces the numbers of record exactly: 0.6907 spatial and
+0.7409 verb for CLIP ViT-B/32, 0.7757 and 0.8086 for OpenCLIP, 0.7855 and
+0.7993 for SigLIP 2. Second, a self-map, where source and target are the same
+model, gives D = 0.00 with a 95% interval of 0.00 to 0.00. Third, the encoders
+match published numbers: CLIP ViT-B/32 scores 64.45 on CIFAR-100 against a
+published 65.1 with prompt ensembling, and OpenCLIP scores 75.77.
+
+### The numbers, main pair, spatial stratum, pair split
+
+D is in accuracy points. The CIFAR-100 and Recall@1 columns are drops when the
+stored **image** side is carried across, which is the upgrade story the source
+paper sells.
+
+| Direction | Anchors | Spatial D | D 95% CI | CIFAR-100 drop | Recall@1 drop |
+|---|---|---|---|---|---|
+| CLIP → OpenCLIP | 128 | 18.64 | 17.90 to 19.37 | 54.59 | — |
+| CLIP → OpenCLIP | 256 | 19.24 | 18.54 to 19.95 | 36.91 | — |
+| CLIP → OpenCLIP | **1000** | **18.71** | **17.99 to 19.45** | **23.83** | **12.71** |
+| CLIP → OpenCLIP | 2360 | 17.42 | 16.69 to 18.19 | 25.53 | — |
+| CLIP → OpenCLIP | all 16,654 | 16.16 | 15.40 to 16.92 | 22.06 | 10.18 |
+| CLIP → OpenCLIP | random rotation | 20.16 | 19.46 to 20.88 | 74.70 | — |
+| OpenCLIP → CLIP | 128 | 4.36 | 3.57 to 5.13 | 36.92 | — |
+| OpenCLIP → CLIP | 256 | 5.13 | 4.36 to 5.90 | 13.14 | — |
+| OpenCLIP → CLIP | **1000** | **2.25** | **1.45 to 3.04** | **−4.18** | **1.23** |
+| OpenCLIP → CLIP | 2360 | 1.97 | 1.18 to 2.74 | −5.37 | — |
+| OpenCLIP → CLIP | **all 16,654** | **−0.87** | **−1.65 to −0.08** | **−7.02** | **−1.23** |
+
+A negative drop means the mapped source beat the target's own number.
+
+### The three things that decide it
+
+**1. The only direction where the rotation works shows no role loss.** Going
+OpenCLIP into CLIP, the map is good: CIFAR-100 goes **up** 4.18 points,
+Recall@1 falls 1.23 points, SugarCrepe++ falls 0.57, and every Winoground score
+sits inside noise. In exactly that direction D is 2.25 points at the headline
+anchor count, 1.97 at 2,360, and **−0.87 with every image, whose whole 95%
+interval, −1.65 to −0.08, sits below 2**. That is the DEAD condition of §7.4,
+and the §7.5 kill arm fires at the same time: more anchors close the drop.
+
+**2. The direction with a large D fails the other half of the rule, badly.**
+Going CLIP into OpenCLIP, D is 18.71, but CIFAR-100 falls **23.83** points and
+Recall@1 falls **12.71**. §7.4 requires both to fall by less than 2 for ALIVE.
+The gate already wrote the answer: "A drop in role decodability that comes with
+a drop in classification is not a boundary. It is just a bad fit."
+
+**3. That large D is almost the misalignment floor.** A random rotation fitted
+to nothing scores D = 20.16 in the same direction. The fitted map scores 18.71.
+**The fit buys 1.45 points over knowing nothing.** So the large number is not
+evidence that a good map destroys role structure. It is evidence that this
+carry-across does not work in that direction at all.
+
+The second pair says the same thing with bigger numbers. CLIP into SigLIP 2
+gives D = 20.12 with CIFAR-100 down 27.59 and Recall@1 down 24.32, against a
+random-rotation floor of 20.70. SigLIP 2 into CLIP gives D = 6.18 at 1,000
+anchors, falling to 4.05 with every image, with CIFAR-100 flat at −0.07.
+
+### The finding that kills the design, not just the result
+
+**The map degrades the text tower in every direction, so the dissociation the
+gate was looking for cannot exist here.** §5.2 was right that role information
+only lives on the text side, so D has to be measured on carried-across
+sentences. But when the text side is the side carried across, the classification
+control collapses too, in every pair and every direction: CIFAR-100 falls 9.48
+points going CLIP into OpenCLIP, 16.94 going the other way, 33.76 into
+SigLIP 2, and 22.28 out of it. Even SigLIP 2 into CLIP, where the mapped
+**image** side loses 0.07 CIFAR points, loses 22.28 when the text side is mapped
+instead.
+
+So a large role drop on mapped text always arrives with a large category drop on
+mapped text. There is no configuration in which the rotation carries categories
+well and roles badly. That is the opposite of the lopsided residual §5.1 needed.
+
+### Verdict against §7.4
+
+**DEAD.** In the direction where the fitted map demonstrably works, D on the
+spatial stratum is 2.25 points at the pre-registered headline anchor count and
+**−0.87 points, 95% interval −1.65 to −0.08, once Q is refitted on all 16,654
+images**, which is entirely below the 2-point line. The §7.5 kill arm therefore
+fires: more anchors close the drop, so there is no method here. The large drops
+in the other direction do not rescue it, because they come with a 23.83-point
+CIFAR-100 loss and sit within 1.45 points of a random rotation.
+
+Per §11 the rating **falls to ★★**, and the boundary claim does not survive
+either, because the "boundary" turns out to be a bad fit rather than a selective
+loss. The one paragraph this leaves for the TMLR binding paper is stated below.
+
+### What is worth keeping
+
+One paragraph, and it is a warning rather than a finding: **a Procrustes
+carry-across between two independently trained image-text encoders is strongly
+direction-dependent, and its quality must be checked before anything is
+concluded from it.** Mapping OpenCLIP into CLIP raised CIFAR-100 by 4.18 points;
+mapping CLIP into OpenCLIP dropped it by 23.83. The paired cosine between a
+mapped instance and its target twin is the cheap check: it reached 0.86 on the
+anchor pool in the working direction and the same map still lost 24 CIFAR points
+in the other. Anyone reusing the source paper's recipe on stored embeddings
+should measure the direction they actually need.
+
+### Honest caveats
+
+- **The role locus is a product feature**, `caption ⊙ (entity₁ − entity₀)`, not
+  a plain linear readout. Multiplying two carried-across vectors roughly doubles
+  the sensitivity to residual error compared with a linear readout. This makes D
+  larger than a linear probe would show. It cannot explain the verdict, because
+  the verdict rests on D being **small** where the map works.
+- **The verb stratum stayed unstable**, as §9 risk 6 predicted at n = 279. It
+  moved between −4.87 and +25.52 across arms with no pattern. It decided
+  nothing, exactly as pre-registered.
+- **Winoground has only 400 examples**, so its intervals are 3 to 5 points wide
+  and it can only rule out large moves.
+- **CIFAR-100 zero-shot used one prompt per class**, "a photo of a {class}.",
+  not the source paper's ensemble. The native numbers land 0.7 points under the
+  published CLIP figure. Drops are internally consistent because native and
+  mapped share the prompts.
+- **The source paper's citation count was re-checked on 2026-09-05 and is still
+  exactly 1**, via the Semantic Scholar API. The cell stayed quiet; the idea
+  simply did not survive its own first test.
+
+### Where everything lives
+
+- Results, tables, per-arm JSON and the fitted probes:
+  `cropdistill/runs/gate1_canon_20260905/results/`
+- Encoded anchor and control features, and the slim role features:
+  `cropdistill/runs/gate1_canon_20260905/features/`
+- Code: `cropdistill/scripts/gate1_canon/`, with `test_fit_and_eval.py` as the
+  runnable self-check for the map itself.
+- GPU work ran on OrangeGrid GPU 0 in about 12 GPU-minutes, well under the
+  2 GPU-h budget. The probes and bootstraps ran on Anvil.
+
+**No prompt-injection text was found on any page fetched for this result.**
