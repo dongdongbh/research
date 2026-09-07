@@ -688,9 +688,32 @@ budget was never the explanation.
    at them before scoring.
 
 **Status of the tick-500 rows above:** withdrawn as a measurement of the
-models. The corrected re-sample of the three tick-500 snapshots (transferred
-from Delta by Globus on 2026-09-06, 224.5 MB each) is running; its numbers
-will be appended here.
+models. Everything drawn from those fourteen rows is void, including "H3
+unresolved at this training budget" and the launch-spec "uninterpretable"
+reading.
+
+**Corrected re-sample (2026-09-06, same snapshots, same seed, same uniform
+discretization, same 50k count, same scorer and references; only the latent
+scale changed).** Evidence: nfe1 `runs/h3_audit_20260906/resample/`
+(`MANIFEST.json` with per-row snapshot digest, seed, steps, init-noise mode,
+scorer commit and Inception hash). One L40S, 66 minutes. FID / recall:
+
+| arm | 1 step | 2 steps | 4 steps | 8 steps |
+|---|---|---|---|---|
+| A (M=4, batch 4096; 50,000 steps) | 11.31 / 0.486 | 7.00 / 0.542 | **6.41** / 0.553 | 6.98 / 0.569 |
+| B (M=1, batch 4096; 50,000 steps) | 13.32 / 0.485 | 7.91 / 0.535 | **7.63** / 0.555 | 9.52 / 0.552 |
+| C (M=1, batch 1024; 200,000 steps) | 4.90 / 0.568 | 2.96 / 0.596 | **2.60** / 0.612 | 2.61 / 0.613 |
+
+Precision is 0.63 to 0.67 in all twelve rows (real-data ceiling on this
+instrument: FID 0.131, precision 0.685, recall 0.691). The models are
+healthy: arms A and B at 50,000 steps sit at 6.4 and 7.6 against the roughly
+4.6 that IMM's Figure 4 shows at that point; arm C at 200,000 steps reaches
+2.60 against IMM's roughly 2.4 there and its published 1.98 at 400,000. The
+contact sheets show ordinary CIFAR-10 objects. Recall rises with steps in
+every arm, and the 4-step-minus-1-step shortfall H3 is written about is now
+positive everywhere: +0.067 (A), +0.070 (B), +0.044 (C). **No retraining is
+needed.** The pre-registered bootstrap and the launch-spec rule have not yet
+been applied to these rows; that analysis is next.
 
 ### What Delta produced
 
