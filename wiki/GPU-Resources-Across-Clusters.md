@@ -112,6 +112,14 @@ month walls that exceed Anvil's limits.
 
 ## OrangeGrid: how we actually hold GPU nodes (added 2026-08-08)
 
+**One-session rule (owner, 2026-09-11):** the holder works for real GPU
+load as long as exactly ONE `condor_ssh_to_job` session is open to it. Open
+one session, start every parallel task in tmux inside it, and never open a
+second session to the same job (a second session is what killed the work on
+2026-09-04 and 2026-09-05). For 80 GB cards, or for work that must outlive
+the person at the keyboard, submit a job instead; see "OrangeGrid: submit
+GPU work as a job" below.
+
 OrangeGrid has no wall-clock limits, so the working practice is to CLAIM
 a whole GPU node and keep it. The submit files live in
 `/home/dli160/submits/` on the OG login node (`ssh og_cluster`):
@@ -127,6 +135,69 @@ Rules of use:
    windows/sessions, check `nvidia-smi` before taking a GPU, clean up.
 3. One holder job per node type is normally enough; release (condor_rm)
    only when the owner says the OG queue of work is empty.
+
+## OrangeGrid: submit GPU work as a job (updated 2026-09-11)
+
+Use a submitted job for 80 GB cards (the holders are L40S) and for work that
+must keep running unattended. Inside a holder, keep to one
+`condor_ssh_to_job` session with tmux (see the one-session rule above); the
+2026-09-04/05 session deaths happened with a second session open. Use the
+owner's minimal submit style, the same shape as
+`/home/dli160/submits/A100_1_start.sub`:
+
+```
+universe = vanilla
+
+executable   = /home/dli160/<project>/my_job.sh
+arguments    = <args>
+output       = /home/dli160/<project>/logs/my_job.$(Cluster).out
+error        = /home/dli160/<project>/logs/my_job.$(Cluster).err
+log          = /home/dli160/<project>/logs/my_job.$(Cluster).log
+environment  = "HOME=/home/dli160 PATH=/home/dli160/.local/bin:/usr/local/bin:/usr/bin:/bin"
+
+request_gpus  = 1
++request_gpus = 1
++wantsArgusNode = True
+
+requirements = (CUDADeviceName == "NVIDIA A100 80GB PCIe")
+
+queue 1
+```
+
+`+wantsArgusNode = True` matters: at least one A100 node
+(OG-NODE-10-5-170-149) has the start rule `(request_gpus >= 1) && wantsArgusNode`
+and silently rejects jobs without it, while `condor_q -better-analyze` reports
+"1 reject your job because of their own requirements". The line is harmless on
+the other nodes. To see which 80 GB cards are actually free:
+`condor_status -af Machine GPUs Start -constraint 'SlotType=="Partitionable" && CUDADeviceName=="NVIDIA A100 80GB PCIe"'`
+(the `GPUs` column is the number of cards still unclaimed on that node; on
+2026-09-11 seven of nine A100 nodes showed 0, all held by other users, and the
+H100 parents showed `Start = false`, closed to new claims).
+
+Rules that came from wasted jobs:
+
+- **Keep the request small.** `request_gpus` plus the literal `+request_gpus`
+  line is required. Do not add `request_memory`, `request_cpus`, or
+  `request_disk` unless you must: L40S slots advertise about 21 GB of disk, and
+  a 200 GB memory request cut the matching A100 slots from 23 to 4.
+- **Pick the card by name:** `"NVIDIA L40S"` (48 GB), `"NVIDIA A100 80GB PCIe"`,
+  `"NVIDIA H100 80GB HBM3"`. For an 80 GB job you can submit one A100 job and
+  one H100 twin with the same script, then `condor_rm` the idle one when the
+  other starts.
+- **Skip node OG-NODE-10-5-174-134.** Its A100s show in `nvidia-smi` but
+  torch reports "No CUDA GPUs are available" (three jobs, 2026-09-11). Add
+  `&& (Machine =!= "OG-NODE-10-5-174-134")` to `requirements`.
+- **Translate the GPU id in the job script.** Condor sets
+  `CUDA_VISIBLE_DEVICES` to a short uuid such as `GPU-5f098947`. Torch 2.10
+  reads it on some nodes and not others, so map it to an index first:
+  `nvidia-smi --query-gpu=index,uuid --format=csv,noheader | awk -F', *' -v s="${CUDA_VISIBLE_DEVICES#GPU-}" 'index($2,s){print $1;exit}'`
+- `$HOME` is unset inside the job; the `environment` line above fixes that.
+- Watch progress from the job's own log lines, not from `ls` on the login
+  node, which lags by minutes.
+
+Worked examples: `cropdistill/runs/sony_motivation_20260904/gen9_launch/`
+(image generation on L40S, A100, H100) and
+`.../vlmprobe_20260911/` (VLM inference on L40S).
 
 ## OrangeGrid verified numbers (2026-08-08 probes)
 

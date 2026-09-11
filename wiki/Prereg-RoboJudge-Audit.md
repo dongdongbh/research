@@ -473,6 +473,69 @@ no robotics recipe and cannot reproduce the paper's own robotics number.
 Deviation 3 named. Compute 8.29 L40S-hours; frames pixel-identical to
 InternVL3's on 5,106/5,106 episodes.
 
+## Post-review amendments (2026-09-07, coordinator; owner-directed "make it to be accepted")
+
+A second external review (ICLR/reviews/review-2026-09-07.md) and the
+inspectability audit it triggered (robojudge task
+`rj-review2-literature-20260907-01`) found gaps in this ledger. Each is
+recorded here with its date so the paper can cite them as amendments, not
+hide them.
+
+1. **H5 re-verdict: INCONCLUSIVE (post-review, 2026-09-07).** Three
+   evaluators with paired Δτ intervals as wide as [−0.286, +0.381] cannot
+   establish whether RoboRewardBench MAE differences translate into
+   ranking-fidelity differences. The earlier "supported" verdict is
+   withdrawn. This is a change of interpretation after the review, and the
+   paper says so.
+2. **H5 judge set.** The lock said "the four judges on that leaderboard"
+   without naming them; the analysis has used three since its first commit
+   (RoboReward-8B, RoboReward-4B, Qwen2.5-VL-7B). No record says which
+   fourth judge was meant or why it was dropped. Recorded as an
+   inspectability failure; the paper reports H5 over the three judges it
+   ran and states this.
+3. **Headline bootstrap unit changed from session to rater** (2026-09-01
+   analysis A4, "whichever gives the wider intervals is the headline")
+   without a numbered deviation. Recorded now as **Deviation 3b** (numbering
+   kept inside this pre-registration; Deviations 4–7 belong to the
+   contextualization pre-registration). The inference target of each unit
+   is stated in the paper.
+4. **Decision rule misquoted in the paper.** Registered: the method counts
+   as a gain only if the paired interval of (stacked τ − best single τ)
+   excludes zero AND the top-1 flip rate does not rise. The paper's
+   restatement inverted the logic (null requires both failures, and "does
+   not fall" for "does not rise"). The verdict is unaffected (interval
+   contains zero; flip rate rose 0 → 0.714), the quotation is corrected.
+5. **Holm family not executable as registered.** The pre-registration names
+   Holm once and registers no p-value, alpha or ordering rule for any
+   hypothesis. A post-review substitute is reported and labelled as such:
+   the six judges' Kendall τ against zero from the campaign's cached draws,
+   Holm-adjusted; all six survive.
+6. **Deviation 3 pre-specification is not verifiable from git.** Its
+   specification and its result were committed together. The owner's
+   ratification quote (2026-09-01) stands in this ledger, but a reader
+   cannot confirm from commit order that the design preceded the result.
+   Stated in the paper.
+7. **H6 was never run.** Its arm needs the DreamGen Bench videos regenerated
+   for four video models (60–120 GPU-h, never spent); no ordering or
+   correlation exists. `runs/gate3_dreamgen_20260905/` is a different study
+   (one judge, five prompt/input variants, real videos) and is not H6.
+8. **Table 4 caption was wrong as printed.** The half-credit accuracy
+   column is not a proportion; its printed bracket was a bootstrap, not
+   Wilson. The scoring rule, denominators and interval method are now
+   written out (analysis A4).
+
+New analyses added after the review, all labelled post-review in the paper:
+A1 human progress scores as an evaluator (RECOVERED: τ +0.905
+[+0.714, +1.000], human top-1 in 0.954 of draws; same-rater ceiling, 94.1%
+agreement with the preference), A2 discrete-vs-continuous readout on the
+recorded LLM-as-a-Verifier run (paired Δτ interval includes zero; top-1
+agreement 0.878 continuous vs 0.681 discrete on the same 2,419 sessions),
+A3 inference-target table, A4 Table 4 intervals, B1 literature coefficient
+audit (39 of the paper's 82 printed intervals were single-n Fisher on
+averaged, pooled or unstated-n coefficients; corrected table replaces them,
+originals kept beside), B2 perturbation model written as equations, B3
+this chronology.
+
 ## Ledger addendum (2026-08-09)
 
 **What is recorded:** the coordinator ratified three environment fixes as the

@@ -69,6 +69,10 @@ the highest rating.
   [[Math-Grounded-Direction-Survey]] ·
   [[Next-Direction-Literature-Survey]] ·
   [[Calibration-Opportunity-Survey]] · [[Compression-Audit-Direction]]
+- [[VLM-Role-Reading-Probe-2026-09-11]] — do chat VLMs (Qwen2.5-VL, Qwen3-VL,
+  InternVL3) read who does what to whom? On 124 human-labeled generated
+  images: 92 to 96% right when a pose fixes the roles, 28 to 34% (chance) on
+  chase scenes, where they default to the common direction.
 - Closed checks and pre-registrations: [[Direction-Gate-Results]] ·
   [[LLM-KD-Direction-Gates]] · [[KD-Noise-Floor-Stage1]] ·
   [[KD-Evidence-Audit-Gate]] · [[Calibration-Draw-Preregistration]] ·

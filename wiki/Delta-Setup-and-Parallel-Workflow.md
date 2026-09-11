@@ -759,6 +759,53 @@ project until the remaining items pass for it:
 - [ ] Delta and Anvil have disjoint branches, W&B runs, run directories, and
   assigned shard ranges.
 
+## 9. Big-model inference on Delta: measured lessons (2026-09-11)
+
+From the FLUX.2 dev (32B) image-generation runs on an H200 (gpue07), run by a
+Claude Code session on the Delta login node with a handoff file from Anvil.
+
+**Put the Python environment and the weights on `/work/nvme`, not `/work/hdd`.**
+The HDD tier has fine bandwidth and terrible latency:
+
+| Access pattern on `/work/hdd` | Measured |
+|---|---|
+| Sequential read of a 1 GB file | 130 MB/s |
+| 200 small Python files, cold | 12.9 s, about 41 to 65 ms per file |
+| `import torch, diffusers, transformers` from a venv on HDD | about 400 s |
+| `from_pretrained` of FLUX.2 dev (167 GB) from HDD | 142 s to map, then the real read at `.to("cuda")` |
+
+Importing the deep-learning stack touches thousands of small files, so a venv
+on HDD costs 6 to 12 minutes per job start. NVMe (`/work/nvme/bhvn/dli26`,
+500 GB quota) fixes the latency. Copy an HF cache with `cp -a`, not `cp -rL`:
+the cache symlinks are relative (`../../../blobs/...`), so `-a` keeps them
+and the copy is 166 GB; `-rL` would duplicate every blob to 332 GB.
+
+**Test the load on a cheap card before taking the big one.** A 15-minute
+`gpuA100x4-interactive` job proved that all five FLUX.2 components load
+(peak host RSS 1.0 GB, since safetensors are memory-mapped) before the H200
+job was resubmitted. The first H200 job had died 16 minutes in on a missing
+package and never touched the GPU.
+
+**Environment pins that work:** torch 2.10.0+cu128 (from the cu128 index only,
+pinned in the same command as every later install so it is never
+re-resolved), torchvision 0.25.0+cu128 (required: transformers 5.x image
+processors such as Pixtral's fail with a placeholder class without it),
+diffusers 0.40.0, transformers 5.16.1. Delta's driver is 595.71, CUDA 12.x.
+
+**Shape and memory.** Request 1/8 of the node for one GPU (1 GPU, 12 CPUs,
+120 GB) so charging stays at 1/8. The 120 GB is a cgroup limit that counts
+page cache, so do not use CPU offload for a 32B model on this shape; keep
+the whole model on the 141 GB H200 (`SONY_NO_OFFLOAD=1` in our script).
+
+**Handoff pattern that worked.** Anvil writes `HANDOFF.md`, the spec, the
+script, the sbatch, and the HF token into a staging folder; Globus moves it
+to `/work/hdd/bhvn/dli26/gen9_staging/`; the Delta session reads the handoff
+and reports in `REPORT.md`, which Anvil pulls back with Globus. Wait for a
+Globus task to finish before reading a transferred file; a 0-byte read
+happened once while a transfer was still in flight.
+
+Launch files of record: `cropdistill/runs/sony_motivation_20260904/gen9_launch/delta/`.
+
 ## Remaining uncertainties and blockers
 
 1. **Compute-node outbound HTTPS:** login-node GitHub, Node, uv, PyPI, PyTorch,
