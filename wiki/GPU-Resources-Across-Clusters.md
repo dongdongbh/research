@@ -68,7 +68,9 @@ change what is feasible:
   treat OG as a ≤2-GPU-per-job system.
 
 **Anvil = the default credit-metered tier.** Direct SSH, key auth, our
-project storage lives here, and the H100 (Anvil AI) partition covers serious
+project storage lives here (5 TB and 1 M files on `/anvil/projects/x-cis261253`,
+1.2 TB and 645 K files used on 2026-09-15; `myquota` to check; layout in
+[[Data-and-Caches]]), and the H100 (Anvil AI) partition covers serious
 training. Wall-time limits apply — design jobs to checkpoint.
 
 **Delta = the big-shape and long-wall tier.** The `sinfo` audit upgraded

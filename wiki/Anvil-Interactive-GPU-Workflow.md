@@ -114,6 +114,9 @@ Keep durable code, manifests, feature caches, and selected outputs under the
 project allocation (`/anvil/projects/x-cis261253/...`). Put disposable
 materialized images, downloads, and other rebuildable intermediates under
 `$SCRATCH/<project>` (`$SCRATCH` is `/anvil/scratch/x-dli26` for this account).
+Quotas: project 5 TB and 1 M files (1.2 TB and 645 K files used on
+2026-09-15), scratch 100 TB with a 30-day purge, home 25 GB. Run `myquota` to
+check; the file count fills faster than the bytes, see [[Data-and-Caches]].
 
 ## Smoke, inspect, then run
 

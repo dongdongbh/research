@@ -20,6 +20,21 @@ project's own repo wiki.
 Project space has daily snapshots (5 TB quota); scratch has none (100 TB).
 Anything expensive to regenerate belongs in project space with a manifest.
 
+Check usage with `myquota` on any Anvil login node. Measured 2026-09-15:
+
+| Location | Used | Limit | Files used | File limit |
+|---|---:|---:|---:|---:|
+| home `x-dli26` | 7.1 GB | 25 GB | - | - |
+| scratch `x-dli26` | 309.3 GB | 100 TB | 498.5 K | 1.0 M |
+| projects `x-cis261253` | 1.2 TB | 5 TB | 645.3 K | 1.0 M |
+
+**The file-count limit is the tighter one on project space: 61.5 percent used
+against 25.9 percent of the bytes.** A dataset with hundreds of thousands of
+small files (raw images, per-episode JSON) will hit the 1 M file cap before
+the 5 TB. Keep such data as a few large files (tar, LMDB, SquashFS, H5), or
+read the RCAC copies in place, and never unpack an archive into project
+space.
+
 ## Repo `data/` symlinks
 
 Each project repo keeps a git-ignored `data/` directory of machine-local
