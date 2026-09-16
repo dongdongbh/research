@@ -116,7 +116,7 @@ allocation directories; there is no per-project work root such as
 | Home | `/u/dli26` | uv/Node binaries, uv-managed Python, current uv cache, shell configuration, secrets |
 | Project | `/projects/bhvn/dli26` | repository and `.venv`; future manifests/checkpoints/runs as appropriate |
 | Work HDD | `/work/hdd/bhvn/dli26` | **8 TB quota (raised; owner, 2026-09-15). Download every dataset here**, under `datasets/`; also model/artifact roots that are read sequentially |
-| Work NVMe | `/work/nvme/bhvn/dli26` | 500 GB. Python environments, model weights, HF/torch caches, and resumable sparse Git staging at `dataset-downloads/` (small-file latency, see Section 9). Not for datasets |
+| Work NVMe | `/work/nvme/bhvn/dli26` | **3 TB (3,000 GB) since 2026-09-16**. Python environments, model weights, HF/torch caches, and resumable sparse Git staging at `dataset-downloads/` (small-file latency, see Section 9). Not for datasets |
 | Node local | `/tmp`, about 0.74 TB on CPU or 1.5 TB on GPU nodes, removed after the job | per-job extraction, LMDB staging, temporary shards |
 
 These values and policies are from the current
@@ -144,8 +144,14 @@ Observed quota after environment installation and partial image staging:
 |---|---:|---:|---:|
 | `/u/dli26` | 10.439 GB | 100 GB | 73,451 / 750,000 |
 | `/projects/bhvn` | 7.602 GB | 500 GB | 38,042 / 750,000 |
-| `/work/nvme/bhvn` | 54.34 MB | 500 GB | 123,642 / 850,000 |
+| `/work/nvme/bhvn` | 54.34 MB | 500 GB at the time; **3,000 GB since 2026-09-16** | 123,642 / 850,000 |
 | `/work/hdd/bhvn` | 42.8 GB | 1 TB at the time; **8 TB since 2026-09-15** | 123,642 / 850,000 |
+
+**Never `mv` between `/work/hdd/bhvn` and `/work/nvme/bhvn`.** The two tiers share one
+file system namespace, so `mv` only moves the file pointer and leaves the data on the
+old backing storage: the file then has HDD speed while sitting in an NVMe path, and the
+quota is charged to the wrong tier. Copy, verify, then remove (`cp -a src dst && rm -r src`,
+or `rsync -a` then `rm`). Source: NCSA support (Brett), 2026-09-16, when raising the NVMe quota.
 
 The current `.venv` is about 7.6 GB in project space. The current uv cache is
 about 8.0 GB at `/u/dli26/.cache/uv`, and the versioned Node installation is
@@ -776,9 +782,10 @@ The HDD tier has fine bandwidth and terrible latency:
 
 Importing the deep-learning stack touches thousands of small files, so a venv
 on HDD costs 6 to 12 minutes per job start. NVMe (`/work/nvme/bhvn/dli26`,
-500 GB quota) fixes the latency. Datasets stay on `/work/hdd` (8 TB): they are read as large files or once per epoch, so its latency does not hurt them. Copy an HF cache with `cp -a`, not `cp -rL`:
+3 TB quota since 2026-09-16) fixes the latency. Datasets stay on `/work/hdd` (8 TB): they are read as large files or once per epoch, so its latency does not hurt them. Copy an HF cache with `cp -a`, not `cp -rL`:
 the cache symlinks are relative (`../../../blobs/...`), so `-a` keeps them
-and the copy is 166 GB; `-rL` would duplicate every blob to 332 GB.
+and the copy is 166 GB; `-rL` would duplicate every blob to 332 GB. Copy and
+then remove; do not `mv` between the HDD and NVMe tiers (Section 2).
 
 **Test the load on a cheap card before taking the big one.** A 15-minute
 `gpuA100x4-interactive` job proved that all five FLUX.2 components load

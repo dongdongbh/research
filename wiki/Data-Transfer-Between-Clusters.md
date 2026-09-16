@@ -38,7 +38,7 @@ Delta  <========== Globus ==========>  Anvil
 Globus File Manager with the ACCESS identity; collections **`Anvil ACCESS`**
 and **`ACCESS Delta`** (an `NCSA Delta` collection also exists under the NCSA
 identity; ACCESS is simpler for us). Delta's collection exposes home plus
-`/work/hdd` and `/work/nvme`. Datasets go to `/work/hdd/bhvn/dli26/datasets` (8 TB quota since 2026-09-15); keep `/work/nvme` (500 GB) for environments and weights.
+`/work/hdd` and `/work/nvme`. Datasets go to `/work/hdd/bhvn/dli26/datasets` (8 TB quota since 2026-09-15); keep `/work/nvme` (3 TB since 2026-09-16) for environments and weights. To move data between the two Delta tiers, copy then remove; `mv` leaves the data on the old tier and charges the wrong quota.
 
 Collection UUIDs (verified 2026-08-31, both GCS v5 mapped collections):
 

@@ -86,7 +86,7 @@ Delta's role in two ways:
   long-run tier; Delta is the *credit-metered* one for jobs that also need
   4–8 GPUs per node.
 
-Storage: `/work/hdd/bhvn` has **8 TB** (owner, 2026-09-15), so datasets download there; `/work/nvme/bhvn` (500 GB) holds environments, weights, and caches. Costs credits; password+Duo SSH makes automation clumsy — stage data via
+Storage: `/work/hdd/bhvn` has **8 TB** (owner, 2026-09-15), so datasets download there; `/work/nvme/bhvn` (3 TB since 2026-09-16) holds environments, weights, and caches; move data between the two tiers with copy-then-remove, never `mv` (see [[Delta-Setup-and-Parallel-Workflow]] Section 2). Costs credits; password+Duo SSH makes automation clumsy — stage data via
 Globus ([[Data-Transfer-Between-Clusters]]). Mind the proportional-charging
 rule above. Charge factors and queue behavior:
 [[Delta-Setup-and-Parallel-Workflow]] and [[Anvil-vs-Delta]].
