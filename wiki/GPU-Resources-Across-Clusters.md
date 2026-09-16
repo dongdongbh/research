@@ -84,7 +84,7 @@ Delta's role in two ways:
   long-run tier; Delta is the *credit-metered* one for jobs that also need
   4–8 GPUs per node.
 
-Costs credits; password+Duo SSH makes automation clumsy — stage data via
+Storage: `/work/hdd/bhvn` has **8 TB** (owner, 2026-09-15), so datasets download there; `/work/nvme/bhvn` (500 GB) holds environments, weights, and caches. Costs credits; password+Duo SSH makes automation clumsy — stage data via
 Globus ([[Data-Transfer-Between-Clusters]]). Mind the proportional-charging
 rule above. Charge factors and queue behavior:
 [[Delta-Setup-and-Parallel-Workflow]] and [[Anvil-vs-Delta]].
@@ -112,13 +112,20 @@ month walls that exceed Anvil's limits.
 
 ## OrangeGrid: how we actually hold GPU nodes (added 2026-08-08)
 
-**One-session rule (owner, 2026-09-11):** the holder works for real GPU
-load as long as exactly ONE `condor_ssh_to_job` session is open to it. Open
-one session, start every parallel task in tmux inside it, and never open a
-second session to the same job (a second session is what killed the work on
-2026-09-04 and 2026-09-05). For 80 GB cards, or for work that must outlive
-the person at the keyboard, submit a job instead; see "OrangeGrid: submit
-GPU work as a job" below.
+**One-session rule (owner, verified 2026-09-11):** the holder works for real
+GPU load as long as exactly ONE `condor_ssh_to_job` session is open to it
+and that session stays open. Test: a 6-minute full-load matmul loop started
+in tmux inside one held-open session ran to completion; the same loop
+started from a session that then closed died within seconds, because the
+tmux server dies with the session. So open one session, keep it open (the
+owner's tmux on the login node is the usual place), start parallel tasks in
+tmux inside it, never open a second session to the same job (a second
+session is what killed the work on 2026-09-04 and 2026-09-05), and read
+progress from files on the shared filesystem. Set `CUDA_VISIBLE_DEVICES=0`
+or `1` yourself inside the holder; the two-uuid list condor sets there is
+not readable by torch. For 80 GB cards, or for work that must outlive the
+person at the keyboard, submit a job instead; see "OrangeGrid: submit GPU
+work as a job" below.
 
 OrangeGrid has no wall-clock limits, so the working practice is to CLAIM
 a whole GPU node and keep it. The submit files live in

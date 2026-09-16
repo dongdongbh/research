@@ -115,8 +115,8 @@ allocation directories; there is no per-project work root such as
 |---|---|---|
 | Home | `/u/dli26` | uv/Node binaries, uv-managed Python, current uv cache, shell configuration, secrets |
 | Project | `/projects/bhvn/dli26` | repository and `.venv`; future manifests/checkpoints/runs as appropriate |
-| Work HDD | `/work/hdd/bhvn/dli26` | durable-for-allocation dataset mirror at `datasets/`; future model/artifact roots |
-| Work NVMe | `/work/nvme/bhvn/dli26` | resumable sparse Git staging at `dataset-downloads/`; future high-IOPS scratch/cache |
+| Work HDD | `/work/hdd/bhvn/dli26` | **8 TB quota (raised; owner, 2026-09-15). Download every dataset here**, under `datasets/`; also model/artifact roots that are read sequentially |
+| Work NVMe | `/work/nvme/bhvn/dli26` | 500 GB. Python environments, model weights, HF/torch caches, and resumable sparse Git staging at `dataset-downloads/` (small-file latency, see Section 9). Not for datasets |
 | Node local | `/tmp`, about 0.74 TB on CPU or 1.5 TB on GPU nodes, removed after the job | per-job extraction, LMDB staging, temporary shards |
 
 These values and policies are from the current
@@ -145,7 +145,7 @@ Observed quota after environment installation and partial image staging:
 | `/u/dli26` | 10.439 GB | 100 GB | 73,451 / 750,000 |
 | `/projects/bhvn` | 7.602 GB | 500 GB | 38,042 / 750,000 |
 | `/work/nvme/bhvn` | 54.34 MB | 500 GB | 123,642 / 850,000 |
-| `/work/hdd/bhvn` | 42.8 GB | 1 TB | 123,642 / 850,000 |
+| `/work/hdd/bhvn` | 42.8 GB | 1 TB at the time; **8 TB since 2026-09-15** | 123,642 / 850,000 |
 
 The current `.venv` is about 7.6 GB in project space. The current uv cache is
 about 8.0 GB at `/u/dli26/.cache/uv`, and the versioned Node installation is
@@ -776,7 +776,7 @@ The HDD tier has fine bandwidth and terrible latency:
 
 Importing the deep-learning stack touches thousands of small files, so a venv
 on HDD costs 6 to 12 minutes per job start. NVMe (`/work/nvme/bhvn/dli26`,
-500 GB quota) fixes the latency. Copy an HF cache with `cp -a`, not `cp -rL`:
+500 GB quota) fixes the latency. Datasets stay on `/work/hdd` (8 TB): they are read as large files or once per epoch, so its latency does not hurt them. Copy an HF cache with `cp -a`, not `cp -rL`:
 the cache symlinks are relative (`../../../blobs/...`), so `-a` keeps them
 and the copy is 166 GB; `-rL` would duplicate every blob to 332 GB.
 
