@@ -144,13 +144,41 @@ Rules of use:
    windows/sessions, check `nvidia-smi` before taking a GPU, clean up.
 3. One holder job per node type is normally enough; release (condor_rm)
    only when the owner says the OG queue of work is empty.
+4. **Use the running holder before you submit anything (owner, 2026-09-18).**
+   `condor_q dli160` first. If a holder job is running, run the work inside
+   it. A new L40S job submitted beside a running holder sat idle with no free
+   slot (three jobs, 2026-09-18) while both of the holder's cards were empty.
+   Submit a job only when the holder cannot serve the shape (80 GB cards) or
+   the owner says the holder is busy.
+
+**Driving the holder from a non-interactive agent (verified 2026-09-18).**
+An agent working over batch SSH cannot hold a session open by hand. This
+recipe honours the one-session rule from a script:
+
+```
+ssh og_cluster 'ps -u dli160 -o args | grep -c condor_ssh_to_job'   # must be 0: never open a second session
+ssh og_cluster 'tmux new-session -d -s <name> -x 220 -y 50 && \
+  tmux send-keys -t <name> "condor_ssh_to_job <jobid>" Enter'
+ssh og_cluster 'tmux send-keys -t <name> "nvidia-smi --query-gpu=index,memory.used --format=csv,noheader" Enter; sleep 5; tmux capture-pane -p -t <name> | tail'
+ssh og_cluster 'tmux send-keys -t <name> "(export CUDA_VISIBLE_DEVICES=0; <job A> > logs/a.out 2>&1) & (export CUDA_VISIBLE_DEVICES=1; <job B> > logs/b.out 2>&1) &" Enter'
+```
+
+The agent's own tmux session on the login node keeps the single
+`condor_ssh_to_job` session open, so the backgrounded jobs inside it live as
+long as that tmux session does. Read progress from the log files on the
+shared filesystem, never by opening another session. Set
+`CUDA_VISIBLE_DEVICES` to a plain index yourself; the condor job body's
+uuid-translation step is harmless when the value is already numeric. Kill
+only your own tmux session when done (`tmux kill-session -t <name>`), which
+closes the job session and frees the cards; the holder keeps running.
+Worked example: the K=8 LLM-as-a-Verifier noise-floor shards,
+`~/llmv_arm/logs/holder.k8*.out`, launched this way on holder 1115860.
 
 ## OrangeGrid: submit GPU work as a job (updated 2026-09-11)
 
 Use a submitted job for 80 GB cards (the holders are L40S) and for work that
 must keep running unattended. Inside a holder, keep to one
-`condor_ssh_to_job` session with tmux (see the one-session rule above); the
-2026-09-04/05 session deaths happened with a second session open. Use the
+`condor_ssh_to_job` session with tmux (see the one-session rule above). Use the
 owner's minimal submit style, the same shape as
 `/home/dli160/submits/A100_1_start.sub`:
 
